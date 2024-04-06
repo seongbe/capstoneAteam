@@ -55,7 +55,14 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-     
+    - assets/icons/
+  fonts:
+    - family: mitmi
+      fonts:
+        - asset: assets/fonts/mitmi.ttf
+    - family: skybori
+      fonts:
+        - asset: assets/fonts/SKYBORI.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
