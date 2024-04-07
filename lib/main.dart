@@ -1,4 +1,4 @@
-import 'package:capstone/page/homepage.dart';
+import 'package:capstone/page/onboarding/startPage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +10,6 @@ class seongbeom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Mainpage();
+    return const StartPage();
   }
 }
