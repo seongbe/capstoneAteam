@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class domainPage extends StatelessWidget {
-  const domainPage({super.key});
+class DomainPage extends StatelessWidget {
+  const DomainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
 
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Get.back(); // 뒤로 가기
+            },
+          ),
+        ),
         body: Stack(
           children: [
             Container(
