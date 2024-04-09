@@ -1,4 +1,5 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/domainpage/domainpage.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -49,7 +50,7 @@ class StartPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 300,
+                    height: 250,
                   ),
                   GreenButton(
                     text1: '시작하기',
@@ -57,6 +58,14 @@ class StartPage extends StatelessWidget {
                     height: 55,
                     onPressed: () {
                       Get.to(HomePage());
+                    },
+                  ),
+                  GreenButton(
+                    text1: '관리자페이지',
+                    width: 288,
+                    height: 55,
+                    onPressed: () {
+                      Get.to(domainPage());
                     },
                   ),
                   SizedBox(
