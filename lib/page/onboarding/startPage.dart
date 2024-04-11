@@ -1,6 +1,6 @@
 import 'package:capstone/component/button.dart';
-import 'package:capstone/page/domainPage/domainPage.dart';
-import 'package:capstone/page/homepage/homepage.dart';
+import 'package:capstone/page/domainpage/Domainpage.dart';
+import 'package:capstone/page/homepage/Homepage.dart';
 import 'package:capstone/page/onboarding/Loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -86,18 +86,20 @@ class StartPage extends StatelessWidget {
                       SizedBox(
                         width: 30,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Get.toNamed('/login');
+                      TextButton(
+                        onPressed: () {
+                          Get.to(loginpage());
                         },
-                        child: Text(
-                          '로그인',
-                          style: TextStyle(
-                            color: Color(0xFF78BE39),
+                        child: Text('로그인',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xFF78BE39),
+                            )),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Color(0xFF78BE39),
+                          textStyle: const TextStyle(
                             fontFamily: 'SKYBORI',
                             fontSize: 18,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Color(0xFF78BE39),
                           ),
                         ),
                       ),
