@@ -1,5 +1,7 @@
 import 'package:capstone/component/Button.dart';
+import 'package:capstone/page/homepage/writelistpage.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
+import 'package:capstone/page/homepage/interestlistpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
@@ -34,7 +36,7 @@ class Pulip extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'skybori',
               fontSize: 30,
-              letterSpacing: 1.0,
+              letterSpacing: 2.0,
             ),
           ),
           centerTitle: true,
@@ -88,7 +90,7 @@ class Pulip extends StatelessWidget {
                   height: 50.0,
                   color: Color(0xffD0E4BC),
                   thickness: 1.0,
-                  endIndent: 50.0,
+                  endIndent: 30.0,
                 ),
                 Text(
                   '나의 정보',
@@ -183,7 +185,7 @@ class Pulip extends StatelessWidget {
                   height: 50.0,
                   color: Color(0xffD0E4BC),
                   thickness: 1.0,
-                  endIndent: 50.0,
+                  endIndent: 30.0,
                 ),
                 Text(
                   '나의 거래',
@@ -204,14 +206,14 @@ class Pulip extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   onPressed: () {
-                    //관심목록 페이지로 넘어가기
+                    Get.to(Interestlistpage());
                   },
                   icon: Icon(
                     Icons.favorite_border_rounded,
                     color: Color.fromRGBO(29, 29, 29, 1),
                   ),
                   label: Text(
-                    '관심목록 ',
+                    '관심목록',
                     style: TextStyle(
                       color: Color.fromRGBO(29, 29, 29, 1),
                       fontFamily: 'skybori',
@@ -230,14 +232,14 @@ class Pulip extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   onPressed: () {
-                    //거래목록 페이지로 넘어가기
+                    Get.to(Writelistpage());
                   },
                   icon: Icon(
                     Icons.list_alt_rounded,
                     color: Color.fromRGBO(29, 29, 29, 1),
                   ),
                   label: Text(
-                    '거래목록 ',
+                    '내가 쓴 글',
                     style: TextStyle(
                       color: Color.fromRGBO(29, 29, 29, 1),
                       fontFamily: 'skybori',
@@ -250,7 +252,7 @@ class Pulip extends StatelessWidget {
                   height: 50.0,
                   color: Color(0xffD0E4BC),
                   thickness: 1.0,
-                  endIndent: 50.0,
+                  endIndent: 30.0,
                 ),
                 Text(
                   '문의 및 신고하기',
@@ -290,7 +292,7 @@ class Pulip extends StatelessWidget {
                   height: 50.0,
                   color: Color(0xffD0E4BC),
                   thickness: 1.0,
-                  endIndent: 50.0,
+                  endIndent: 30.0,
                 ),
                 TextButton.icon(
                   style: TextButton.styleFrom(
