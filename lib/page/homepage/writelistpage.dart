@@ -1,4 +1,5 @@
 import 'package:capstone/component/Button.dart';
+import 'package:capstone/page/homepage/rewritepage.dart';
 import 'package:capstone/wiget/bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -94,7 +95,7 @@ class Writelist extends StatelessWidget {
                       width: 79,
                       height: 30,
                       onPressed: () {
-                        //프로필 수정
+                        Get.to(ReWritePage());
                       },
                     ),
                   ],
@@ -138,7 +139,7 @@ class Writelist extends StatelessWidget {
                       width: 79,
                       height: 30,
                       onPressed: () {
-                        //프로필 수정
+                        Get.to(ReWritePage());
                       },
                     ),
                   ],

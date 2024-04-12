@@ -1,7 +1,8 @@
 import 'package:capstone/component/Button.dart';
-import 'package:capstone/page/homepage/writelistpage.dart';
+import 'package:capstone/page/homepage/Writelistpage.dart';
+import 'package:capstone/page/homepage/Setprofilepage.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
-import 'package:capstone/page/homepage/interestlistpage.dart';
+import 'package:capstone/page/homepage/Interestlistpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
@@ -82,7 +83,7 @@ class Pulip extends StatelessWidget {
                     width: 79,
                     height: 30,
                     onPressed: () {
-                      //프로필 수정
+                      Get.to(Setprofilepage());
                     },
                   ),
                 ]),
