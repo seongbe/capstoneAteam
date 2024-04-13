@@ -1,7 +1,7 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/domainpage/Domainpage.dart';
-import 'package:capstone/page/homepage/homepage.dart';
-import 'package:capstone/page/onboarding/loginpage.dart';
+import 'package:capstone/page/homepage/Homepage.dart';
+import 'package:capstone/page/onboarding/Loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
