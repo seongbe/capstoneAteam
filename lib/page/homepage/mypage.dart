@@ -1,6 +1,7 @@
 import 'package:capstone/component/Button.dart';
 import 'package:capstone/page/homepage/Writelistpage.dart';
 import 'package:capstone/page/homepage/Setprofilepage.dart';
+import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:capstone/page/homepage/Interestlistpage.dart';
 import 'package:flutter/material.dart';
@@ -273,7 +274,7 @@ class Pulip extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   onPressed: () {
-                    //문의 및 신고글 작성 페이지로 넘어가기
+                    Get.to(QandApage());
                   },
                   icon: Icon(
                     Icons.warning_amber_rounded,
