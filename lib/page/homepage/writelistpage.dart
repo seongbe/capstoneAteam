@@ -92,7 +92,7 @@ class Writelist extends StatelessWidget {
                     GreenButton(
                       // 버튼 글씨 사이즈 수정해야함
                       text1: '수정하기',
-                      width: 79,
+                      width: 69,
                       height: 30,
                       onPressed: () {
                         Get.to(ReWritePage());
@@ -136,7 +136,7 @@ class Writelist extends StatelessWidget {
                     GreenButton(
                       // 버튼 글씨 사이즈 수정해야함
                       text1: '수정하기',
-                      width: 79,
+                      width: 60,
                       height: 30,
                       onPressed: () {
                         Get.to(ReWritePage());
