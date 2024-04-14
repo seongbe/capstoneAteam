@@ -1,4 +1,4 @@
-import 'package:capstone/page/domainpage/domainpage.dart';
+import 'package:capstone/page/domainpage/Domainpage.dart';
 import 'package:capstone/page/onboarding/loginpage.dart';
 
 import 'package:get/get.dart';

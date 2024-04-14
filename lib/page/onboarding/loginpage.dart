@@ -1,6 +1,8 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/Certification.dart';
+import 'package:capstone/page/onboarding/IDFound.dart';
+import 'package:capstone/page/onboarding/PasswordFound.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
@@ -65,7 +67,7 @@ class loginpage extends StatelessWidget {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffD0E4BC)),
+                          BorderSide(width: 1, color: Color(0xffD0E4BC)),
                         ),
                       ),
                     ),
@@ -85,7 +87,7 @@ class loginpage extends StatelessWidget {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           borderSide:
-                              BorderSide(width: 1, color: Color(0xffD0E4BC)),
+                          BorderSide(width: 1, color: Color(0xffD0E4BC)),
                         ),
                       ),
                     ),
@@ -111,26 +113,44 @@ class loginpage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('아이디 찾기',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: Colors.black,
+                      TextButton(
+                        onPressed: () {
+                          Get.to(IDFound());
+                        },
+                        child: Text('아이디 찾기',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.black,
+                            )),
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(
                             fontFamily: 'SKYBORI',
                             fontSize: 15,
-                          )),
+                          ),
+                        ),
+                      ),
                       Text(' / ',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'SKYBORI',
                             fontSize: 15,
                           )),
-                      Text('비밀번호 재설정',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: Colors.black,
+                      TextButton(
+                        onPressed: () {
+                          Get.to(PasswordFound());
+                        },
+                        child: Text('비밀번호 재설정',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.black,
+                            )),
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(
                             fontFamily: 'SKYBORI',
                             fontSize: 15,
-                          ))
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   GreenButton(
