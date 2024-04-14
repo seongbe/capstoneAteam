@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
+import 'package:capstone/page/domainpage/user_manage_page.dart';
+import 'package:capstone/page/domainpage/contact_page.dart';
+import 'package:capstone/page/onboarding/loginpage.dart';
+import 'package:capstone/component/button.dart';
 
 class DomainPage extends StatelessWidget {
-  const DomainPage({super.key});
+  const DomainPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +17,6 @@ class DomainPage extends StatelessWidget {
 
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Get.back(); // 뒤로 가기
-            },
-          ),
-        ),
         body: Stack(
           children: [
             Container(
@@ -56,40 +53,49 @@ class DomainPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 122.41,
-                        height: 122.41,
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7FBF4),
-                          border: Border.all(
-                            color: Color(0xFF999999),
-                            width: 1.4,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 6),
-                            Image.asset(
-                              'assets/icons/icon_users.png',
-                              width: 68.15,
-                              height: 68.15,
-                              color: Color(0xFF5E5E5E),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(UserManagePage());
+                        },
+                        child: Container(
+                          width: 122.41,
+                          height: 122.41,
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF7FBF4),
+                            border: Border.all(
+                              color: Color(0xFF999999),
+                              width: 1.4,
                             ),
-                            Text(
-                              '사용자 관리',
-                              style: TextStyle(
-                                fontFamily: 'mitmi',
-                                fontSize: 18,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 6),
+                              Image.asset(
+                                'assets/icons/icon_users.png',
+                                width: 68.15,
+                                height: 68.15,
                                 color: Color(0xFF5E5E5E),
                               ),
-                            ),
-                          ],
+                              Text(
+                                '사용자 관리',
+                                style: TextStyle(
+                                  fontFamily: 'mitmi',
+                                  fontSize: 18,
+                                  color: Color(0xFF5E5E5E),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Container(
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(ContactPage());
+                        },
+                        child: Container(
                         width: 122.41,
                         height: 122.41,
                         margin: EdgeInsets.only(left: 48),
@@ -122,32 +128,20 @@ class DomainPage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      ),
                     ],
                   ),
                   SizedBox(height: 40),
-                  Container(
-                    width: 287, // 원하는 너비
-                    height: 55, // 원하는 높이
-                    decoration: BoxDecoration(
-                      color: Color(0xFF78BE39),
-                      border: Border.all(
-                        color: Color(0xFF66AA28),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '로그아웃',
-                        style: TextStyle(
-                          fontFamily: 'mitmi',
-                          fontSize: 27,
-                          color: Colors.white,
-                          letterSpacing: 20,
-                        ),
+                  Center(
+                      child: GreenButton(
+                        text1: '로그아웃',
+                        width: 288,
+                        height: 55,
+                        onPressed: () {
+                          Get.to((loginpage()));
+                        },
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
