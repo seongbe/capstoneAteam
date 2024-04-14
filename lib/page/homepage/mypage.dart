@@ -83,6 +83,7 @@ class Pulip extends StatelessWidget {
                     text1: '프로필수정',
                     width: 79,
                     height: 30,
+
                     onPressed: () {
                       Get.to(Setprofilepage());
                     },

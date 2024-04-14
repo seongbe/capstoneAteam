@@ -84,7 +84,10 @@ class ContactContainer_BLUE extends StatelessWidget {
                 ),
                 Text(
                   '처리완료',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
                 ),
               ],
             ),
