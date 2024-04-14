@@ -20,10 +20,17 @@ class HomePage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          leadingWidth: 80,
+          leadingWidth: 150,
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Get.back(); // 뒤로 가기
+                },
+              ),
+
               SizedBox(
                 width: 20,
               ),

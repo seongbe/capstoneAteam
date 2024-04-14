@@ -1,11 +1,12 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/Certification.dart';
+import 'package:capstone/page/onboarding/IDFound.dart';
+import 'package:capstone/page/onboarding/PasswordFound.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
-
 
 class loginpage extends StatelessWidget {
   const loginpage({super.key});
@@ -15,7 +16,7 @@ class loginpage extends StatelessWidget {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
-    // Container의 너비와 높이를 동일하게 설정합니다.
+// Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
 
     return MaterialApp(
@@ -54,14 +55,13 @@ class loginpage extends StatelessWidget {
                   SizedBox(
                     height: 120,
                   ),
-
                   const SizedBox(
                     width: 350,
                     child: TextField(
                       decoration: InputDecoration(
                         labelText: '아이디를 입력하세요.',
-                        labelStyle: TextStyle(color: Color(0xffC0C0C0),
-                            fontFamily: 'mitmi'),
+                        labelStyle: TextStyle(
+                            color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                         filled: true,
                         fillColor: Color(0xffF8FFF2),
                         enabledBorder: OutlineInputBorder(
@@ -72,19 +72,16 @@ class loginpage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   SizedBox(
                     height: 10,
                   ),
-
                   const SizedBox(
                     width: 350,
                     child: TextField(
                       decoration: InputDecoration(
                         labelText: '비밀번호를 입력하세요.',
-                        labelStyle: TextStyle(color: Color(0xffC0C0C0),
-                            fontFamily: 'mitmi'
-                        ),
+                        labelStyle: TextStyle(
+                            color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                         filled: true,
                         fillColor: Color(0xffF8FFF2),
                         enabledBorder: OutlineInputBorder(
@@ -95,49 +92,67 @@ class loginpage extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Icon(Icons.check_box),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text('로그인 상태 유지',
-                          style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'SKYBORI',
-                        fontSize: 18,)),
-                    ]
-                  ),
-
+                  Row(children: [
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Icon(Icons.check_box),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('로그인 상태 유지',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'SKYBORI',
+                          fontSize: 18,
+                        )),
+                  ]),
                   SizedBox(
                     height: 30,
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('아이디 찾기',style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.black,
-                        fontFamily: 'SKYBORI',
-                        fontSize: 15,)),
-                      Text(' / ',style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'SKYBORI',
-                        fontSize: 15,)),
-                      Text('비밀번호 재설정',style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Colors.black,
-                        fontFamily: 'SKYBORI',
-                        fontSize: 15,))
+                      TextButton(
+                        onPressed: () {
+                          Get.to(IDFound());
+                        },
+                        child: Text('아이디 찾기',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.black,
+                            )),
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(
+                            fontFamily: 'SKYBORI',
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      Text(' / ',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'SKYBORI',
+                            fontSize: 15,
+                          )),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(PasswordFound());
+                        },
+                        child: Text('비밀번호 재설정',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.black,
+                            )),
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(
+                            fontFamily: 'SKYBORI',
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
                     ],
-
                   ),
-
                   GreenButton(
                     text1: '로그인',
                     width: 288,
@@ -146,7 +161,6 @@ class loginpage extends StatelessWidget {
                       Get.to(HomePage());
                     },
                   ),
-                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -162,24 +176,20 @@ class loginpage extends StatelessWidget {
                         width: 30,
                       ),
                       TextButton(
-                        onPressed: (){
+                        onPressed: () {
                           Get.to(Certification());
                         },
                         child: Text('계정만들기',
                             style: TextStyle(
                               decoration: TextDecoration.underline,
                               decorationColor: Color(0xFF78BE39),
-                            )
-                        ),
-
+                            )),
                         style: TextButton.styleFrom(
                           foregroundColor: Color(0xFF78BE39),
                           textStyle: const TextStyle(
                             fontFamily: 'SKYBORI',
                             fontSize: 18,
                           ),
-
-
                         ),
                       ),
                     ],

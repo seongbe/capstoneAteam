@@ -1,4 +1,5 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/domainpage/Domainpage.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/loginpage.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class StartPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 300,
+                    height: 250,
                   ),
                   GreenButton(
                     text1: '시작하기',
@@ -58,6 +59,14 @@ class StartPage extends StatelessWidget {
                     height: 55,
                     onPressed: () {
                       Get.to(HomePage());
+                    },
+                  ),
+                  GreenButton(
+                    text1: '관리자페이지',
+                    width: 288,
+                    height: 55,
+                    onPressed: () {
+                      Get.to(DomainPage());
                     },
                   ),
                   SizedBox(
@@ -78,24 +87,20 @@ class StartPage extends StatelessWidget {
                         width: 30,
                       ),
                       TextButton(
-                        onPressed: (){
+                        onPressed: () {
                           Get.to(loginpage());
                         },
                         child: Text('로그인',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          decorationColor: Color(0xFF78BE39),
-                        )
-                        ),
-
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xFF78BE39),
+                            )),
                         style: TextButton.styleFrom(
                           foregroundColor: Color(0xFF78BE39),
                           textStyle: const TextStyle(
                             fontFamily: 'SKYBORI',
                             fontSize: 18,
                           ),
-
-
                         ),
                       ),
                     ],

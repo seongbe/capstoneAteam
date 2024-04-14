@@ -1,12 +1,12 @@
 import 'package:capstone/component/button.dart';
-import 'package:capstone/page/onboarding/createAcouunt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:capstone/page/onboarding/PasswordCertification.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
-class Certification extends StatelessWidget {
-  const Certification({super.key});
+class PasswordFound extends StatelessWidget {
+  const PasswordFound({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class Certification extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('회원가입'),
+          title: Text('비밀번호 재설정'),
           titleTextStyle: const TextStyle(
               fontSize: 40, color: Colors.black, fontFamily: 'mitmi'),
           shape: const Border(
@@ -76,14 +76,6 @@ class Certification extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  GreenButton(
-                    text1: '인증메일받기',
-                    width: 288,
-                    height: 55,
-                    onPressed: () {
-                      //Get.to();
-                    },
-                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -92,7 +84,7 @@ class Certification extends StatelessWidget {
                       SizedBox(
                         width: 35,
                       ),
-                      Text('인증번호',
+                      Text('생년월일',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'SKYBORI',
@@ -101,19 +93,13 @@ class Certification extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
-                      Text('어떤 경우에도 타인에게 보여주지 마세요!',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontFamily: 'SKYBORI',
-                            fontSize: 15,
-                          ))
                     ],
                   ),
                   const SizedBox(
                       width: 350,
                       child: TextField(
                         decoration: InputDecoration(
-                          labelText: '인증번호를 입력하세요',
+                          labelText: '6자리 생년월일 ex)000120',
                           labelStyle: TextStyle(
                               color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                           filled: true,
@@ -129,35 +115,16 @@ class Certification extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  GreenButton(
-                    text1: '인증번호확인',
-                    width: 288,
-                    height: 55,
-                    onPressed: () {
-                      //Get.to();
-                    },
-                  ),
+
                   const SizedBox(
-                    height: 70,
-                  ),
-                  Container(
-                    child: Text('이용약관 및 개인정보취급방침',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.black,
-                          fontFamily: 'SKYBORI',
-                          fontSize: 15,
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 10,
+                    height: 40,
                   ),
                   GreenButton(
-                    text1: '동의하고다음으로',
+                    text1: '인증번호 발송',
                     width: 300,
                     height: 55,
                     onPressed: () {
-                      Get.to(CreatAccount());
+                      Get.to(PasswordCertification());
                     },
                   ),
                 ],
