@@ -5,16 +5,20 @@ class MainPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Container(
-          width: 358,
-          height: 110,
-          child: Column(
-            children: [],
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return SizedBox(
+          height: 100,
+          child: Row(
+            children: [
+              Image.asset(
+                'assets/images/skunivLogo.png',
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
+      itemCount: 10,
     );
   }
 }
