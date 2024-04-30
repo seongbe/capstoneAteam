@@ -38,6 +38,15 @@ class BookListItem extends StatelessWidget {
                       textAlign: TextAlign.start),
                   Text(subtitle1),
                   Text(subtitle2),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 190,
+                      ),
+                      Icon(Icons.chat),
+                      Icon(Icons.heart_broken)
+                    ],
+                  )
                 ],
               ),
             ],

@@ -1,3 +1,5 @@
+import 'package:capstone/component/alterdilog2.dart';
+import 'package:capstone/component/alterdilog3.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/mypage.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +127,8 @@ class Inputpass extends StatelessWidget {
             width: 756,
             height: 50,
             onPressed: () {
-              Get.to(Mypage());
+              CustomDialog3.showAlert(
+                  context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black);
             },
           ),
         ],
