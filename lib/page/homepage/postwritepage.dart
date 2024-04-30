@@ -1,3 +1,4 @@
+import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -160,10 +161,13 @@ class PostWritePage extends StatelessWidget {
                 height: 70,
                 child: GreenButton(
                   // 버튼 글씨 사이즈 수정해야함
-                  text1: '수정하기',
+                  text1: '작성하기',
                   width: 756,
                   height: 50,
-                  onPressed: () {},
+                  onPressed: () {
+                    CustomDialog.showAlert(
+                        context, "글이 정상적으로 등록되었습니다.", 14, Colors.black);
+                  },
                 ),
               )
             ],

@@ -17,9 +17,11 @@ class ChatPage extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text('채팅페이지'),
+                Row(
+                  children: [],
+                )
               ],
-            )
+            ),
           ],
         ),
       ),
