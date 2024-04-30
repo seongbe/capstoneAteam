@@ -7,7 +7,7 @@ class CustomDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFFCFE4BC),
+          backgroundColor: Color(0xFFCFE4BC).withAlpha(400),
           content: SizedBox(
             height: 50,
             child: Container(
