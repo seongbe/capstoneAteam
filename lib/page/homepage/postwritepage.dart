@@ -166,7 +166,7 @@ class PostWritePage extends StatelessWidget {
                   height: 50,
                   onPressed: () {
                     CustomDialog.showAlert(
-                        context, "글이 정상적으로 등록되었습니다.", 14, Colors.black);
+                        context, "글이 정상적으로 등록되었습니다.", 14, Colors.black,(){});
                   },
                 ),
               )

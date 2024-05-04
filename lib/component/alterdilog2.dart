@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 class CustomDialog2 {
   static void showAlert(
-      BuildContext context, String message, double fontSize, Color textColor,VoidCallback onConfirm) {
+      BuildContext context, String message, double fontSize, Color textColor) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

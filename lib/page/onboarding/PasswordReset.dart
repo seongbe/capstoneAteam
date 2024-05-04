@@ -1,5 +1,6 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alerdialog.dart';
+import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -126,8 +127,8 @@ class PasswordReset extends StatelessWidget {
                     width: 300,
                     height: 55,
                     onPressed: () {
-                      //CustomDialog.showAlert(context, "비밀번호 재설정이 완료되었습니다.\n 다시 로그인 해주세요.", 20, Colors.black);
-                      Get.to(loginpage());
+                      //CustomDialog2.showAlert(context, "비밀번호가 일치하지 않습니다.\n 다시 입력해주세요.", 20, Colors.black,(){});
+                      CustomDialog.showAlert(context, "비밀번호 재설정이 완료되었습니다.\n 다시 로그인 해주세요.", 20, Colors.black,(){Get.to(loginpage());});
                     },
                   ),
                 ],

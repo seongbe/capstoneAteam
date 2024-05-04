@@ -1,4 +1,5 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/onboarding/loginpage.dart';
 import 'package:flutter/material.dart';
@@ -118,8 +119,8 @@ class CreatAccount extends StatelessWidget {
                           width: 80,
                           height: 40,
                           onPressed: () {
-                            CustomDialog2.showAlert(context, "사용할 수 있는 닉네임 입니다.", 20, Colors.black,(){});
-                            //CustomDialog2.showAlert(context, "이미 사용중인 닉네임 입니다.\n 새로운 닉네임을 입력하세요.", 20, Colors.black);
+                            CustomDialog.showAlert(context, "사용할 수 있는 닉네임 입니다.", 20, Colors.black,(){});
+                            //CustomDialog.showAlert(context, "이미 사용중인 닉네임 입니다.\n 새로운 닉네임을 입력하세요.", 20, Colors.black);
                             Get.to(CreatAccount());
                           },
                         ),
@@ -203,11 +204,10 @@ class CreatAccount extends StatelessWidget {
                     width: 300,
                     height: 55,
                     onPressed: () {
-                      CustomDialog2.showAlert(context, "회원가입이 완료되었습니다.\n 로그인 화면으로 이동합니다.", 20, Colors.black,(){});
+                      CustomDialog.showAlert(context, "회원가입이 완료되었습니다.\n 로그인 화면으로 이동합니다.", 20, Colors.black,() {Get.to(loginpage());});
                       //CustomDialog2.showAlert(context, "이미 사용중인 아이디 입니다.\n 새로운 아이디를 입력하세요.", 20, Colors.black);
                       //CustomDialog2.showAlert(context, "비밀번호가 일치하지 않습니다.\n 다시 입력해주세요.", 20, Colors.black);
-
-                      Get.to(loginpage());                    },
+                    },
                   ),
                 ],
               ),
