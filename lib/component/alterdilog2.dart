@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 class CustomDialog2 {
   static void showAlert(
-      BuildContext context, String message, double fontSize, Color textColor) {
+      BuildContext context, String message, double fontSize, Color textColor,VoidCallback onConfirm) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -41,7 +41,7 @@ class CustomDialog2 {
                 Get.back();
               },
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFF78BE39), // 버튼의 배경색
+                backgroundColor: Color(0xFF78BE39), // 버튼의 배경색
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50), // 버튼의 모서리를 둥글게 만듭니다.
                   side: BorderSide(

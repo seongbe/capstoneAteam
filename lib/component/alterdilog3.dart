@@ -44,7 +44,7 @@ class CustomDialog3 {
                     Get.back();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF78BE39), // 버튼의 배경색
+                    backgroundColor: Color(0xFF78BE39), // 버튼의 배경색
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(50), // 버튼의 모서리를 둥글게 만듭니다.
@@ -72,7 +72,7 @@ class CustomDialog3 {
                     Get.back();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF78BE39), // 버튼의 배경색
+                    backgroundColor: Color(0xFF78BE39), // 버튼의 배경색
                     shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(50), // 버튼의 모서리를 둥글게 만듭니다.

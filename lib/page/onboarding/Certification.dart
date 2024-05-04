@@ -1,4 +1,5 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/onboarding/createAcouunt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -81,7 +82,7 @@ class Certification extends StatelessWidget {
                     width: 288,
                     height: 55,
                     onPressed: () {
-                      //Get.to();
+                      CustomDialog2.showAlert(context, "입력한 학교 이메일로 인증번호가 발송되었습니다.", 20, Colors.black,(){});
                     },
                   ),
                   const SizedBox(
@@ -134,7 +135,7 @@ class Certification extends StatelessWidget {
                     width: 288,
                     height: 55,
                     onPressed: () {
-                      //Get.to();
+                      CustomDialog2.showAlert(context, "입력한 인증번호가 틀렸습니다.\n 다시 입력해주세요.", 20, Colors.black,(){});
                     },
                   ),
                   const SizedBox(

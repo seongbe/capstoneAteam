@@ -158,6 +158,7 @@ class loginpage extends StatelessWidget {
                     width: 288,
                     height: 55,
                     onPressed: () {
+                      //CustomDialog2.showAlert(context, "아이디나 비밀번호를 잘못입력하셨습니다.", 20, Colors.black);
                       Get.to(HomePage());
                     },
                   ),
