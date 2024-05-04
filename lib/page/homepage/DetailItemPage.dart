@@ -1,6 +1,9 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/wiget/app_bar.dart';
+import 'package:capstone/wiget/chat_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 class DetailItemPage extends StatelessWidget {
   const DetailItemPage({super.key});
@@ -16,7 +19,7 @@ class DetailItemPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               // 뒤로가기 버튼 클릭 시 현재 페이지를 pop하여 이전 페이지로 이동
-              Navigator.of(context).pop();
+              Get.back();
             },
           ),
           title: Text('상세페이지'), // 앱 바 제목 설정
@@ -152,7 +155,7 @@ class DetailItemPage extends StatelessWidget {
               Divider(),
               Container(
                 width: 390,
-                height: 88,
+                height: 50,
                 child: Row(
                   children: [
                     SizedBox(
@@ -203,29 +206,16 @@ class DetailItemPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      width: 130,
+                      width: 140,
                     ),
-                    Container(
+                    ChatButton(
                       width: 80,
                       height: 34,
-                      decoration: BoxDecoration(
-                        color: Color(0xFF78BE39),
-                        border: Border.all(
-                          color: Color(0xFF66AA28),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '채팅하기',
-                          style: TextStyle(
-                            fontFamily: 'mitmi',
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      text1: '채팅하기',
+                      textsize: 14,
+                      onPressed: () {
+                        Get.to(Chatingchang());
+                      },
                     ),
                   ],
                 ),
