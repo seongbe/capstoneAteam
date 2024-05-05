@@ -3,6 +3,7 @@ import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/Setprofilepage.dart';
+import 'package:capstone/page/homepage/mypage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -136,8 +137,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
             width: 756,
             height: 50,
             onPressed: () {
-              CustomDialog.showAlert(
-                context, "프로필 수정이 완료되었습니다.", 20, Colors.black);
+              //CustomDialog.showAlert(
+              //  context, "프로필 수정이 완료되었습니다.", 20, Colors.black,);
             },
             letterspace: 30,
           ),
