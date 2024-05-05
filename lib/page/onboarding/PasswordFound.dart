@@ -1,4 +1,5 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/component/alerdialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:capstone/page/onboarding/PasswordCertification.dart';
@@ -124,7 +125,8 @@ class PasswordFound extends StatelessWidget {
                     width: 300,
                     height: 55,
                     onPressed: () {
-                      Get.to(PasswordCertification());
+                      CustomDialog.showAlert(context, "이메일로 인증번호를 발송했습니다.", 20, Colors.black,(){Get.to(PasswordCertification());});
+                      //Get.to(PasswordCertification());
                     },
                   ),
                 ],

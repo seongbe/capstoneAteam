@@ -13,6 +13,7 @@ class ContactDetailEnd extends StatelessWidget {
   get detail =>'판매자가 책을 1권 안주고 돈을 받아갔습니다';
   get date => '2024-03-28-18-25-56';
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

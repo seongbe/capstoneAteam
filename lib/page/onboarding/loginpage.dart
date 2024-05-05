@@ -1,4 +1,5 @@
 import 'package:capstone/component/button.dart';
+import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/Certification.dart';
 import 'package:capstone/page/onboarding/IDFound.dart';
@@ -158,6 +159,8 @@ class loginpage extends StatelessWidget {
                     width: 288,
                     height: 55,
                     onPressed: () {
+                      //잘목입력시
+                      //CustomDialog2.showAlert(context, "아이디나 비밀번호를 잘못입력하셨습니다.", 20, Colors.black,(){});
                       Get.to(HomePage());
                     },
                   ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:capstone/component/alerdialog.dart';
 import 'dart:async';
 import 'package:capstone/component/button.dart';
-import 'package:capstone/page/onboarding/createAcouunt.dart';
+import 'package:capstone/page/onboarding/PasswordReset.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
@@ -149,6 +150,7 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                   TextButton(
                     onPressed: () {
                       setState(() {
+                        CustomDialog.showAlert(context, "이메일로 인증번호를 발송했습니다.", 20, Colors.black,(){});
                         _secondsRemaining = 60; // 타이머 리
                         startTimer();// 셋
                       });
@@ -173,7 +175,7 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                 width: 300,
                 height: 55,
                 onPressed: () {
-                  //Get.to();
+                  CustomDialog.showAlert(context, "인증이 완료되었습니다.", 20, Colors.black,(){Get.to(PasswordReset());});
                 },
               ),
 
