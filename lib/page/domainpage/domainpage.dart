@@ -1,10 +1,12 @@
+import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:capstone/page/domainpage/user_manage_page.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
-import 'package:capstone/page/onboarding/loginpage.dart';
 import 'package:capstone/component/button.dart';
+
+import '../onboarding/startPage.dart';
 
 class DomainPage extends StatelessWidget {
   const DomainPage({Key? key});
@@ -133,15 +135,16 @@ class DomainPage extends StatelessWidget {
                   ),
                   SizedBox(height: 40),
                   Center(
-                      child: GreenButton(
-                        text1: '로그아웃',
-                        width: 288,
-                        height: 55,
-                        onPressed: () {
-                          Get.to((loginpage()));
-                        },
-                      ),
+                    child: GreenButton(
+                      text1: '로그아웃',
+                      width: 288,
+                      height: 55,
+                      onPressed: () {
+                        Get.to(loginpage());
+                      },
                     ),
+                  ),
+
                 ],
               ),
             ),

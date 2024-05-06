@@ -24,7 +24,8 @@ class CustomDialog3 {
                       message,
                       style: TextStyle(
                         color: textColor,
-                        fontSize: fontSize,
+                        fontFamily: 'mitmi',
+                        fontSize: 25,
                         fontWeight: FontWeight.w400,
                       ),
                       textAlign: TextAlign.center,
@@ -57,7 +58,7 @@ class CustomDialog3 {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 27,
-                        fontFamily: 'Ownglyph meetme',
+                        fontFamily: 'mitmi',
                         fontWeight: FontWeight.w400,
                         height: 0.03,
                         letterSpacing: 9.45,
@@ -85,7 +86,7 @@ class CustomDialog3 {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 27,
-                        fontFamily: 'Ownglyph meetme',
+                        fontFamily: 'mitmi',
                         fontWeight: FontWeight.w400,
                         height: 0.03,
                         letterSpacing: 9.45,
