@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,6 +14,7 @@ class ImagePickerScreen extends StatefulWidget {
 class _ImagePickerScreenState extends State<ImagePickerScreen> {
   final ImagePicker _picker = ImagePicker();
   final List<XFile?> _pickedImages = [];
+  XFile? _pickedFile;
   
   // 카메라, 갤러리에서 이미지 1개 불러오기
   // ImageSource.galley , ImageSource.camera 
@@ -87,7 +89,14 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   
   // 불러온 이미지 gridView
   Widget _gridPhoto() {
-    return Expanded(
+    return ScrollConfiguration(
+      behavior: ScrollBehavior(),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: _pickedImages.isNotEmpty
+          ? Row(
+              children: [
+                Expanded(
       child: _pickedImages.isNotEmpty
           ? GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -99,6 +108,10 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   .toList(),
             )
           : const SizedBox(),
+          )]
+            )
+          : const SizedBox(),
+      )
     );
   }
 
