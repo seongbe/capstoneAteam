@@ -1,10 +1,12 @@
 import 'package:capstone/page/homepage/DetailItemPage.dart';
+import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/wiget/chatListitem.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({super.key});
+  const ChatPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,35 +56,45 @@ class ChatPage extends StatelessWidget {
           children: [
             Column(
               children: [
-                Chatlistitem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
-                  title: '운영체제 공룡책', // 제목
-                  subtitle1: '소프트웨어학과 3일전', // 부제목1
-                  subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                GestureDetector(
+                  child: Chatlistitem(
+                    imagePath: 'assets/images/book.png', // 이미지 경로
+                    title: '운영체제 공룡책', // 제목
+                    subtitle1: '소프트웨어학과 3일전', // 부제목1
+                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                  ),
                 ),
-                Chatlistitem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
-                  title: '운영체제 공룡책', // 제목
-                  subtitle1: '소프트웨어학과 3일전', // 부제목1
-                  subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                GestureDetector(
+                  child: Chatlistitem(
+                    imagePath: 'assets/images/book.png', // 이미지 경로
+                    title: '운영체제 공룡책', // 제목
+                    subtitle1: '소프트웨어학과 3일전', // 부제목1
+                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                  ),
                 ),
-                Chatlistitem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
-                  title: '운영체제 공룡책', // 제목
-                  subtitle1: '소프트웨어학과 3일전', // 부제목1
-                  subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                GestureDetector(
+                  child: Chatlistitem(
+                    imagePath: 'assets/images/book.png', // 이미지 경로
+                    title: '운영체제 공룡책', // 제목
+                    subtitle1: '소프트웨어학과 3일전', // 부제목1
+                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                  ),
                 ),
-                Chatlistitem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
-                  title: '운영체제 공룡책', // 제목
-                  subtitle1: '소프트웨어학과 3일전', // 부제목1
-                  subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                GestureDetector(
+                  child: Chatlistitem(
+                    imagePath: 'assets/images/book.png', // 이미지 경로
+                    title: '운영체제 공룡책', // 제목
+                    subtitle1: '소프트웨어학과 3일전', // 부제목1
+                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                  ),
                 ),
-                Chatlistitem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
-                  title: '운영체제 공룡책', // 제목
-                  subtitle1: '소프트웨어학과 3일전', // 부제목1
-                  subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                GestureDetector(
+                  child: Chatlistitem(
+                    imagePath: 'assets/images/book.png', // 이미지 경로
+                    title: '운영체제 공룡책', // 제목
+                    subtitle1: '소프트웨어학과 3일전', // 부제목1
+                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
+                  ),
                 ),
               ],
             ),

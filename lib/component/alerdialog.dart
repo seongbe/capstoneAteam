@@ -34,7 +34,7 @@ class CustomDialog {
         });
 
         return AlertDialog(
-          backgroundColor: Color(0xFFCFE4BC).withAlpha(400),
+          backgroundColor: Color(0xFFCFE4BC),
           content: Container(
             width: popupWidth,
             height: popupHeight,
