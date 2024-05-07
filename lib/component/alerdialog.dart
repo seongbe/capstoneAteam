@@ -42,6 +42,7 @@ class CustomDialog {
               child: Text(
                 message,
                 style: TextStyle(
+                  fontFamily: 'mitmi',
                   fontSize: fontSize,
                   color: textColor,
                 ),
