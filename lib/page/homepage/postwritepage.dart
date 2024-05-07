@@ -1,3 +1,4 @@
+import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/button.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class PostWritePage extends StatelessWidget {
                     ),
                     onPressed: () {
                       //사진 추가 버튼
+                      Get.to(ImagePickerScreen());
                     },
                   ),
                 ],

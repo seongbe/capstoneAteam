@@ -1,8 +1,11 @@
+import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/alterdilog3.dart';
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/homepage/SetProfileImage.dart';
 import 'package:capstone/page/homepage/mypage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +39,7 @@ class Inputpass extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'skybori',
             fontSize: 30,
-            letterSpacing: 2.0,
+            letterSpacing: 5.0,
           ),
         ),
         centerTitle: true,
@@ -60,10 +63,27 @@ class Inputpass extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
         children: <Widget>[
-          SizedBox(
-            // 알림 창 들어가는 곳
-            height: 200,
+          Container(
+            height: 135,
+            width: 280,
+            margin: EdgeInsets.only(left: 30.0,top: 30.0, right: 30.0,bottom: 20.0),
+            decoration: BoxDecoration(
+              border: Border.all(width: 1.7, color: Color(0xffD0E4BC)),
+              borderRadius: BorderRadius.circular(40),
+              color: Color(0xffF8FFF2)
+            ),
+            child:  Center(
+              child: Text(
+              '본인 확인을 위해 \n비밀번호를 입력해주세요.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'skybori',
+                fontSize: 20,
+                letterSpacing: 2.0,
+              ),
+            ),)
           ),
+          
           Text(
             '비밀번호',
             style: TextStyle(
@@ -79,6 +99,8 @@ class Inputpass extends StatelessWidget {
             decoration: InputDecoration(
               labelText: '비밀번호를 입력하세요.',
               helperText: "* 필수 입력값입니다.",
+              helperStyle: 
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               labelStyle:
                   TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
@@ -96,6 +118,7 @@ class Inputpass extends StatelessWidget {
               return null;
             },
           ),
+          SizedBox(height: 20,),
           Text(
             '비밀번호 확인',
             style: TextStyle(
@@ -111,6 +134,8 @@ class Inputpass extends StatelessWidget {
             decoration: InputDecoration(
               labelText: '비밀번호를 다시 입력해 주세요.',
               helperText: "* 필수 입력값입니다.",
+              helperStyle: 
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               labelStyle:
                   TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
@@ -127,8 +152,9 @@ class Inputpass extends StatelessWidget {
             width: 756,
             height: 50,
             onPressed: () {
-              CustomDialog3.showAlert(
-                  context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black);
+              //CustomDialog3.showAlert(
+              //    context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black);
+              Get.to(SetProfileImage());    
             },
           ),
         ],

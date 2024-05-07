@@ -79,11 +79,10 @@ class Pulip extends StatelessWidget {
                     width: 40.0,
                   ),
                   GreenButton(
-                    // 버튼 글씨 사이즈 수정해야함
                     text1: '프로필수정',
-                    width: 79,
+                    width: 100,
                     height: 30,
-
+                    textsize: 20,
                     onPressed: () {
                       Get.to(Setprofilepage());
                     },
@@ -108,7 +107,7 @@ class Pulip extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.school),
+                    Icon(Icons.menu_book),
                     SizedBox(
                       width: 10,
                     ),

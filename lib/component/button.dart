@@ -7,6 +7,7 @@ class GreenButton extends StatelessWidget {
   final double height;
   final VoidCallback? onPressed;
   final double textsize;
+  final double letterspace;
 
   const GreenButton({
     Key? key,
@@ -15,6 +16,7 @@ class GreenButton extends StatelessWidget {
     this.height = 55,
     this.onPressed,
     this.textsize = 30,
+    this.letterspace = 20,
   }) : super(key: key);
 
   @override
@@ -39,7 +41,7 @@ class GreenButton extends StatelessWidget {
               fontFamily: 'mitmi',
               fontSize: textsize,
               color: Colors.white,
-              letterSpacing: 20,
+              letterSpacing: letterspace,
             ),
           ),
         ),
