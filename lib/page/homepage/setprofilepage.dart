@@ -152,8 +152,8 @@ class Inputpass extends StatelessWidget {
             width: 756,
             height: 50,
             onPressed: () {
-              //CustomDialog3.showAlert(
-              //    context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black);
+              CustomDialog2.showAlert(
+                  context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black, );
               Get.to(SetProfileImage());    
             },
           ),

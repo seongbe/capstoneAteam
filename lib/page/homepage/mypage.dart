@@ -86,6 +86,7 @@ class Pulip extends StatelessWidget {
                     onPressed: () {
                       Get.to(Setprofilepage());
                     },
+                    letterspace: 5,
                   ),
                 ]),
                 Divider(
@@ -107,7 +108,7 @@ class Pulip extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.menu_book),
+                    Icon(Icons.account_balance),
                     SizedBox(
                       width: 10,
                     ),

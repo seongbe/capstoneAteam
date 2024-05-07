@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:capstone/component/alerdialog.dart';
+import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/Setprofilepage.dart';
 import 'package:flutter/foundation.dart';
@@ -8,18 +10,6 @@ import 'package:image_picker/image_picker.dart';
 
 class SetProfileImage extends StatefulWidget {
   const SetProfileImage({super.key});
-
-  Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final double screenWidth = screenSize.width;
-    final double screenHeight = screenSize.height;
-    // Container의 너비와 높이를 동일하게 설정합니다.
-    final containerSize = screenWidth;
-    return MaterialApp(
-      title: 'Set_Profile_Page',
-      debugShowCheckedModeBanner: false,
-    );
-  }
   @override
   State<SetProfileImage> createState() => _SetProfileImageState();
 }
@@ -36,6 +26,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
     final double screenHeight = screenSize.height;
     // Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
+    PickedFile _imageFile;
+    final ImagePicker _picker = ImagePicker();
 
     return SafeArea(
       child: Scaffold(
@@ -69,18 +61,32 @@ class _SetProfileImageState extends State<SetProfileImage> {
         body: ListView(
           padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
           children: [
-              const SizedBox(height: 50,),
+            const SizedBox(height: 50,),
+              Stack(
+              children: [
+              Positioned(right: 70, top: 100,
+              child: IconButton(
+                highlightColor: Colors.white,
+                icon: Icon(Icons.camera_alt_outlined, color: Colors.black45, size: 40,),
+                onPressed: () {
+                  _showBottomSheet();
+                },
+              ),
+              ),
               if(_pickedFile == null)
-                GestureDetector(
-                  onTap: () {
-                    _showBottomSheet();
-                  },
-                  child: Center(
-                    child: Icon(
-                      Icons.account_circle_outlined,
-                      size: imageSize,
-                    ),
+                Center(
+                child: Container(
+                  width: imageSize,
+                  height: imageSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        width: 2, color: Colors.black12,),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/skon_fly.png'),
+                      fit: BoxFit.cover),
                   ),
+                ),
                 )
               else
                 Center(
@@ -90,15 +96,14 @@ class _SetProfileImageState extends State<SetProfileImage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                        width: 2, color: Theme.of(context).colorScheme.primary),
+                        width: 2, color: Colors.black12,),
                     image: DecorationImage(
                         image: FileImage(File(_pickedFile!.path)),
                         fit: BoxFit.cover),
                   ),
                 ),
                 ),
-              
-              
+          ],),
               
             SizedBox(height: 50,),
             Text(
@@ -109,7 +114,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
               letterSpacing: 2.0,
             ),
           ),
-            TextField(
+          SizedBox(height: 10,),
+          TextField(
             decoration: InputDecoration(
               labelText: '바꾸고 싶은 닉네임을 입력해주세요.',
               labelStyle:
@@ -123,14 +129,15 @@ class _SetProfileImageState extends State<SetProfileImage> {
             ),
           ),
           SizedBox(
-            width: 40.0,
+            height: 40.0,
           ),
           GreenButton(
             text1: '프로필수정',
             width: 756,
             height: 50,
             onPressed: () {
-              Get.to(Setprofilepage());
+              CustomDialog.showAlert(
+                context, "프로필 수정이 완료되었습니다.", 20, Colors.black);
             },
             letterspace: 30,
           ),
@@ -231,4 +238,6 @@ class _SetProfileImageState extends State<SetProfileImage> {
     }
   }
 }
+
+
 
