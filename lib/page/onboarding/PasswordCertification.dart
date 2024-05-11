@@ -150,8 +150,9 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        CustomDialog.showAlert(context, "이메일로 인증번호를 발송했습니다.", 20, Colors.black,(){});
-                        _secondsRemaining = 60; // 타이머 리
+                        CustomDialog.showAlert(context, "이메일로 인증번호를 발송했습니다.", 19, Colors.black,(){});
+                        _secondsRemaining = 60; // 타이머 리셋
+                        _timer.cancel();
                         startTimer();// 셋
                       });
                     },

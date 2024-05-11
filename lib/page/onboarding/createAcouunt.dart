@@ -43,38 +43,7 @@ class CreatAccount extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 35,
-                      ),
-                      Text('아이디',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'SKYBORI',
-                            fontSize: 20,)),
-                    ],
-                  ),
 
-                  const SizedBox(
-                      width: 350,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: '아이디를 입력하세요',
-                          labelStyle: TextStyle(color: Color(0xffC0C0C0),
-                              fontFamily: 'mitmi'),
-                          filled: true,
-                          fillColor: Color(0xffF8FFF2),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffD0E4BC)),
-                          ),
-                        ),
-                      )),
                   const SizedBox(
                     height: 20,
                   ),

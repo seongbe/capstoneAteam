@@ -128,7 +128,7 @@ class PasswordReset extends StatelessWidget {
                     height: 55,
                     onPressed: () {
                       //CustomDialog2.showAlert(context, "비밀번호가 일치하지 않습니다.\n 다시 입력해주세요.", 20, Colors.black,(){});
-                      CustomDialog.showAlert(context, "비밀번호 재설정이 완료되었습니다.\n 다시 로그인 해주세요.", 20, Colors.black,(){Get.to(loginpage());});
+                      CustomDialog.showAlert(context, "비밀번호 재설정이 완료되었습니다.\n 다시 로그인 해주세요.", 19, Colors.black,(){Get.to(loginpage());});
                     },
                   ),
                 ],

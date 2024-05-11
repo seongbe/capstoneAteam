@@ -2,7 +2,6 @@ import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/Certification.dart';
-import 'package:capstone/page/onboarding/IDFound.dart';
 import 'package:capstone/page/onboarding/PasswordFound.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -23,7 +22,9 @@ class loginpage extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Stack(
+        resizeToAvoidBottomInset : false,
+        body: SingleChildScrollView(
+        child: Stack(
           children: [
             Container(
               width: screenWidth,
@@ -116,28 +117,6 @@ class loginpage extends StatelessWidget {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Get.to(IDFound());
-                        },
-                        child: Text('아이디 찾기',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.black,
-                            )),
-                        style: TextButton.styleFrom(
-                          textStyle: const TextStyle(
-                            fontFamily: 'SKYBORI',
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      Text(' / ',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'SKYBORI',
-                            fontSize: 15,
-                          )),
-                      TextButton(
-                        onPressed: () {
                           Get.to(PasswordFound());
                         },
                         child: Text('비밀번호 재설정',
@@ -202,6 +181,7 @@ class loginpage extends StatelessWidget {
             )
           ],
         ),
+    )
       ),
     );
   }

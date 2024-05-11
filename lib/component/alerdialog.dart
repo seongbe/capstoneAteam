@@ -21,7 +21,7 @@ class CustomDialog {
 
     // 팝업창의 크기를 텍스트의 크기에 맞게 조절
     double popupWidth = textPainter.width + 48; // 좌우 padding 고려
-    double popupHeight = textPainter.height + 24; // 상하 padding 고려
+    double popupHeight = textPainter.height + 44; // 상하 padding 고려
 
     showDialog(
       context: context,

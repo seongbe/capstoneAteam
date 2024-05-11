@@ -14,6 +14,7 @@ class Certification extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
           centerTitle: true,
           title: Text('회원가입'),
@@ -36,7 +37,8 @@ class Certification extends StatelessWidget {
             SizedBox(width: 10),
           ],
         ),
-        body: Stack(
+        body: SingleChildScrollView(
+          child:Stack(
           children: [
             Center(
               child: Column(
@@ -49,7 +51,7 @@ class Certification extends StatelessWidget {
                       SizedBox(
                         width: 35,
                       ),
-                      Text('학교 이메일',
+                      Text('학교 이메일(아이디로 사용됩니다.)',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'SKYBORI',
@@ -166,6 +168,7 @@ class Certification extends StatelessWidget {
             )
           ],
         ),
+      )
       ),
     );
   }
