@@ -43,8 +43,20 @@ class BookListItem extends StatelessWidget {
                       SizedBox(
                         width: 190,
                       ),
-                      Icon(Icons.chat),
-                      Icon(Icons.heart_broken)
+                      Row(
+                        children: [
+                          Image(
+                              image: AssetImage('assets/icons/icon_chat.png')),
+                          Text('3')
+                        ],
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Image(
+                          width: 20,
+                          image: AssetImage('assets/icons/icon_heart.png')),
+                      Text('3')
                     ],
                   )
                 ],
