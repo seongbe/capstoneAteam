@@ -8,17 +8,17 @@ class WriteListItem extends StatelessWidget {
   final String imagePath;
   final String title;
   final String date;
-  
+
   const WriteListItem({
     required this.imagePath,
     required this.title,
     required this.date,
-    });
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         //클릭 되었을 때 쓴 글 보러가기
         Get.to(DetailItemPage());
       },
@@ -36,23 +36,30 @@ class WriteListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(title,
-                        style: TextStyle(
-                          fontFamily: 'skybori',
-                          fontSize: 20,),
-                        textAlign: TextAlign.start,
-                        
-                  ),
-                  SizedBox(height: 20,),
-                  Text(date,
+                  Text(
+                    title,
                     style: TextStyle(
                       fontFamily: 'skybori',
-                      fontSize: 15,),
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    date,
+                    style: TextStyle(
+                      fontFamily: 'skybori',
+                      fontSize: 15,
+                    ),
                     textAlign: TextAlign.start,
                   ),
                 ],
               ),
-              SizedBox(width: 60,),
+              SizedBox(
+                width: 60,
+              ),
               GreenButton(
                 // 버튼 글씨 사이즈 수정해야함
                 text1: '수정',
@@ -69,7 +76,8 @@ class WriteListItem extends StatelessWidget {
             color: Color(0xffD0E4BC),
             thickness: 1.0,
           ),
-        ],),
+        ],
+      ),
     );
   }
 }

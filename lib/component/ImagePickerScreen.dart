@@ -17,9 +17,9 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   final ImagePicker _picker = ImagePicker();
   final List<XFile?> _pickedImages = [];
   XFile? _pickedFile;
-  
+
   // 카메라, 갤러리에서 이미지 1개 불러오기
-  // ImageSource.galley , ImageSource.camera 
+  // ImageSource.galley , ImageSource.camera
   void getImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(source: source);
 
@@ -27,7 +27,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       _pickedImages.add(image);
     });
   }
-  
+
   // 이미지 여러개 불러오기
   void getMultiImage() async {
     final List<XFile>? images = await _picker.pickMultiImage();
@@ -39,7 +39,21 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  
+  Widget _gridPhoto2() {
+    return Expanded(
+      child: _pickedImages.isNotEmpty
+          ? GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+              ),
+              children: _pickedImages
+                  .where((element) => element != null)
+                  .map((e) => _gridPhotoItem(e!))
+                  .toList(),
+            )
+          : const SizedBox(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +91,15 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              _gridPhoto(),
+              _imageLoadButtons(),
+              _gridPhoto2(),
             ],
           ),
         ),
       ),
     );
   }
-  
+
   // 화면 상단 버튼
   Widget _imageLoadButtons() {
     return Padding(
@@ -116,60 +131,30 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       ),
     );
   }
-  
-  // 불러온 이미지 gridView
-  Widget _gridPhoto() {
-    return Expanded(
-      child: _pickedImages.isNotEmpty
-          ? GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-              ),
-              children:  
-              _pickedImages
-                  .where((element) => element != null)
-                  .map((e) => _gridPhotoItem(e!))
-                  .toList(),
-            )
-          : const SizedBox(),
-      // child: _pickedImages.isNotEmpty
-      //           ? ListView(
-      //             scrollDirection: Axis.horizontal,
-      //             children: _pickedImages
-      //             .where((element) => element != null)
-      //             .map((e) => _gridPhotoItem(e!))
-      //             .toList(),
-      //             padding: EdgeInsets.all(10.0),
-      //       )
-      //       : const SizedBox(),
 
+  Widget _gridPhoto() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.camera_alt_rounded),
+            color: Colors.grey,
+            onPressed: () {
+              _showBottomSheet();
+            },
+          ),
+          SizedBox(width: 10), // 간격 조절
+          Row(
+            children: _pickedImages
+                .where((element) => element != null)
+                .map((e) => _gridPhotoItem(e!))
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
-
-  // Widget _gridPhoto2(){
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width,
-  //     height: 150,
-  //     child: ListView(
-  //           scrollDirection: Axis.horizontal,
-  //           children: [
-  //             Container(
-  //               height: 100,
-  //               child: IconButton(
-  //                 icon : Icon(Icons.camera_alt_rounded), 
-  //                 color: Colors.grey,
-  //                 onPressed: () {
-  //                   _showBottomSheet();
-  //                 },
-  //             ),),
-              
-  //           ],
-  //         )
-          
-  //     ),
-
-  //   );
-  // }
 
   Widget _gridPhotoItem(XFile e) {
     return Padding(
@@ -202,18 +187,17 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     );
   }
 
-
-          //       _pickedImages.isNotEmpty
-          //       ? ListView(
-          //         scrollDirection: Axis.horizontal,
-          //         children: _pickedImages
-          //         .where((element) => element != null)
-          //         .map((e) => _gridPhotoItem(e!))
-          //         .toList(),
-          //   )
-          // : const SizedBox(),
-          //   ],
-          // ),
+  //       _pickedImages.isNotEmpty
+  //       ? ListView(
+  //         scrollDirection: Axis.horizontal,
+  //         children: _pickedImages
+  //         .where((element) => element != null)
+  //         .map((e) => _gridPhotoItem(e!))
+  //         .toList(),
+  //   )
+  // : const SizedBox(),
+  //   ],
+  // ),
 
   _showBottomSheet() {
     return showModalBottomSheet(
@@ -231,41 +215,47 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [            
+            children: [
               ElevatedButton(
-                onPressed: () {getImage(ImageSource.camera);},
+                onPressed: () {
+                  getImage(ImageSource.camera);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffD0E4BC),
                   surfaceTintColor: Color(0xffD0E4BC),
                   foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(  
-                    borderRadius: BorderRadius.circular(12),  
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   //fixedSize: Size(300, 60),
-                  
                 ),
-                child: const Text('사진찍기',
-                style: TextStyle(
-                  fontFamily: 'skybori',
-                  fontSize: 20,
-                  letterSpacing: 2.0,
-                ),),
+                child: const Text(
+                  '사진찍기',
+                  style: TextStyle(
+                    fontFamily: 'skybori',
+                    fontSize: 20,
+                    letterSpacing: 2.0,
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 20,
               ),
               ElevatedButton(
-                onPressed: () {getMultiImage();},
+                onPressed: () {
+                  getMultiImage();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffD0E4BC),
                   surfaceTintColor: Color(0xffD0E4BC),
                   foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(  
-                    borderRadius: BorderRadius.circular(12),  
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   //fixedSize: Size(300, 60),
                 ),
-                child: const Text('라이브러리에서 불러오기',
+                child: const Text(
+                  '라이브러리에서 불러오기',
                   style: TextStyle(
                     fontFamily: 'skybori',
                     fontSize: 20,
@@ -279,5 +269,4 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       },
     );
   }
-
 }

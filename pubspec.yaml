@@ -41,7 +41,7 @@ dependencies:
   get: ^4.6.6
   image_picker: ^0.8.0+1
   image_gallery_saver: '^1.6.9'
-
+  permission_handler: ^10.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
