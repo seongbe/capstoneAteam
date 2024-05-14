@@ -1,3 +1,5 @@
+import 'package:capstone/component/chat.dart';
+import 'package:capstone/component/chat2.dart';
 import 'package:capstone/page/homepage/yaksookget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -131,7 +133,99 @@ class Chatingchang extends StatelessWidget {
         body: ListView(
           children: [
             Column(
-              children: [Text('hi')],
+              children: [
+                Divider(),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('오전 09:43',
+                            style: TextStyle(
+                              color: Color(0xFF9F9F9F),
+                              fontSize: 8,
+                              fontFamily: 'Work Sans',
+                              fontWeight: FontWeight.w500,
+                              height: 0.34,
+                              letterSpacing: -0.41,
+                            )),
+                      ],
+                    ),
+                    rightChatting(
+                      text: '8000원 가능하실까요?',
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 20,
+                    ),
+                    leftChatting(
+                      text: '9,000원으로 거래하시죠',
+                    ),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('오전 09:43  ',
+                            style: TextStyle(
+                              color: Color(0xFF9F9F9F),
+                              fontSize: 8,
+                              fontFamily: 'Work Sans',
+                              fontWeight: FontWeight.w500,
+                              height: 0.34,
+                              letterSpacing: -0.41,
+                            )),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('오전 09:43',
+                            style: TextStyle(
+                              color: Color(0xFF9F9F9F),
+                              fontSize: 8,
+                              fontFamily: 'Work Sans',
+                              fontWeight: FontWeight.w500,
+                              height: 0.34,
+                              letterSpacing: -0.41,
+                            )),
+                      ],
+                    ),
+                    rightChatting(
+                      text: '8000원 가능하실까요?',
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              ],
             )
           ],
         ),
