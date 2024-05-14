@@ -62,7 +62,7 @@ class Pulip extends StatelessWidget {
                         size: 62,
                       ),
                       onPressed: () {
-                        //사진 추가 버튼
+                        //사진 상세 보기
                       }),
                   SizedBox(
                     width: 20.0,
