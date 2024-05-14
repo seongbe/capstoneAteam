@@ -77,6 +77,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
           child: Column(
             children: [
               const SizedBox(height: 20),
+              _imageLoadButtons(),
               _gridPhoto(),
             ],
           ),
@@ -116,60 +117,37 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
       ),
     );
   }
-  
-  // 불러온 이미지 gridView
   Widget _gridPhoto() {
-    return Expanded(
-      child: _pickedImages.isNotEmpty
-          ? GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-              ),
-              children:  
-              _pickedImages
-                  .where((element) => element != null)
-                  .map((e) => _gridPhotoItem(e!))
-                  .toList(),
-            )
-          : const SizedBox(),
-      // child: _pickedImages.isNotEmpty
-      //           ? ListView(
-      //             scrollDirection: Axis.horizontal,
-      //             children: _pickedImages
-      //             .where((element) => element != null)
-      //             .map((e) => _gridPhotoItem(e!))
-      //             .toList(),
-      //             padding: EdgeInsets.all(10.0),
-      //       )
-      //       : const SizedBox(),
+  return Expanded(
+    child: _pickedImages.isNotEmpty
+        ? ListView.builder(
+            scrollDirection: Axis.horizontal, // 수평 스크롤을 위해 추가
+            itemCount: _pickedImages.length + 1, // 이미지 수와 IconButton을 위해 1을 추가
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                // 첫 번째 아이템은 IconButton
+                return IconButton(
+                  icon: Icon(Icons.camera_alt_rounded),
+                  color: Colors.grey,
+                  onPressed: () {
+                    _showBottomSheet();
+                  },
+                );
+              } else {
+                // 나머지는 이미지 아이템
+                final image = _pickedImages[index - 1];
+                if (image == null) return SizedBox(); // null 체크
+                return _gridPhotoItem(image);
+              }
+            },
+          )
+        : SizedBox(),
+  );
+}
 
-    );
-  }
 
-  // Widget _gridPhoto2(){
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width,
-  //     height: 150,
-  //     child: ListView(
-  //           scrollDirection: Axis.horizontal,
-  //           children: [
-  //             Container(
-  //               height: 100,
-  //               child: IconButton(
-  //                 icon : Icon(Icons.camera_alt_rounded), 
-  //                 color: Colors.grey,
-  //                 onPressed: () {
-  //                   _showBottomSheet();
-  //                 },
-  //             ),),
-              
-  //           ],
-  //         )
-          
-  //     ),
-
-  //   );
-  // }
+  // 불러온 이미지 gridView
+  
 
   Widget _gridPhotoItem(XFile e) {
     return Padding(
