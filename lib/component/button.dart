@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // GetX 패키지 가져오기
 
 class GreenButton extends StatelessWidget {
   final String text1;

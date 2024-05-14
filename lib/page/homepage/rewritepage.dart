@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/writelistpage.dart';
