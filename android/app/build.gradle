@@ -5,6 +5,7 @@ plugins {
     // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 
 }
 
@@ -70,9 +71,6 @@ flutter {
 }
 
 dependencies {
-<<<<<<< HEAD
-    implementation 'com.google.firebase:firebase-bom:33.0.0'
-=======
->>>>>>> 06c9874 (Firebase 연결 및 관련 패키지 설정)
+    implementation platform'com.google.firebase:firebase-bom:33.0.0'
     implementation "androidx.multidex:multidex:2.0.1"
 }
