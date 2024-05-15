@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "859736008367",
+    "project_id": "sku-market-5910e",
+    "storage_bucket": "sku-market-5910e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859736008367:android:115a7ff33ac90e6784565a",
+        "android_client_info": {
+          "package_name": "com.example.capstone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCClxMgOA1GgmcEbsedP7FyNUPMRy1ctGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
