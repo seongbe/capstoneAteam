@@ -1,15 +1,49 @@
-import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:capstone/page/domainpage/user_manage_page.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
 import 'package:capstone/component/button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import '../onboarding/startPage.dart';
 
-class DomainPage extends StatelessWidget {
-  const DomainPage({Key? key});
+class DomainPage extends StatefulWidget {
+  const DomainPage({Key? key}) : super(key: key);
+
+  @override
+  _DomainPageState createState() => _DomainPageState();
+}
+
+class _DomainPageState extends State<DomainPage> {
+  List<String> likes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLikes();
+  }
+
+  Future<void> fetchLikes() async {
+    try {
+      // Firestore에서 Product 컬렉션의 문서 가져오기
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Product').get();
+
+      // 각 문서의 Like 값을 리스트에 추가
+      querySnapshot.docs.forEach((doc) {
+        likes.add(doc['Like'].toString());
+      });
+
+      // 상태 업데이트 요청
+      setState(() {});
+    } catch (e) {
+      print('Error fetching likes: $e');
+      // 에러 발생 시 '값이 안받아졌습니다' 텍스트 추가
+      setState(() {
+        likes.add('값이 안받아졌습니다');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,38 +132,38 @@ class DomainPage extends StatelessWidget {
                           Get.to(ContactPage());
                         },
                         child: Container(
-                        width: 122.41,
-                        height: 122.41,
-                        margin: EdgeInsets.only(left: 48),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7FBF4),
-                          border: Border.all(
-                            color: Color(0xFF999999),
-                            width: 1.4,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 6),
-                            Image.asset(
-                              'assets/icons/icon_contact.png',
-                              width: 68.15,
-                              height: 68.15,
-                              color: Color(0xFF5E5E5E),
+                          width: 122.41,
+                          height: 122.41,
+                          margin: EdgeInsets.only(left: 48),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF7FBF4),
+                            border: Border.all(
+                              color: Color(0xFF999999),
+                              width: 1.4,
                             ),
-                            Text(
-                              '문의 / 신고',
-                              style: TextStyle(
-                                fontFamily: 'mitmi',
-                                fontSize: 18,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 6),
+                              Image.asset(
+                                'assets/icons/icon_contact.png',
+                                width: 68.15,
+                                height: 68.15,
                                 color: Color(0xFF5E5E5E),
                               ),
-                            ),
-                          ],
+                              Text(
+                                '문의 / 신고',
+                                style: TextStyle(
+                                  fontFamily: 'mitmi',
+                                  fontSize: 18,
+                                  color: Color(0xFF5E5E5E),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                       ),
                     ],
                   ),
@@ -140,11 +174,16 @@ class DomainPage extends StatelessWidget {
                       width: 288,
                       height: 55,
                       onPressed: () {
-                        Get.to(loginpage());
+                        Get.to(StartPage());
                       },
                     ),
                   ),
-
+                  // Firestore에서 받아온 Like 값 출력 또는 에러 메시지 출력
+                  SizedBox(height: 20),
+                  Text('Product 컬렉션의 Like 값:'),
+                  Column(
+                    children: likes.map((like) => Text(like)).toList(),
+                  ),
                 ],
               ),
             ),
@@ -153,4 +192,10 @@ class DomainPage extends StatelessWidget {
       ),
     );
   }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(DomainPage());
 }
