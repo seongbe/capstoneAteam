@@ -122,6 +122,7 @@ class PostWritePage extends StatelessWidget {
                 height: 20.0,
               ),
               TextField(
+                maxLines: null,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: InputDecoration(
@@ -135,7 +136,7 @@ class PostWritePage extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 70.0),
+                  contentPadding: EdgeInsets.symmetric(vertical: 20.0),
                 ),
               ),
               SizedBox(

@@ -45,9 +45,9 @@ class _ReWritePageState extends State<ReWritePage> {
           width: 0.8,
         )),
       ),
-      body: SafeArea(
-        child: Padding(padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
-        child:
+      body: ListView(
+        padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
+        children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -135,6 +135,7 @@ class _ReWritePageState extends State<ReWritePage> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
                   ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 20.0),
                 ),
               ),
               SizedBox(
@@ -152,8 +153,7 @@ class _ReWritePageState extends State<ReWritePage> {
               )
             ],
         ),
-          ),
-      ),
+         ], ),
     );
   }
 }
