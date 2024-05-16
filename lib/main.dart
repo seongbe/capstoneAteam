@@ -1,12 +1,15 @@
-import 'package:capstone/page/onboarding/startPage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:capstone/page/onboarding/startPage.dart';
 
-void main() {
-  runApp(seongbeom());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(SeongBeom());
 }
 
-class seongbeom extends StatelessWidget {
-  const seongbeom({super.key});
+class SeongBeom extends StatelessWidget {
+  const SeongBeom({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
