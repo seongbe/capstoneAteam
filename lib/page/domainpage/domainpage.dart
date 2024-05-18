@@ -4,14 +4,14 @@ import 'package:capstone/page/domainpage/user_manage_page.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
 import 'package:capstone/component/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import '../onboarding/startPage.dart';
 
-class DomainPage extends StatefulWidget {
+class DomainPage extends StatelessWidget {
   const DomainPage({Key? key}) : super(key: key);
 
   @override
+<<<<<<< HEAD
   _DomainPageState createState() => _DomainPageState();
 }
 
@@ -46,6 +46,8 @@ class _DomainPageState extends State<DomainPage> {
   }
 
   @override
+=======
+>>>>>>> a726690c2e2d262accaa9590beb6c963c340c0ad
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
@@ -178,12 +180,6 @@ class _DomainPageState extends State<DomainPage> {
                       },
                     ),
                   ),
-                  // Firestore에서 받아온 Like 값 출력 또는 에러 메시지 출력
-                  SizedBox(height: 20),
-                  Text('Product 컬렉션의 Like 값:'),
-                  Column(
-                    children: likes.map((like) => Text(like)).toList(),
-                  ),
                 ],
               ),
             ),
@@ -192,10 +188,4 @@ class _DomainPageState extends State<DomainPage> {
       ),
     );
   }
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(DomainPage());
 }
