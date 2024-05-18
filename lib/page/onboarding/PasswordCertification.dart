@@ -3,7 +3,6 @@ import 'package:capstone/component/alerdialog.dart';
 import 'dart:async';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/onboarding/PasswordReset.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
@@ -107,7 +106,7 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                 height: 40,
               ),
 
-              Container(
+              SizedBox(
                 width: 200,
                 child: TextField(
                   decoration: InputDecoration(
@@ -124,7 +123,7 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                 ),
               ),
               Text(
-                '${getFormattedTime(_secondsRemaining)}',
+                getFormattedTime(_secondsRemaining),
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey,),
@@ -156,11 +155,6 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                         startTimer();// 셋
                       });
                     },
-                    child: Text('다시 보내기',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          decorationColor: Color(0xFF78BE39),
-                        )),
                     style: TextButton.styleFrom(
                       foregroundColor: Color(0xFF78BE39),
                       textStyle: const TextStyle(
@@ -168,6 +162,11 @@ class _PasswordCertificationState extends State<PasswordCertification> {
                         fontSize: 18,
                       ),
                     ),
+                    child: Text('다시 보내기',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: Color(0xFF78BE39),
+                        )),
                   ),
                 ],
               ),

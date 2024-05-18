@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-import 'package:capstone/page/domainpage/contact_page_wait.dart';
-import 'package:capstone/page/domainpage/contact_page_end.dart';
 import 'package:capstone/page/domainpage/Domainpage.dart';
 
 

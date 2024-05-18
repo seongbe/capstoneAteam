@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/writelistpage.dart';
 import 'package:flutter/material.dart';
@@ -192,14 +191,12 @@ class _ReWritePageState extends State<ReWritePage> {
   
   // 이미지 여러개 불러오기
   void getMultiImage() async {
-    final List<XFile>? images = await _picker.pickMultiImage();
+    final List<XFile> images = await _picker.pickMultiImage();
 
-    if (images != null) {
-      setState(() {
-        _pickedImages.addAll(images);
-      });
+    setState(() {
+      _pickedImages.addAll(images);
+    });
     }
-  }
 
   _showBottomSheet() {
     return showModalBottomSheet(

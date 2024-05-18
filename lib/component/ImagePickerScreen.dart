@@ -1,9 +1,7 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerScreen extends StatefulWidget {
@@ -30,14 +28,12 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   
   // 이미지 여러개 불러오기
   void getMultiImage() async {
-    final List<XFile>? images = await _picker.pickMultiImage();
+    final List<XFile> images = await _picker.pickMultiImage();
 
-    if (images != null) {
-      setState(() {
-        _pickedImages.addAll(images);
-      });
+    setState(() {
+      _pickedImages.addAll(images);
+    });
     }
-  }
 
   
 

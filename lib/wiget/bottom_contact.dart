@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 class ContactCustomBottomNavigationBar extends StatelessWidget {
   final ContactController controller = Get.find();
 
+  ContactCustomBottomNavigationBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Obx(

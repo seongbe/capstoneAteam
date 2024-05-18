@@ -30,9 +30,9 @@ class _DomainPageState extends State<DomainPage> {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Product').get();
 
       // 각 문서의 Like 값을 리스트에 추가
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         likes.add(doc['Like'].toString());
-      });
+      }
 
       // 상태 업데이트 요청
       setState(() {});

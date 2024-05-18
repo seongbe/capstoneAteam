@@ -1,7 +1,6 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alerdialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:capstone/page/onboarding/PasswordCertification.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';

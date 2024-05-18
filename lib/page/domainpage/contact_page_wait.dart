@@ -33,6 +33,7 @@ class ContactPageAllList extends StatelessWidget {
 class ContactPageWait extends StatelessWidget {
   const ContactPageWait({Key? key}) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(

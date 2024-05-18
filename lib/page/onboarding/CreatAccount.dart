@@ -1,9 +1,7 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alerdialog.dart';
-import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/onboarding/loginpage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 

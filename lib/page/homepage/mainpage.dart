@@ -1,11 +1,11 @@
 import 'package:capstone/page/homepage/postwritepage.dart';
 import 'package:capstone/wiget/BookListItem.dart';
-import 'package:capstone/wiget/mainpost.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/route_manager.dart';
 
 class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -35,7 +35,7 @@ class CustomDialog {
 
         return AlertDialog(
           backgroundColor: Color(0xFFCFE4BC),
-          content: Container(
+          content: SizedBox(
             width: popupWidth,
             height: popupHeight,
             child: Center(

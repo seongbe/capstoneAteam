@@ -1,10 +1,8 @@
 import 'package:capstone/component/button.dart';
-import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/Certification.dart';
 import 'package:capstone/page/onboarding/PasswordFound.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
@@ -119,17 +117,17 @@ class loginpage extends StatelessWidget {
                         onPressed: () {
                           Get.to(PasswordFound());
                         },
-                        child: Text('비밀번호 재설정',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.black,
-                            )),
                         style: TextButton.styleFrom(
                           textStyle: const TextStyle(
                             fontFamily: 'SKYBORI',
                             fontSize: 15,
                           ),
                         ),
+                        child: Text('비밀번호 재설정',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.black,
+                            )),
                       ),
                     ],
                   ),
@@ -161,11 +159,6 @@ class loginpage extends StatelessWidget {
                         onPressed: () {
                           Get.to(Certification());
                         },
-                        child: Text('계정만들기',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Color(0xFF78BE39),
-                            )),
                         style: TextButton.styleFrom(
                           foregroundColor: Color(0xFF78BE39),
                           textStyle: const TextStyle(
@@ -173,6 +166,11 @@ class loginpage extends StatelessWidget {
                             fontSize: 18,
                           ),
                         ),
+                        child: Text('계정만들기',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xFF78BE39),
+                            )),
                       ),
                     ],
                   ),

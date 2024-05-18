@@ -21,7 +21,7 @@ class GreenButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed != null ? onPressed : () {}, // 클릭 이벤트 추가
+      onPressed: onPressed ?? () {}, // 클릭 이벤트 추가
       child: Container(
         width: width,
         height: height,

@@ -1,6 +1,5 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/mypage.dart';
-import 'package:capstone/page/homepage/writelistpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';

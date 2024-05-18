@@ -9,7 +9,7 @@ class WriteListItem extends StatelessWidget {
   final String title;
   final String date;
   
-  const WriteListItem({
+  const WriteListItem({super.key, 
     required this.imagePath,
     required this.title,
     required this.date,
