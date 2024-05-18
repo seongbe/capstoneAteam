@@ -4,46 +4,11 @@ import 'package:capstone/page/domainpage/user_manage_page.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
 import 'package:capstone/component/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import '../onboarding/startPage.dart';
 
-class DomainPage extends StatefulWidget {
+class DomainPage extends StatelessWidget {
   const DomainPage({Key? key}) : super(key: key);
-
-  @override
-  _DomainPageState createState() => _DomainPageState();
-}
-
-class _DomainPageState extends State<DomainPage> {
-  List<String> likes = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchLikes();
-  }
-
-  Future<void> fetchLikes() async {
-    try {
-      // Firestore에서 Product 컬렉션의 문서 가져오기
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Product').get();
-
-      // 각 문서의 Like 값을 리스트에 추가
-      querySnapshot.docs.forEach((doc) {
-        likes.add(doc['Like'].toString());
-      });
-
-      // 상태 업데이트 요청
-      setState(() {});
-    } catch (e) {
-      print('Error fetching likes: $e');
-      // 에러 발생 시 '값이 안받아졌습니다' 텍스트 추가
-      setState(() {
-        likes.add('값이 안받아졌습니다');
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,12 +143,6 @@ class _DomainPageState extends State<DomainPage> {
                       },
                     ),
                   ),
-                  // Firestore에서 받아온 Like 값 출력 또는 에러 메시지 출력
-                  SizedBox(height: 20),
-                  Text('Product 컬렉션의 Like 값:'),
-                  Column(
-                    children: likes.map((like) => Text(like)).toList(),
-                  ),
                 ],
               ),
             ),
@@ -192,10 +151,4 @@ class _DomainPageState extends State<DomainPage> {
       ),
     );
   }
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(DomainPage());
 }
