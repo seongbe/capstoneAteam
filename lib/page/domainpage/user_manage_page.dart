@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/page/domainpage/Domainpage.dart';
+import 'dart:async';
+import 'dart:ui' as ui;
 import '../../component/alterdilog3.dart';
+import '../../component/alerdialog.dart';
 
 class UserManagePage extends StatefulWidget {
   const UserManagePage({Key? key}) : super(key: key);
@@ -174,8 +177,23 @@ class _UserManagePageState extends State<UserManagePage> {
                             .doc(userID)
                             .update({'status': accountStatus == '활성화' ? false : true});
 
+                        // 다이얼로그 닫기
+                        Navigator.of(context).pop();
+
+                        String updatedStatus = accountStatus == '활성화' ? '정지' : '활성화';
+                        CustomDialog.showAlert(
+                          context,
+                          '$name의 계정이\n $updatedStatus 되었습니다.',
+                          25,
+                          Colors.black,
+                              () async {
+                            // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
+                          },
+                        );
+
                         // 데이터 새로 고침
                         await fetchUserData();
+
                       } catch (e) {
                         print('Error updating account status: $e');
                         // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
