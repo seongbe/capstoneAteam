@@ -4,8 +4,7 @@ import 'package:capstone/page/domainpage/user_manage_page.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
 import 'package:capstone/component/button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../onboarding/startPage.dart';
+import 'package:capstone/page/onboarding/startPage.dart';
 
 class DomainPage extends StatelessWidget {
   const DomainPage({Key? key}) : super(key: key);

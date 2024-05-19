@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/page/domainpage/Domainpage.dart';
-
 import '../../component/alterdilog3.dart';
 
 class UserManagePage extends StatefulWidget {
@@ -158,8 +156,8 @@ class _UserManagePageState extends State<UserManagePage> {
                   icon: Image.asset('assets/icons/icon_more.png'),
                   onPressed: () {
                     String action = accountStatus == '활성화' ? '정지' : '활성화';
-                    String alertMessage = '해당 사용자를 $action 하시겠습니까?';
-                    CustomDialog3.showConfirmationDialog(context, alertMessage, () async {
+                    String alertMessage = '해당 사용자를 \n$action 하시겠습니까?';
+                    CustomDialog3.showConfirmationDialog(context, alertMessage.replaceFirst('해당 사용자', name), () async {
                       try {
                         // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
                         DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('UserDomainTest')
@@ -181,7 +179,6 @@ class _UserManagePageState extends State<UserManagePage> {
                       } catch (e) {
                         print('Error updating account status: $e');
                         // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
-                        // 예를 들어, SnackBar를 사용하여 오류 메시지를 표시할 수 있습니다.
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('계정 상태를 업데이트하는 도중 오류가 발생했습니다.'),
                         ));
@@ -189,7 +186,6 @@ class _UserManagePageState extends State<UserManagePage> {
                     });
                   },
                 ),
-
               ],
             ),
           ),
@@ -209,7 +205,6 @@ class _UserManagePageState extends State<UserManagePage> {
       overflow: TextOverflow.ellipsis,
     );
   }
-
 }
 
 class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
