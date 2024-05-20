@@ -30,48 +30,6 @@ class MainPage extends StatelessWidget {
                 subtitle1: '소프트웨어학과 3일전', // 부제목1
                 subtitle2: '10,000원', // 부제목2
               ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
             ],
           ),
         ),
