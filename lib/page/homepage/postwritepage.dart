@@ -124,7 +124,6 @@ class PostWritePage extends StatelessWidget {
               TextField(
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
-                maxLines: null,
                 decoration: InputDecoration(
                   hintText:
                       '신뢰할 수 있는 거래를 위해 자세히 적어주세요. \n(판매금지 물품은 게시가 제한될 수 있어요)\n\n서경대 학생들의 안전한 중고거래 환경을 위해\n함께 노력해주세요)',
