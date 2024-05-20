@@ -2,11 +2,19 @@ import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/wiget/app_bar.dart';
 import 'package:capstone/wiget/chat_button.dart';
+import 'package:capstone/wiget/slideImage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class DetailItemPage extends StatelessWidget {
-  const DetailItemPage({super.key});
+  final List<String> imgPaths = [
+    'assets/images/book.png',
+    'https://via.placeholder.com/600x400?text=Image+1',
+    'https://via.placeholder.com/600x400?text=Image+2',
+    'https://via.placeholder.com/600x400?text=Image+3',
+    'https://via.placeholder.com/600x400?text=Image+4',
+    'https://via.placeholder.com/600x400?text=Image+5',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +37,7 @@ class DetailItemPage extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Container(
-                    width: 390,
-                    height: 390,
-                    decoration: ShapeDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                              'assets/images/book.png',
-                            ),
-                            fit: BoxFit.fill),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4))),
-                  ),
+                  ImageCarouselSlider(imgPaths: imgPaths),
                   SizedBox(
                     height: 20,
                   ),

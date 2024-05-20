@@ -51,30 +51,8 @@ class PostWritePage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  SizedBox(width: 20),
-                  // 사진을 화면에 그려주기 위한 부분
-
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    icon: Icon(
-                      Icons.add_photo_alternate_outlined,
-                      size: 70,
-                    ),
-                    onPressed: () {
-                      //사진 추가 버튼
-                      Get.to(ImagePickerScreen());
-                    },
-                  ),
-                ],
-              ),
+              ImagePickerScreen(),
               Divider(
-                height: 50.0,
                 color: Color(0xffD0E4BC),
                 thickness: 1.0,
               ),
@@ -91,8 +69,8 @@ class PostWritePage extends StatelessWidget {
               ),
               TextField(
                 decoration: InputDecoration(
-                  labelText: '제목을 입력하세요.',
-                  labelStyle:
+                  hintText: '제목을 입력하세요.',
+                  hintStyle:
                       TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
@@ -118,8 +96,8 @@ class PostWritePage extends StatelessWidget {
               ),
               TextField(
                 decoration: InputDecoration(
-                  labelText: '가격을 입력해 주세요',
-                  labelStyle:
+                  hintText: '가격을 입력해 주세요',
+                  hintStyle:
                       TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
@@ -144,11 +122,12 @@ class PostWritePage extends StatelessWidget {
                 height: 20.0,
               ),
               TextField(
+                maxLines: null,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  labelText:
-                      '신뢰할 수 있는 거래를 위해 자세히 적어주세요. \n(판매금지 물품은 게시가 제한ㄷ될 수 있어요)\n\n서경대 학생들의 안전한 중고거래 환경을 위해\n함께 노력해주세요)',
-                  labelStyle:
+                  hintText:
+                      '신뢰할 수 있는 거래를 위해 자세히 적어주세요. \n(판매금지 물품은 게시가 제한될 수 있어요)\n\n서경대 학생들의 안전한 중고거래 환경을 위해\n함께 노력해주세요)',
+                  hintStyle:
                       TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
@@ -156,7 +135,7 @@ class PostWritePage extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 70.0),
+                  contentPadding: EdgeInsets.symmetric(vertical: 20.0),
                 ),
               ),
               SizedBox(
@@ -169,7 +148,7 @@ class PostWritePage extends StatelessWidget {
                   height: 50,
                   onPressed: () {
                     CustomDialog.showAlert(
-                        context, "글이 정상적으로 등록되었습니다.", 14, Colors.black,(){});
+                        context, "글이 정상적으로 등록되었습니다.", 14, Colors.black, () {});
                   },
                 ),
               )
@@ -179,5 +158,4 @@ class PostWritePage extends StatelessWidget {
       ),
     );
   }
-
 }

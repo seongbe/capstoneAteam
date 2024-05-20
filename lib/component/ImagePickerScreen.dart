@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -31,7 +30,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   // 이미지 여러개 불러오기
   void getMultiImage() async {
     final List<XFile>? images = await _picker.pickMultiImage();
-
     if (images != null) {
       setState(() {
         _pickedImages.addAll(images);
@@ -39,119 +37,33 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  Widget _gridPhoto2() {
-    return Expanded(
-      child: _pickedImages.isNotEmpty
-          ? GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-              ),
-              children: _pickedImages
-                  .where((element) => element != null)
-                  .map((e) => _gridPhotoItem(e!))
-                  .toList(),
-            )
-          : const SizedBox(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '수정하기',
-          style: TextStyle(
-            fontFamily: 'skybori',
-            fontSize: 30,
-            letterSpacing: 2.0,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () {
-            Get.back();
-          },
-        ),
-        actions: [
-          Image.asset('assets/images/skon_fly.png'),
-          SizedBox(width: 20),
-        ],
-        shape: Border(
-            bottom: BorderSide(
-          color: Colors.grey,
-          width: 0.8,
-        )),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              _imageLoadButtons(),
-              _gridPhoto2(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 화면 상단 버튼
-  Widget _imageLoadButtons() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            child: ElevatedButton(
-              onPressed: () => getImage(ImageSource.camera),
-              child: const Text('Camera'),
-            ),
-          ),
-          const SizedBox(width: 20),
-          SizedBox(
-            child: ElevatedButton(
-              onPressed: () => getImage(ImageSource.gallery),
-              child: const Text('Image'),
-            ),
-          ),
-          const SizedBox(width: 20),
-          SizedBox(
-            child: ElevatedButton(
-              onPressed: () => getMultiImage(),
-              child: const Text('Multi Image'),
-            ),
-          ),
-        ],
-      ),
-    );
+    return _gridPhoto();
   }
 
   Widget _gridPhoto() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.camera_alt_rounded),
-            color: Colors.grey,
-            onPressed: () {
-              _showBottomSheet();
-            },
-          ),
-          SizedBox(width: 10), // 간격 조절
-          Row(
-            children: _pickedImages
-                .where((element) => element != null)
-                .map((e) => _gridPhotoItem(e!))
-                .toList(),
-          ),
-        ],
+    return Container(
+      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+      margin: EdgeInsets.symmetric(vertical: 20.0),
+      height: 100,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              iconSize: 50,
+              icon: Icon(Icons.camera_alt_rounded),
+              color: Colors.grey,
+              onPressed: () {
+                _showBottomSheet();
+              },
+            ),
+            SizedBox(width: 10), // 간격 조절
+            ..._pickedImages.map((e) => _gridPhotoItem(e!)).toList(),
+            SizedBox(width: 10), // 간격 조절
+          ],
+        ),
       ),
     );
   }
@@ -159,45 +71,37 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   Widget _gridPhotoItem(XFile e) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.file(
-              File(e.path),
-              fit: BoxFit.cover,
-            ),
-          ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _pickedImages.remove(e);
-                });
-              },
-              child: const Icon(
-                Icons.cancel_rounded,
-                color: Colors.black87,
+      child: Container(
+        width: 100, // 적절한 너비 설정
+        height: 100, // 적절한 높이 설정
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.file(
+                File(e.path),
+                fit: BoxFit.cover,
               ),
             ),
-          )
-        ],
+            Positioned(
+              top: 5,
+              right: 5,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _pickedImages.remove(e);
+                  });
+                },
+                child: const Icon(
+                  Icons.cancel_rounded,
+                  color: Colors.black87,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
-
-  //       _pickedImages.isNotEmpty
-  //       ? ListView(
-  //         scrollDirection: Axis.horizontal,
-  //         children: _pickedImages
-  //         .where((element) => element != null)
-  //         .map((e) => _gridPhotoItem(e!))
-  //         .toList(),
-  //   )
-  // : const SizedBox(),
-  //   ],
-  // ),
 
   _showBottomSheet() {
     return showModalBottomSheet(
