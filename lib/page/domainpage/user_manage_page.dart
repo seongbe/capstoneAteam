@@ -1,10 +1,11 @@
+import 'package:capstone/page/domainpage/user_manage_page_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/page/domainpage/Domainpage.dart';
-
+import 'dart:async';
 import '../../component/alterdilog3.dart';
+import '../../component/alerdialog.dart';
 
 class UserManagePage extends StatefulWidget {
   const UserManagePage({Key? key}) : super(key: key);
@@ -24,7 +25,8 @@ class _UserManagePageState extends State<UserManagePage> {
 
   Future<void> fetchUserData() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('UserDomainTest').get();
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('UserDomainTest').get();
       List<Map<String, dynamic>> tempList = [];
 
       querySnapshot.docs.forEach((doc) {
@@ -106,7 +108,7 @@ class _UserManagePageState extends State<UserManagePage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                (BuildContext context, int index) {
                   return _buildUserInfoTile(
                     name: userDataList[index]['name'],
                     id: userDataList[index]['id'],
@@ -134,21 +136,35 @@ class _UserManagePageState extends State<UserManagePage> {
   }
 
   Widget _buildUserInfoTile(
-      {required String name, required String id, required String accountStatus}) {
+      {required String name,
+      required String id,
+      required String accountStatus}) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
-            child: Row(
-              children: [
-                SizedBox(width: 27),
-                _buildUserInfoItem(name, 4), // 이름은 4글자까지 표시
-              ],
+            child: GestureDetector(
+              onTap: () {
+                Get.to(UserManagePageDetail(userEmail: id));
+              },
+              child: Row(
+                children: [
+                  SizedBox(width: 27),
+                  _buildUserInfoItem(name, 4), // 이름은 4글자까지 표시
+                ],
+              ),
             ),
           ),
-          Expanded(child: _buildUserInfoItem(id, 8)), // ID는 8글자까지 표시
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Get.to(UserManagePageDetail(userEmail: id));
+              },
+              child: _buildUserInfoItem(id, 8), // ID는 8글자까지 표시
+            ),
+          ), // ID는 8글자까지 표시
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -156,40 +172,61 @@ class _UserManagePageState extends State<UserManagePage> {
                 _buildUserInfoItem(accountStatus, 8), // 계정 상태는 8글자까지 표시
                 IconButton(
                   icon: Image.asset('assets/icons/icon_more.png'),
-                  onPressed: () {
+                  onPressed: () async {
                     String action = accountStatus == '활성화' ? '정지' : '활성화';
-                    String alertMessage = '해당 사용자를 $action 하시겠습니까?';
-                    CustomDialog3.showConfirmationDialog(context, alertMessage, () async {
-                      try {
-                        // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
-                        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('UserDomainTest')
-                            .where('nickname', isEqualTo: name)
-                            .where('user_id', isEqualTo: id)
-                            .get()
-                            .then((querySnapshot) => querySnapshot.docs.first);
+                    String alertMessage = '해당 사용자을(를) \n$action 하시겠습니까?';
+                    CustomDialog3.showConfirmationDialog(
+                        context, alertMessage.replaceFirst('해당 사용자', name),
+                            () async {
+                          try {
+                            // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
+                            DocumentSnapshot userSnapshot = await FirebaseFirestore
+                                .instance
+                                .collection('UserDomainTest')
+                                .where('nickname', isEqualTo: name)
+                                .where('user_id', isEqualTo: id)
+                                .get()
+                                .then((querySnapshot) => querySnapshot.docs.first);
 
-                        // 사용자의 UID 가져오기
-                        String userID = userSnapshot.id;
+                            // 사용자의 UID 가져오기
+                            String userID = userSnapshot.id;
 
-                        // Firestore에서 해당 사용자의 계정 상태 업데이트
-                        await FirebaseFirestore.instance.collection('UserDomainTest')
-                            .doc(userID)
-                            .update({'status': accountStatus == '활성화' ? false : true});
+                            // Firestore에서 해당 사용자의 계정 상태 업데이트
+                            await FirebaseFirestore.instance
+                                .collection('UserDomainTest')
+                                .doc(userID)
+                                .update({
+                              'status': accountStatus == '활성화' ? false : true
+                            });
 
-                        // 데이터 새로 고침
-                        await fetchUserData();
-                      } catch (e) {
-                        print('Error updating account status: $e');
-                        // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
-                        // 예를 들어, SnackBar를 사용하여 오류 메시지를 표시할 수 있습니다.
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('계정 상태를 업데이트하는 도중 오류가 발생했습니다.'),
-                        ));
-                      }
-                    });
+                            // 다이얼로그 닫기
+                            Navigator.of(context).pop();
+
+                            String updatedStatus =
+                            accountStatus == '활성화' ? '정지' : '활성화';
+                            CustomDialog.showAlert(
+                              context,
+                              '$name의 계정이\n $updatedStatus 되었습니다.',
+                              25,
+                              Colors.black,
+                                  () async {
+                                // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
+                              },
+                            );
+
+                            // 데이터 새로 고침
+                            await fetchUserData();
+                            setState(() {}); // UI 갱신
+                          } catch (e) {
+                            print('Error updating account status: $e');
+                            // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('계정 상태를 업데이트하는 도중 오류가 발생했습니다.'),
+                            ));
+                          }
+                        });
                   },
                 ),
-
               ],
             ),
           ),
@@ -209,12 +246,12 @@ class _UserManagePageState extends State<UserManagePage> {
       overflow: TextOverflow.ellipsis,
     );
   }
-
 }
 
 class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       color: Colors.white,
