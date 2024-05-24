@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // GetX 패키지 가져오기
+// GetX 패키지 가져오기
 
 class ChatButton extends StatelessWidget {
   final String text1;
@@ -20,7 +20,7 @@ class ChatButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed != null ? onPressed : () {}, // 클릭 이벤트 추가
+      onPressed: onPressed ?? () {}, // 클릭 이벤트 추가
       child: Container(
         width: width,
         height: height,

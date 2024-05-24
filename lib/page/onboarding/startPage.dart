@@ -7,7 +7,7 @@ import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
 class StartPage extends StatelessWidget {
-  const StartPage({Key? key});
+  const StartPage({super.key, Key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +98,6 @@ class StartPage extends StatelessWidget {
                           logoClickCount = 0;
                           Get.to(loginpage());
                         },
-                        child: Text('로그인',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Color(0xFF78BE39),
-                            )),
                         style: TextButton.styleFrom(
                           foregroundColor: Color(0xFF78BE39),
                           textStyle: const TextStyle(
@@ -110,6 +105,11 @@ class StartPage extends StatelessWidget {
                             fontSize: 18,
                           ),
                         ),
+                        child: Text('로그인',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xFF78BE39),
+                            )),
                       ),
                     ],
                   ),

@@ -10,7 +10,8 @@ class CreatAccount extends StatefulWidget {
   final User? user; // Certification 페이지로부터 전달된 사용자 객체
   final String email; // Certification 페이지로부터 전달된 이메일
 
-  CreatAccount({Key? key, required this.user, required this.email}) : super(key: key);
+  CreatAccount({Key? key, required this.user, required this.email})
+      : super(key: key);
 
   @override
   _CreatAccountState createState() => _CreatAccountState();
@@ -19,7 +20,8 @@ class CreatAccount extends StatefulWidget {
 class _CreatAccountState extends State<CreatAccount> {
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   String confirmnickname = '';
   late String email;
 
@@ -32,9 +34,8 @@ class _CreatAccountState extends State<CreatAccount> {
     CollectionReference usersCollection = firestore.collection('User');
 
     // 닉네임 중복 여부 확인
-    QuerySnapshot querySnapshot = await usersCollection
-        .where('nickname', isEqualTo: nickname)
-        .get();
+    QuerySnapshot querySnapshot =
+        await usersCollection.where('nickname', isEqualTo: nickname).get();
 
     if (querySnapshot.docs.isNotEmpty) {
       return false; // 중복된 닉네임이 있음
@@ -63,13 +64,13 @@ class _CreatAccountState extends State<CreatAccount> {
 
     // Firestore에 사용자의 이메일을 저장합니다.
     await usersCollection.doc(uid).set({
-      'created_at': FieldValue.serverTimestamp(), // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+      'created_at': FieldValue.serverTimestamp(),
+      // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
       'nickname': nickname,
       'popular': 0,
       'profile_url': '프로필 사진 URL',
       'status': false,
       'user_id': email
-
     });
   }
 
@@ -173,26 +174,21 @@ class _CreatAccountState extends State<CreatAccount> {
                             "닉네임을 입력해주세요.",
                             20,
                             Colors.black,
-                                () {},
+                            () {},
                           );
                           return;
                         }
 
                         if (await _checkNickname()) {
-                          CustomDialog.showAlert(
-                            context,
-                            "사용할 수 있는 닉네임 입니다.",
-                            20,
-                            Colors.black,
-                                () {}
-                          );
+                          CustomDialog.showAlert(context, "사용할 수 있는 닉네임 입니다.",
+                              20, Colors.black, () {});
                         } else {
                           CustomDialog.showAlert(
                             context,
                             "이미 사용중인 닉네임 입니다.\n 새로운 닉네임을 입력하세요.",
                             20,
                             Colors.black,
-                                () {},
+                            () {},
                           );
                         }
                       },
@@ -290,7 +286,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       "닉네임을 입력해주세요.",
                       20,
                       Colors.black,
-                          () {},
+                      () {},
                     );
                     return;
                   }
@@ -301,7 +297,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       "중복확인을 해주세요.",
                       20,
                       Colors.black,
-                          () {},
+                      () {},
                     );
                     return;
                   }
@@ -313,7 +309,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       "이미 사용 중인 닉네임입니다.\n새로운 닉네임을 입력하세요.",
                       20,
                       Colors.black,
-                          () {},
+                      () {},
                     );
                     return;
                   }
@@ -325,7 +321,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       "비밀번호는 6자리 이상이어야 합니다.",
                       20,
                       Colors.black,
-                          () {},
+                      () {},
                     );
                     return;
                   }
@@ -337,7 +333,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       "비밀번호가 일치하지 않습니다.\n다시 입력해주세요.",
                       20,
                       Colors.black,
-                          () {},
+                      () {},
                     );
                     return;
                   }
@@ -351,14 +347,13 @@ class _CreatAccountState extends State<CreatAccount> {
                   } catch (e) {
                     print('오류 발생: $e');
                   }
-
                   // 회원가입 완료 시 로그인 페이지로 이동
                   CustomDialog.showAlert(
                     context,
                     "회원가입이 완료되었습니다.\n로그인 화면으로 이동합니다.",
                     20,
                     Colors.black,
-                        () {
+                    () {
                       Get.to(loginpage());
                     },
                   );

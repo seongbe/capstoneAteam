@@ -1,6 +1,4 @@
-import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/chatingchang.dart';
-import 'package:capstone/wiget/app_bar.dart';
 import 'package:capstone/wiget/chat_button.dart';
 import 'package:capstone/wiget/slideImage.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +148,7 @@ class DetailItemPage extends StatelessWidget {
                 ],
               ),
               Divider(),
-              Container(
+              SizedBox(
                 width: 390,
                 height: 50,
                 child: Row(

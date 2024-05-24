@@ -9,7 +9,7 @@ class BookListItem extends StatelessWidget {
   final String subtitle1;
   final String subtitle2;
 
-  BookListItem({
+  BookListItem({super.key, 
     required this.imagePath,
     required this.title,
     required this.subtitle1,
@@ -78,6 +78,8 @@ class BookListItem extends StatelessWidget {
 }
 
 class AnotherPage extends StatelessWidget {
+  const AnotherPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,5 +1,3 @@
-import 'package:capstone/component/Button.dart';
-import 'package:capstone/page/homepage/rewritepage.dart';
 import 'package:capstone/wiget/bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';

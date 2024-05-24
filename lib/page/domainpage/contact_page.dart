@@ -11,6 +11,8 @@ import '../../wiget/bottom_contact.dart';
 class ContactPage extends StatelessWidget {
   final ContactController controller = Get.put(ContactController());
 
+  ContactPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

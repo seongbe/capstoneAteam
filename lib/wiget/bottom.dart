@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 class CustomBottomNavigationBar extends StatelessWidget {
   final HomeController controller = Get.find();
 
+  CustomBottomNavigationBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Obx(
