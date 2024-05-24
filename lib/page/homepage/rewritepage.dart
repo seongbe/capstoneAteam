@@ -41,9 +41,9 @@ class _ReWritePageState extends State<ReWritePage> {
         ],
         shape: Border(
             bottom: BorderSide(
-          color: Colors.grey,
-          width: 0.8,
-        )),
+              color: Colors.grey,
+              width: 0.8,
+            )),
       ),
       body: ListView(
         padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
@@ -72,7 +72,7 @@ class _ReWritePageState extends State<ReWritePage> {
                   hintText: '제목을 입력하세요.',
                   helperText: "* 필수 입력값입니다.",
                   hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -99,7 +99,7 @@ class _ReWritePageState extends State<ReWritePage> {
                 decoration: InputDecoration(
                   hintText: '가격을 입력하세요.',
                   hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -128,7 +128,7 @@ class _ReWritePageState extends State<ReWritePage> {
                 decoration: InputDecoration(
                   hintText: '내용을 입력하세요.',
                   hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -152,8 +152,8 @@ class _ReWritePageState extends State<ReWritePage> {
                 ),
               )
             ],
-        ),
-         ], ),
+          ),
+        ], ),
     );
   }
 }

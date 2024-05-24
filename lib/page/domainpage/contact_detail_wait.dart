@@ -1,6 +1,5 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
-import 'package:capstone/page/domainpage/contact_page_all.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
@@ -242,7 +241,7 @@ class CustomDialog {
 
         return AlertDialog(
           backgroundColor: Color(0xFFCFE4BC),
-          content: Container(
+          content: SizedBox(
             width: popupWidth,
             height: popupHeight,
             child: Center(

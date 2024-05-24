@@ -21,21 +21,23 @@ class CustomDialog {
 
     // 팝업창의 크기를 텍스트의 크기에 맞게 조절
     double popupWidth = textPainter.width + 48; // 좌우 padding 고려
-    double popupHeight = textPainter.height + 24; // 상하 padding 고려
+    double popupHeight = textPainter.height + 44; // 상하 padding 고려
+
+    // 타이머를 사용하여 일정 시간 후에 자동으로 팝업 창을 닫음
+    Timer(Duration(seconds: 2), () {
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop(); // 2초 후에 팝업 창 닫기
+        moveToPage();
+      }
+    });
 
     showDialog(
       context: context,
-      barrierDismissible: true, // 팝업 창 외부 터치로 닫기 허용
+      barrierDismissible: false, // 팝업 창 외부 터치로 닫기 허용
       builder: (BuildContext context) {
-        // 타이머를 사용하여 일정 시간 후에 자동으로 팝업 창을 닫음
-        Timer(Duration(seconds: 2), () {
-          Navigator.of(context).pop(); // 2초 후에 팝업 창 닫기
-          moveToPage();
-        });
-
         return AlertDialog(
           backgroundColor: Color(0xFFCFE4BC),
-          content: Container(
+          content: SizedBox(
             width: popupWidth,
             height: popupHeight,
             child: Center(

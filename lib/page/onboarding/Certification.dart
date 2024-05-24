@@ -1,67 +1,170 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alterdilog2.dart';
-import 'package:capstone/page/onboarding/createAcouunt.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:get/route_manager.dart';
-import 'package:get/get.dart';
+import 'package:capstone/page/onboarding/createAcouunt.dart'; // 추가 정보 입력 페이지
 
-class Certification extends StatelessWidget {
-  const Certification({super.key});
+class Certification extends StatefulWidget {
+  const Certification({Key? key}) : super(key: key);
+
+  @override
+  _CertificationState createState() => _CertificationState();
+}
+
+class _CertificationState extends State<Certification> with WidgetsBindingObserver {
+  final TextEditingController _emailController = TextEditingController();
+  bool isSent = false;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.clear(); // 이메일 텍스트 필드 초기화
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      deleteUser();
+    }
+  }
+
+  Future<void> _sendVerificationEmail() async {
+    try {
+      String email = _emailController.text.trim();
+
+      if (!GetUtils.isEmail(email)) {
+        CustomDialog2.showAlert(
+            context, "유효한 이메일 주소를 입력해주세요.", 20, Colors.black);
+        return;
+      }
+
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference usersCollection = firestore.collection('User');
+
+      // 이메일이 이미 등록되어 있는지 확인
+      QuerySnapshot querySnapshot = await usersCollection
+          .where('user_id', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        CustomDialog2.showAlert(
+            context, "이미 가입된 계정입니다.", 20, Colors.black);
+        return;
+      }
+
+      FirebaseAuth auth = FirebaseAuth.instance;
+
+      // Firebase를 사용하여 사용자 생성
+      await auth.createUserWithEmailAndPassword(
+          email: email, password: 'temporaryPassword');
+      user = auth.currentUser;
+
+      if (user != null && !user!.emailVerified) {
+        // 이메일 인증 메일 전송
+        await user!.sendEmailVerification();
+
+        setState(() {
+          isSent = true;
+        });
+
+        CustomDialog2.showAlert(
+            context, "입력한 이메일 주소로 인증 메일이 발송되었습니다.", 20, Colors.black);
+      }
+    } catch (e) {
+      CustomDialog2.showAlert(context, "오류가 발생했습니다: $e", 20, Colors.black);
+    }
+  }
+
+  Future<void> _checkEmailVerified() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    user = auth.currentUser;
+
+    await user!.reload();
+    user = auth.currentUser;  // reload 후에 user를 다시 가져옵니다
+
+    if (isSent && user!.emailVerified) {
+      // 이메일 인증이 완료된 경우 추가 정보 입력 페이지로 이동
+      //initState();
+      Get.to(CreatAccount(user: user, email: _emailController.text));
+    } else {
+      // 이메일 인증이 완료되지 않은 경우 경고 메시지 표시
+      CustomDialog2.showAlert(
+          context, "이메일 인증이 완료되지 않았습니다. 이메일을 확인해주세요.", 20, Colors.black);
+    }
+  }
+
+  Future<void> deleteUser() async {
+    if (user != null) {
+      try {
+        await user!.delete();
+      } catch (e) {
+        // 사용자 삭제 중에 오류가 발생한 경우 예외 처리를 수행합니다.
+        print('사용자 삭제 중 오류 발생: $e');
+        // 오류 메시지를 사용자에게 표시할 수도 있습니다.
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        // 사용자 삭제 시도
+        await deleteUser();
+        // 뒤로 가기 동작 수행
+        return true;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           centerTitle: true,
-          title: Text('회원가입'),
+          title: const Text('회원가입'),
           titleTextStyle: const TextStyle(
               fontSize: 40, color: Colors.black, fontFamily: 'mitmi'),
           shape: const Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 1,
-            ),
-          ),
+              bottom: BorderSide(color: Colors.grey, width: 1)),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              Get.back(); // 뒤로 가기
+              deleteUser();
+              Get.back();
             },
           ),
           actions: [
             Image.asset('assets/images/skon_fly.png'),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
           ],
         ),
-        body: Stack(
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 35,
-                      ),
-                      Text('학교 이메일',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'SKYBORI',
-                            fontSize: 20,
-                          )),
-                    ],
-                  ),
-                  const SizedBox(
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Row(
+                      children: const [
+                        SizedBox(width: 35),
+                        Text('이메일 주소(아이디로 사용됩니다.)',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'SKYBORI',
+                              fontSize: 20,
+                            )),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
                       width: 350,
                       child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Example@skuniv.ac.kr',
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'example@example.com',
                           labelStyle: TextStyle(
                               color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                           filled: true,
@@ -69,102 +172,31 @@ class Certification extends StatelessWidget {
                           enabledBorder: OutlineInputBorder(
                             borderRadius:
                             BorderRadius.all(Radius.circular(10.0)),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffD0E4BC)),
+                            borderSide: BorderSide(
+                                width: 1, color: Color(0xffD0E4BC)),
                           ),
                         ),
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  GreenButton(
-                    text1: '인증메일받기',
-                    width: 288,
-                    height: 55,
-                    onPressed: () {
-                      CustomDialog2.showAlert(context, "입력한 학교 이메일로 인증번호가 발송되었습니다.", 20, Colors.black);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 35,
                       ),
-                      Text('인증번호',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'SKYBORI',
-                            fontSize: 20,
-                          )),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('어떤 경우에도 타인에게 보여주지 마세요!',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontFamily: 'SKYBORI',
-                            fontSize: 15,
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                      width: 350,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: '인증번호를 입력하세요',
-                          labelStyle: TextStyle(
-                              color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-                          filled: true,
-                          fillColor: Color(0xffF8FFF2),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(10.0)),
-                            borderSide:
-                            BorderSide(width: 1, color: Color(0xffD0E4BC)),
-                          ),
-                        ),
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  GreenButton(
-                    text1: '인증번호확인',
-                    width: 288,
-                    height: 55,
-                    onPressed: () {
-                      CustomDialog2.showAlert(context, "입력한 인증번호가 틀렸습니다.\n 다시 입력해주세요.", 20, Colors.black);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 70,
-                  ),
-                  Container(
-                    child: Text('이용약관 및 개인정보취급방침',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Colors.black,
-                          fontFamily: 'SKYBORI',
-                          fontSize: 15,
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  GreenButton(
-                    text1: '동의하고다음으로',
-                    width: 300,
-                    height: 55,
-                    onPressed: () {
-                      Get.to(CreatAccount());
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
+                    ),
+                    const SizedBox(height: 10),
+                    GreenButton(
+                      text1: '인증 메일 받기',
+                      width: 288,
+                      height: 55,
+                      onPressed: _sendVerificationEmail,
+                    ),
+                    const SizedBox(height: 20),
+                    GreenButton(
+                      text1: '이메일 인증 확인',
+                      width: 288,
+                      height: 55,
+                      onPressed: _checkEmailVerified,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

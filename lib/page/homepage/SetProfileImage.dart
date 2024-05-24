@@ -1,9 +1,5 @@
 import 'dart:io';
-import 'package:capstone/component/alerdialog.dart';
-import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
-import 'package:capstone/page/homepage/Setprofilepage.dart';
-import 'package:capstone/page/homepage/mypage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,15 +16,15 @@ class _SetProfileImageState extends State<SetProfileImage> {
   @override
 
   Widget build(BuildContext context) {
-    final imageSize = 150.0; //MediaQuery.of(context).size.width/4;
+    const imageSize = 150.0; //MediaQuery.of(context).size.width/4;
 
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
     // Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
-    PickedFile _imageFile;
-    final ImagePicker _picker = ImagePicker();
+    PickedFile imageFile;
+    final ImagePicker picker = ImagePicker();
 
     return SafeArea(
       child: Scaffold(

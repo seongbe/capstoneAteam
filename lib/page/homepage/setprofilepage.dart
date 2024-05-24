@@ -1,11 +1,7 @@
-import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/alterdilog2.dart';
-import 'package:capstone/component/alterdilog3.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/SetProfileImage.dart';
-import 'package:capstone/page/homepage/mypage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 

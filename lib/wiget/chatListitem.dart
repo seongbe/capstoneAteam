@@ -8,7 +8,7 @@ class Chatlistitem extends StatelessWidget {
   final String subtitle1;
   final String subtitle2;
 
-  Chatlistitem({
+  Chatlistitem({super.key, 
     required this.imagePath,
     required this.title,
     required this.subtitle1,
