@@ -1,9 +1,8 @@
-import 'package:capstone/component/Button.dart';
-import 'package:capstone/page/homepage/rewritepage.dart';
 import 'package:capstone/wiget/bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
+import 'package:capstone/wiget/WriteListItem.dart';
 
 class Writelistpage extends StatelessWidget {
   const Writelistpage({super.key});
@@ -56,103 +55,23 @@ class Writelist extends StatelessWidget {
             width: 0.8,
           )),
         ),
-        body: ListView(
-          padding: EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 0.0),
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        body:  SafeArea(
+            child: ListView(
               children: [
-                Row(
-                  children: [
-                    Image.asset('assets/images/book.jfif',
-                        width: 66, height: 66, fit: BoxFit.contain),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    SizedBox(
-                      width: 180,
-                      height: 50,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('운영체제 공룡책',
-                              style: TextStyle(
-                                fontFamily: 'skybori',
-                                fontSize: 20,
-                              )),
-                          Text('3일전',
-                              style: TextStyle(
-                                fontFamily: 'skybori',
-                                fontSize: 15,
-                                color: Color.fromRGBO(140, 140, 140, 1),
-                              )),
-                        ],
-                      ),
-                    ),
-                    GreenButton(
-                      // 버튼 글씨 사이즈 수정해야함
-                      text1: '수정하기',
-                      width: 69,
-                      height: 30,
-                      onPressed: () {
-                        Get.to(ReWritePage());
-                      },
-                    ),
-                  ],
+                WriteListItem(
+                  imagePath: 'assets/images/book.png', // 이미지 경로
+                  title: '운영체제 공룡책', // 제목
+                  date: '3일전', //날짜
                 ),
-                Divider(
-                  height: 50.0,
-                  color: Color(0xffD0E4BC),
-                  thickness: 1.0,
-                  endIndent: 30.0,
-                ),
-                Row(
-                  children: [
-                    Image.asset('assets/images/book.jfif',
-                        width: 66, height: 66, fit: BoxFit.contain),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    SizedBox(
-                      width: 180,
-                      height: 50,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('운영체제 공룡책',
-                              style: TextStyle(
-                                fontFamily: 'skybori',
-                                fontSize: 20,
-                              )),
-                          Text('3일전',
-                              style: TextStyle(
-                                fontFamily: 'skybori',
-                                fontSize: 15,
-                                color: Color.fromRGBO(140, 140, 140, 1),
-                              )),
-                        ],
-                      ),
-                    ),
-                    GreenButton(
-                      // 버튼 글씨 사이즈 수정해야함
-                      text1: '수정하기',
-                      width: 60,
-                      height: 30,
-                      onPressed: () {
-                        Get.to(ReWritePage());
-                      },
-                    ),
-                  ],
-                ),
-                Divider(
-                  height: 50.0,
-                  color: Color(0xffD0E4BC),
-                  thickness: 1.0,
-                  endIndent: 30.0,
+                WriteListItem(
+                  imagePath: 'assets/images/book.png', // 이미지 경로
+                  title: '운영체제 공룡책', // 제목
+                  date: '5일전', //날짜
                 ),
               ],
             ),
-          ],
-        ));
+          ),
+          bottomNavigationBar: CustomBottomNavigationBar()
+        );
   }
 }

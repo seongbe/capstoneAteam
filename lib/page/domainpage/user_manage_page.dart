@@ -1,10 +1,11 @@
+import 'package:capstone/page/domainpage/user_manage_page_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
-import 'package:capstone/page/domainpage/contact_page_wait.dart';
-import 'package:capstone/page/domainpage/contact_page_end.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/page/domainpage/Domainpage.dart';
-
+import 'dart:async';
+import '../../component/alterdilog3.dart';
+import '../../component/alerdialog.dart';
 
 class UserManagePage extends StatefulWidget {
   const UserManagePage({Key? key}) : super(key: key);
@@ -14,6 +15,37 @@ class UserManagePage extends StatefulWidget {
 }
 
 class _UserManagePageState extends State<UserManagePage> {
+  late List<Map<String, dynamic>> userDataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('UserDomainTest').get();
+      List<Map<String, dynamic>> tempList = [];
+
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic> userData = {
+          'name': doc['nickname'],
+          'id': doc['user_id'],
+          'accountStatus': doc['status'] ? '활성화' : '정지',
+        };
+        tempList.add(userData);
+      });
+
+      setState(() {
+        userDataList = tempList;
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,7 +96,7 @@ class _UserManagePageState extends State<UserManagePage> {
                         children: [
                           _buildHeaderItem('  이름   '),
                           _buildHeaderItem('|'),
-                          _buildHeaderItem('  ID(학번) '),
+                          _buildHeaderItem('  ID(학교이메일) '),
                           _buildHeaderItem('|'),
                           _buildHeaderItem('계정 상태'),
                         ],
@@ -76,29 +108,14 @@ class _UserManagePageState extends State<UserManagePage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  // _buildUserInfoTile을 호출하여 위젯 생성 후 반환
-                  if (index % 3 == 0) {
-                    return _buildUserInfoTile(
-                      name: '김민서',
-                      id: '2021301010',
-                      accountStatus: '활성화',
-                    );
-                  } else if (index % 3 == 1) {
-                    return _buildUserInfoTile(
-                      name: '김가은',
-                      id: '2020301000',
-                      accountStatus: '활성화',
-                    );
-                  } else {
-                    return _buildUserInfoTile(
-                      name: '김서경',
-                      id: '2024301000',
-                      accountStatus: '정지',
-                    );
-                  }
+                (BuildContext context, int index) {
+                  return _buildUserInfoTile(
+                    name: userDataList[index]['name'],
+                    id: userDataList[index]['id'],
+                    accountStatus: userDataList[index]['accountStatus'],
+                  );
                 },
-                childCount: 16, // 예시로 10개의 항목 생성
+                childCount: userDataList.length,
               ),
             ),
           ],
@@ -119,33 +136,95 @@ class _UserManagePageState extends State<UserManagePage> {
   }
 
   Widget _buildUserInfoTile(
-      {required String name, required String id, required String accountStatus}) {
+      {required String name,
+      required String id,
+      required String accountStatus}) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
-            child: Row(
-              children: [
-                SizedBox(width: 27),
-                _buildUserInfoItem(name),
-              ],
+            child: GestureDetector(
+              onTap: () {
+                Get.to(UserManagePageDetail(userEmail: id));
+              },
+              child: Row(
+                children: [
+                  SizedBox(width: 27),
+                  _buildUserInfoItem(name, 4), // 이름은 4글자까지 표시
+                ],
+              ),
             ),
           ),
-          Expanded(child: _buildUserInfoItem(id)),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Get.to(UserManagePageDetail(userEmail: id));
+              },
+              child: _buildUserInfoItem(id, 8), // ID는 8글자까지 표시
+            ),
+          ), // ID는 8글자까지 표시
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _buildUserInfoItem(accountStatus),
+                _buildUserInfoItem(accountStatus, 8), // 계정 상태는 8글자까지 표시
                 IconButton(
                   icon: Image.asset('assets/icons/icon_more.png'),
-                  onPressed: () {
-                    String alertMessage = accountStatus == '활성화'
-                        ? "해당 사용자를 \n정지하시겠습니까?"
-                        : "해당 사용자를 \n활성화하시겠습니까?";
-                    CustomDialog3.showAlert(context, alertMessage, 14, Colors.black);
+                  onPressed: () async {
+                    String action = accountStatus == '활성화' ? '정지' : '활성화';
+                    String alertMessage = '해당 사용자을(를) \n$action 하시겠습니까?';
+                    CustomDialog3.showConfirmationDialog(
+                        context, alertMessage.replaceFirst('해당 사용자', name),
+                            () async {
+                          try {
+                            // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
+                            DocumentSnapshot userSnapshot = await FirebaseFirestore
+                                .instance
+                                .collection('UserDomainTest')
+                                .where('nickname', isEqualTo: name)
+                                .where('user_id', isEqualTo: id)
+                                .get()
+                                .then((querySnapshot) => querySnapshot.docs.first);
+
+                            // 사용자의 UID 가져오기
+                            String userID = userSnapshot.id;
+
+                            // Firestore에서 해당 사용자의 계정 상태 업데이트
+                            await FirebaseFirestore.instance
+                                .collection('UserDomainTest')
+                                .doc(userID)
+                                .update({
+                              'status': accountStatus == '활성화' ? false : true
+                            });
+
+                            // 다이얼로그 닫기
+                            Navigator.of(context).pop();
+
+                            String updatedStatus =
+                            accountStatus == '활성화' ? '정지' : '활성화';
+                            CustomDialog.showAlert(
+                              context,
+                              '$name의 계정이\n $updatedStatus 되었습니다.',
+                              25,
+                              Colors.black,
+                                  () async {
+                                // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
+                              },
+                            );
+
+                            // 데이터 새로 고침
+                            await fetchUserData();
+                            setState(() {}); // UI 갱신
+                          } catch (e) {
+                            print('Error updating account status: $e');
+                            // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('계정 상태를 업데이트하는 도중 오류가 발생했습니다.'),
+                            ));
+                          }
+                        });
                   },
                 ),
               ],
@@ -156,21 +235,23 @@ class _UserManagePageState extends State<UserManagePage> {
     );
   }
 
-  Widget _buildUserInfoItem(String text) {
+  Widget _buildUserInfoItem(String text, int maxLength) {
     return Text(
-      text,
+      text.length <= maxLength ? text : text.substring(0, maxLength) + '...',
       style: TextStyle(
         fontFamily: 'skybori',
         fontSize: 18,
         color: Color(0xFF464646),
       ),
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
 
 class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       color: Colors.white,
@@ -178,7 +259,7 @@ class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
         height: 80,
         child: TextField(
           decoration: InputDecoration(
-            labelText: '이름 또는 학번을 검색하세요.',
+            labelText: '이름 또는 ID를 검색하세요.',
             labelStyle: TextStyle(
               color: Color(0xffC0C0C0),
               fontFamily: 'mitmi',
@@ -204,106 +285,6 @@ class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return false;
-  }
-}
-
-class CustomDialog3 {
-  static void showAlert(
-      BuildContext context, String message, double fontSize, Color textColor) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            AlertDialog(
-              backgroundColor: Color(0xFFCFE4BC),
-              content: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      message,
-                      style: TextStyle(
-                        color: textColor,
-                        fontFamily: 'mitmi',
-                        fontSize: 25,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                ),
-              ),
-              actions: [], // actions 비우기
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // 확인 버튼을 눌렀을 때 수행할 작업 추가
-                    Get.back();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF78BE39), // 버튼의 배경색
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(50), // 버튼의 모서리를 둥글게 만듭니다.
-                      side: BorderSide(
-                          width: 1.50, color: Color(0xFF65AA28)), // 버튼의 테두리 설정
-                    ),
-                  ),
-                  child: Text('확인',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 27,
-                        fontFamily: 'mitmi',
-                        fontWeight: FontWeight.w400,
-                        height: 0.03,
-                        letterSpacing: 9.45,
-                      )),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // 확인 버튼을 눌렀을 때 수행할 작업 추가
-                    Get.back();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF78BE39), // 버튼의 배경색
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(50), // 버튼의 모서리를 둥글게 만듭니다.
-                      side: BorderSide(
-                          width: 1.50, color: Color(0xFF65AA28)), // 버튼의 테두리 설정
-                    ),
-                  ),
-                  child: Text('취소',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 27,
-                        fontFamily: 'mitmi',
-                        fontWeight: FontWeight.w400,
-                        height: 0.03,
-                        letterSpacing: 9.45,
-                      )),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
   }
 }
 

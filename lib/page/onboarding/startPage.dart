@@ -7,16 +7,16 @@ import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 
 class StartPage extends StatelessWidget {
-  const StartPage({super.key});
+  const StartPage({super.key, Key});
 
   @override
   Widget build(BuildContext context) {
-    // 화면의 너비를 가져옵니다.
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
-    // Container의 너비와 높이를 동일하게 설정합니다.
-    final containerSize = screenWidth;
+
+    int logoClickCount = 0;
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -36,18 +36,32 @@ class StartPage extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 110),
-                  Image.asset(
-                    'assets/images/skunivLogo.png',
-                    width: 126.98,
-                    height: 77.01,
-                  ),
-                  Text(
-                    '풀잎장터',
-                    style: TextStyle(
-                      fontFamily: 'mitmi',
-                      color: Color(0xFF7AAC4D),
-                      fontSize: 55,
-                      letterSpacing: 3.0,
+                  GestureDetector(
+                    onTap: () {
+                      logoClickCount++;
+
+                      if (logoClickCount == 10) {
+                        logoClickCount = 0;
+                        Get.to(DomainPage());
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/skunivLogo.png',
+                          width: 126.98,
+                          height: 77.01,
+                        ),
+                        Text(
+                          '풀잎장터',
+                          style: TextStyle(
+                            fontFamily: 'mitmi',
+                            color: Color(0xFF7AAC4D),
+                            fontSize: 55,
+                            letterSpacing: 3.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
@@ -58,15 +72,8 @@ class StartPage extends StatelessWidget {
                     width: 288,
                     height: 55,
                     onPressed: () {
-                      Get.to(loginpage());
-                    },
-                  ),
-                  GreenButton(
-                    text1: '관리자페이지',
-                    width: 288,
-                    height: 55,
-                    onPressed: () {
-                      Get.to(DomainPage());
+                      logoClickCount = 0;
+                      Get.to(HomePage());
                     },
                   ),
                   SizedBox(
@@ -88,13 +95,9 @@ class StartPage extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
+                          logoClickCount = 0;
                           Get.to(loginpage());
                         },
-                        child: Text('로그인',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Color(0xFF78BE39),
-                            )),
                         style: TextButton.styleFrom(
                           foregroundColor: Color(0xFF78BE39),
                           textStyle: const TextStyle(
@@ -102,6 +105,11 @@ class StartPage extends StatelessWidget {
                             fontSize: 18,
                           ),
                         ),
+                        child: Text('로그인',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xFF78BE39),
+                            )),
                       ),
                     ],
                   ),

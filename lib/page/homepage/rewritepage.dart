@@ -1,8 +1,11 @@
+import 'dart:io';
+import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/writelistpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ReWritePage extends StatefulWidget {
   const ReWritePage({super.key});
@@ -38,41 +41,18 @@ class _ReWritePageState extends State<ReWritePage> {
         ],
         shape: Border(
             bottom: BorderSide(
-          color: Colors.grey,
-          width: 0.8,
-        )),
+              color: Colors.grey,
+              width: 0.8,
+            )),
       ),
       body: ListView(
         padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
-        children: <Widget>[
+        children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Image.asset('assets/images/book.jfif',
-                      width: 70, height: 70, fit: BoxFit.contain),
-                  SizedBox(width: 20),
-                  // 사진을 화면에 그려주기 위한 부분
-
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    icon: Icon(
-                      Icons.add_photo_alternate_outlined,
-                      size: 70,
-                    ),
-                    onPressed: () {
-                      //사진 추가 버튼
-                    },
-                  ),
-                ],
-              ),
+              ImagePickerScreen(),
               Divider(
-                height: 50.0,
                 color: Color(0xffD0E4BC),
                 thickness: 1.0,
               ),
@@ -89,10 +69,10 @@ class _ReWritePageState extends State<ReWritePage> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  labelText: '제목을 입력하세요.',
+                  hintText: '제목을 입력하세요.',
                   helperText: "* 필수 입력값입니다.",
-                  labelStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintStyle:
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -117,9 +97,9 @@ class _ReWritePageState extends State<ReWritePage> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  labelText: '가격을 입력하세요.',
-                  labelStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintText: '가격을 입력하세요.',
+                  hintStyle:
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -146,15 +126,16 @@ class _ReWritePageState extends State<ReWritePage> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: InputDecoration(
-                  labelText: '내용을 입력하세요.',
-                  labelStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintText: '내용을 입력하세요.',
+                  hintStyle:
+                  TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
                   ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 20.0),
                 ),
               ),
               SizedBox(
@@ -171,9 +152,8 @@ class _ReWritePageState extends State<ReWritePage> {
                 ),
               )
             ],
-          )
-        ],
-      ),
+          ),
+        ], ),
     );
   }
 }

@@ -1,12 +1,8 @@
-import 'package:capstone/page/homepage/DetailItemPage.dart';
-import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/wiget/chatListitem.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import 'package:get/get.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key});
+  const ChatPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

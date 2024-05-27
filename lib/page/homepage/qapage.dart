@@ -1,6 +1,6 @@
+import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/mypage.dart';
-import 'package:capstone/page/homepage/writelistpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
@@ -49,29 +49,10 @@ class _QandApageState extends State<QandApage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  SizedBox(width: 20),
-                  // 사진을 화면에 그려주기 위한 부분
-
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    icon: Icon(
-                      Icons.add_photo_alternate_outlined,
-                      size: 70,
-                    ),
-                    onPressed: () {
-                      //사진 추가 버튼
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 30,
+              ImagePickerScreen(),
+              Divider(
+                color: Color(0xffD0E4BC),
+                thickness: 1.0,
               ),
               Text(
                 '제목',
@@ -86,9 +67,9 @@ class _QandApageState extends State<QandApage> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  labelText: '제목을 입력하세요.',
+                  hintText: '제목을 입력하세요.',
                   helperText: "* 필수 입력값입니다.",
-                  labelStyle:
+                  hintStyle:
                       TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
@@ -114,8 +95,8 @@ class _QandApageState extends State<QandApage> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'ex)사기, 비속어 사용 등',
-                  labelStyle:
+                  hintText: 'ex)사기, 비속어 사용 등',
+                  hintStyle:
                       TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
@@ -147,8 +128,8 @@ class _QandApageState extends State<QandApage> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: InputDecoration(
-                  labelText: '문의사항과 신고에 대해 자세히 설명해주세요.',
-                  labelStyle:
+                  hintText: '문의사항과 신고에 대해 자세히 설명해주세요.',
+                  hintStyle:
                       TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
@@ -156,6 +137,7 @@ class _QandApageState extends State<QandApage> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
                   ),
+                 // contentPadding: EdgeInsets.symmetric(vertical: 20.0),
                 ),
               ),
               SizedBox(
