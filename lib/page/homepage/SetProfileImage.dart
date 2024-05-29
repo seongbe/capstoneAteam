@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class SetProfileImage extends StatefulWidget {
   const SetProfileImage({super.key});
@@ -13,17 +14,28 @@ class SetProfileImage extends StatefulWidget {
 
 class _SetProfileImageState extends State<SetProfileImage> {
   XFile? _pickedFile;
-  @override
+  final FirebaseStorage storage = FirebaseStorage.instance;
 
+  Future<void> uploadImage() async {
+    if (_pickedFile != null) {
+      final now = DateTime.now();
+      var ref = storage.ref().child('profileImages/$now.jpg');
+      await ref.putFile(File(_pickedFile!.path));
+    } else {
+      if (kDebugMode) {
+        print('No image selected');
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const imageSize = 150.0; //MediaQuery.of(context).size.width/4;
+    const imageSize = 150.0;
 
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
-    // Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
-    PickedFile imageFile;
     final ImagePicker picker = ImagePicker();
 
     return SafeArea(
@@ -114,8 +126,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
           SizedBox(height: 10,),
           TextField(
             decoration: InputDecoration(
-              labelText: '바꾸고 싶은 닉네임을 입력해주세요.',
-              labelStyle:
+              hintText: '바꾸고 싶은 닉네임을 입력해주세요.',
+              hintStyle:
                   TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
               fillColor: Color(0xffF8FFF2),
@@ -133,6 +145,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
             width: 756,
             height: 50,
             onPressed: () {
+              uploadImage();
               //CustomDialog.showAlert(
               //  context, "프로필 수정이 완료되었습니다.", 20, Colors.black,);
             },
@@ -235,6 +248,3 @@ class _SetProfileImageState extends State<SetProfileImage> {
     }
   }
 }
-
-
-
