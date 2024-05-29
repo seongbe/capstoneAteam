@@ -1,39 +1,42 @@
-import 'package:capstone/page/homepage/postwritepage.dart';
-import 'package:capstone/wiget/BookListItem.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+
+  getUserInfo() async {
+    var result =
+        await FirebaseFirestore.instance.collection('userInfo').doc(uid).get();
+    return result.data();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        //FAB을 전달하는 아규먼트
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Color(0xFF78BE39),
-            onPressed: () {
-              Get.to(PostWritePage());
-            },
-            child: Container(
-              child: Icon(Icons.add),
-            )),
-
-        body: SafeArea(
-          child: ListView(
-            children: [
-              BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
-                title: '운영체제 공룡책', // 제목
-                subtitle1: '소프트웨어학과 3일전', // 부제목1
-                subtitle2: '10,000원', // 부제목2
-              ),
-            ],
-          ),
-        ),
-      ),
+    return Scaffold(
+      body: FutureBuilder(
+          future: getUserInfo(),
+          builder: (context, snapshot) {
+            return snapshot.hasData
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text((snapshot.data as Map)['name']),
+                        Text((snapshot.data as Map)['email']),
+                        Text((snapshot.data as Map)['phoneNumber']),
+                      ],
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator());
+          }),
     );
   }
 }
