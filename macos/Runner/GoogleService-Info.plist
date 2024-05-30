@@ -2,18 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>859736008367-b8jfvtb93tf9bvm8ij5b90e1hr5uereg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.859736008367-b8jfvtb93tf9bvm8ij5b90e1hr5uereg</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAcaHDfJRLGWGb3tDgcMprCoINDvQQroxM</string>
+	<string>AIzaSyDHYE3GJvwz1Q7sYtt3x8JEvnMDrb3aJNk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>938546452578</string>
+	<string>859736008367</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.capstone.RunnerTests</string>
+	<string>com.example.capstone</string>
 	<key>PROJECT_ID</key>
-	<string>capstone-febbd</string>
+	<string>sku-market-5910e</string>
 	<key>STORAGE_BUCKET</key>
-	<string>capstone-febbd.appspot.com</string>
+	<string>sku-market-5910e.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:938546452578:ios:3733368516b1de29aa993b</string>
+	<string>1:859736008367:ios:e97da100c935072c84565a</string>
+	<key>DATABASE_URL</key>
+	<string>https://sku-market-5910e-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

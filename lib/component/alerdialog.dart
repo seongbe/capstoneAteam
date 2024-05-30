@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 class CustomDialog {
-  static void showAlert(
-      BuildContext context, String message, double fontSize, Color textColor,VoidCallback moveToPage) {
+  static void showAlert(BuildContext context, String message, double fontSize,
+      Color textColor, VoidCallback moveToPage) {
     // 텍스트의 폭과 높이를 측정
     TextPainter textPainter = TextPainter(
       text: TextSpan(
