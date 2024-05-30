@@ -68,7 +68,7 @@ class _CreatAccountState extends State<CreatAccount> {
       // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
       'nickname': nickname,
       'popular': 0,
-      'profile_url': '프로필 사진 URL',
+      'profile_url': "", //empty값으로 초기화
       'status': false,
       'user_id': email
     });

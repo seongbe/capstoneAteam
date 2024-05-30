@@ -1,5 +1,9 @@
 import 'dart:io';
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/domainpage/contact_detail_wait.dart';
+import 'package:capstone/page/homepage/mypage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,18 +19,58 @@ class SetProfileImage extends StatefulWidget {
 class _SetProfileImageState extends State<SetProfileImage> {
   XFile? _pickedFile;
   final FirebaseStorage storage = FirebaseStorage.instance;
+  final CollectionReference userCollection = FirebaseFirestore.instance.collection('User');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> uploadImage() async {
-    if (_pickedFile != null) {
+  String? _profileUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  Future<void> _fetchUserProfile() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot<Map<String, dynamic>> userProfile =
+            await _firestore.collection('User').doc(user.uid).get();
+        setState(() {
+          _profileUrl = userProfile['profile_url'];
+        });
+      }
+    } catch (e) {
+      print('Failed to fetch user profile: $e');
+    }
+  }
+
+
+  Future<void> _uploadImage() async {
+  if (_pickedFile != null) {
+    try {
       final now = DateTime.now();
       var ref = storage.ref().child('profileImages/$now.jpg');
       await ref.putFile(File(_pickedFile!.path));
-    } else {
-      if (kDebugMode) {
-        print('No image selected');
-      }
+      String downloadURL = await ref.getDownloadURL();
+
+      // 업로드된 이미지 URL을 Firestore에 업데이트
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance.collection('User').doc(userId).update({
+        'profile_url': downloadURL,
+      });
+    } catch (e) {
+      print('Failed to upload image: $e');
+      // 예외 발생 시 적절히 처리
+    }
+  } else {
+    if (kDebugMode) {
+      print('No image selected');
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +98,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () {
-              Get.back();
+              Get.to(Mypage());
             },
           ),
           actions: [
@@ -73,7 +117,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
             const SizedBox(height: 50,),
               Stack(
               children: [
-              Positioned(right: 70, top: 100,
+              Positioned(right: 60, top: 100,
               child: IconButton(
                 highlightColor: Colors.white,
                 icon: Icon(Icons.camera_alt_outlined, color: Colors.black45, size: 40,),
@@ -84,19 +128,27 @@ class _SetProfileImageState extends State<SetProfileImage> {
               ),
               if(_pickedFile == null)
                 Center(
-                child: Container(
-                  width: imageSize,
-                  height: imageSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                        width: 2, color: Colors.black12,),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/skon_fly.png'),
-                      fit: BoxFit.cover),
+                  child: Container(
+                    width: imageSize,
+                    height: imageSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2,
+                        color: Colors.black12,
+                      ),
+                      image: _profileUrl != null && _profileUrl!.isNotEmpty
+                          ? DecorationImage(
+                              image: NetworkImage(_profileUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              image: AssetImage('assets/images/skon_fly.png'),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
                   ),
-                ),
-                )
+                  )
               else
                 Center(
                 child: Container(
@@ -113,7 +165,6 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 ),
                 ),
           ],),
-              
             SizedBox(height: 50,),
             Text(
             '닉네임',
@@ -145,9 +196,11 @@ class _SetProfileImageState extends State<SetProfileImage> {
             width: 756,
             height: 50,
             onPressed: () {
-              uploadImage();
-              //CustomDialog.showAlert(
-              //  context, "프로필 수정이 완료되었습니다.", 20, Colors.black,);
+              _uploadImage();
+              CustomDialog.showAlert(
+                context, "프로필 수정이 완료되었습니다.", 20, Colors.black,(){
+                  Get.to(Mypage());
+                });
             },
             letterspace: 30,
           ),
