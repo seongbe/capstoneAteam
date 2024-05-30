@@ -28,17 +28,17 @@ class _SetProfileImageState extends State<SetProfileImage> {
   @override
   void initState() {
     super.initState();
-    _fetchUserProfile();
+    _fetchUserData();
   }
 
-  Future<void> _fetchUserProfile() async {
+  Future<void> _fetchUserData() async {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot<Map<String, dynamic>> userProfile =
+        DocumentSnapshot<Map<String, dynamic>> userInfo=
             await _firestore.collection('User').doc(user.uid).get();
         setState(() {
-          _profileUrl = userProfile['profile_url'];
+          _profileUrl = userInfo['profile_url'];
         });
       }
     } catch (e) {
