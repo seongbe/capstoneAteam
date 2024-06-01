@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/component/button.dart';
@@ -17,6 +18,24 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
   final TextEditingController _emailController = TextEditingController();
   bool isSent = false;
   User? user;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> deleteUser() async {
+    if (user != null) {
+      try {
+        await user!.delete();
+      } catch (e) {
+        // 사용자 삭제 중에 오류가 발생한 경우 예외 처리를 수행합니다.
+        print('사용자 삭제 중 오류 발생: $e');
+        // 오류 메시지를 사용자에게 표시할 수도 있습니다.
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -56,6 +75,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
         return;
       }
 
+
       FirebaseAuth auth = FirebaseAuth.instance;
 
       // Firebase를 사용하여 사용자 생성
@@ -89,24 +109,11 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
 
     if (isSent && user!.emailVerified) {
       // 이메일 인증이 완료된 경우 추가 정보 입력 페이지로 이동
-      //initState();
       Get.to(CreatAccount(user: user, email: _emailController.text));
     } else {
       // 이메일 인증이 완료되지 않은 경우 경고 메시지 표시
       CustomDialog2.showAlert(
           context, "이메일 인증이 완료되지 않았습니다. 이메일을 확인해주세요.", 20, Colors.black);
-    }
-  }
-
-  Future<void> deleteUser() async {
-    if (user != null) {
-      try {
-        await user!.delete();
-      } catch (e) {
-        // 사용자 삭제 중에 오류가 발생한 경우 예외 처리를 수행합니다.
-        print('사용자 삭제 중 오류 발생: $e');
-        // 오류 메시지를 사용자에게 표시할 수도 있습니다.
-      }
     }
   }
 
@@ -178,6 +185,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 10),
                     GreenButton(
                       text1: '인증 메일 받기',

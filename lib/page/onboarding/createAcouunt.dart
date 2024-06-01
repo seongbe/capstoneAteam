@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/homepage/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore import 추가
 import 'package:capstone/component/alerdialog.dart';
@@ -24,6 +26,18 @@ class _CreatAccountState extends State<CreatAccount> {
       TextEditingController();
   String confirmnickname = '';
   late String email;
+
+  Future<void> checkLoginStatus() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // 사용자가 로그인되어 있음
+      print('사용자가 로그인되어 있습니다.');
+    } else {
+      // 사용자가 로그인되어 있지 않음
+      print('사용자가 로그인되어 있지 않습니다.');
+    }
+  }
 
   // 닉네임 중복 확인 메서드
   Future<bool> _checkNickname() async {
@@ -142,6 +156,9 @@ class _CreatAccountState extends State<CreatAccount> {
                   SizedBox(
                     width: 220,
                     child: TextField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9a-zA-Zㄱ-ㅎ가-힣]')),
+                      ],
                       controller: _nicknameController,
                       decoration: InputDecoration(
                         labelText: '닉네임을 입력하세요',
@@ -335,6 +352,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       Colors.black,
                       () {},
                     );
+                    checkLoginStatus();
                     return;
                   }
 
@@ -347,14 +365,17 @@ class _CreatAccountState extends State<CreatAccount> {
                   } catch (e) {
                     print('오류 발생: $e');
                   }
+
+                  checkLoginStatus();
+
                   // 회원가입 완료 시 로그인 페이지로 이동
                   CustomDialog.showAlert(
                     context,
-                    "회원가입이 완료되었습니다.\n로그인 화면으로 이동합니다.",
+                    "회원가입이 완료되었습니다.",
                     20,
                     Colors.black,
                     () {
-                      Get.to(loginpage());
+                      Get.to(HomePage());
                     },
                   );
                 },
