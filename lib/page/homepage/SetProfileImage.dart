@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'package:capstone/component/button.dart';
+import 'package:capstone/page/domainpage/contact_detail_wait.dart';
+import 'package:capstone/page/homepage/mypage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class SetProfileImage extends StatefulWidget {
   const SetProfileImage({super.key});
@@ -13,17 +18,68 @@ class SetProfileImage extends StatefulWidget {
 
 class _SetProfileImageState extends State<SetProfileImage> {
   XFile? _pickedFile;
-  @override
+  final FirebaseStorage storage = FirebaseStorage.instance;
+  final CollectionReference userCollection = FirebaseFirestore.instance.collection('User');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  String? _profileUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot<Map<String, dynamic>> userInfo=
+            await _firestore.collection('User').doc(user.uid).get();
+        setState(() {
+          _profileUrl = userInfo['profile_url'];
+        });
+      }
+    } catch (e) {
+      print('Failed to fetch user profile: $e');
+    }
+  }
+
+
+  Future<void> _uploadImage() async {
+  if (_pickedFile != null) {
+    try {
+      final now = DateTime.now();
+      var ref = storage.ref().child('profileImages/$now.jpg');
+      await ref.putFile(File(_pickedFile!.path));
+      String downloadURL = await ref.getDownloadURL();
+
+      // 업로드된 이미지 URL을 Firestore에 업데이트
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance.collection('User').doc(userId).update({
+        'profile_url': downloadURL,
+      });
+    } catch (e) {
+      print('Failed to upload image: $e');
+      // 예외 발생 시 적절히 처리
+    }
+  } else {
+    if (kDebugMode) {
+      print('No image selected');
+    }
+  }
+}
+
+
+  @override
   Widget build(BuildContext context) {
-    const imageSize = 150.0; //MediaQuery.of(context).size.width/4;
+    const imageSize = 150.0;
 
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
-    // Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
-    PickedFile imageFile;
     final ImagePicker picker = ImagePicker();
 
     return SafeArea(
@@ -42,7 +98,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () {
-              Get.back();
+              Get.to(Mypage());
             },
           ),
           actions: [
@@ -61,7 +117,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
             const SizedBox(height: 50,),
               Stack(
               children: [
-              Positioned(right: 70, top: 100,
+              Positioned(right: 60, top: 100,
               child: IconButton(
                 highlightColor: Colors.white,
                 icon: Icon(Icons.camera_alt_outlined, color: Colors.black45, size: 40,),
@@ -72,19 +128,27 @@ class _SetProfileImageState extends State<SetProfileImage> {
               ),
               if(_pickedFile == null)
                 Center(
-                child: Container(
-                  width: imageSize,
-                  height: imageSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                        width: 2, color: Colors.black12,),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/skon_fly.png'),
-                      fit: BoxFit.cover),
+                  child: Container(
+                    width: imageSize,
+                    height: imageSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2,
+                        color: Colors.black12,
+                      ),
+                      image: _profileUrl != null && _profileUrl!.isNotEmpty
+                          ? DecorationImage(
+                              image: NetworkImage(_profileUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              image: AssetImage('assets/images/skon_fly.png'),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
                   ),
-                ),
-                )
+                  )
               else
                 Center(
                 child: Container(
@@ -101,7 +165,6 @@ class _SetProfileImageState extends State<SetProfileImage> {
                 ),
                 ),
           ],),
-              
             SizedBox(height: 50,),
             Text(
             '닉네임',
@@ -114,8 +177,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
           SizedBox(height: 10,),
           TextField(
             decoration: InputDecoration(
-              labelText: '바꾸고 싶은 닉네임을 입력해주세요.',
-              labelStyle:
+              hintText: '바꾸고 싶은 닉네임을 입력해주세요.',
+              hintStyle:
                   TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
               fillColor: Color(0xffF8FFF2),
@@ -133,8 +196,11 @@ class _SetProfileImageState extends State<SetProfileImage> {
             width: 756,
             height: 50,
             onPressed: () {
-              //CustomDialog.showAlert(
-              //  context, "프로필 수정이 완료되었습니다.", 20, Colors.black,);
+              _uploadImage();
+              CustomDialog.showAlert(
+                context, "프로필 수정이 완료되었습니다.", 20, Colors.black,(){
+                  Get.to(Mypage());
+                });
             },
             letterspace: 30,
           ),
@@ -235,6 +301,3 @@ class _SetProfileImageState extends State<SetProfileImage> {
     }
   }
 }
-
-
-

@@ -44,7 +44,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
 
   Widget _gridPhoto() {
     return Container(
-      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
       margin: EdgeInsets.symmetric(vertical: 20.0),
       height: 100,
       child: SingleChildScrollView(

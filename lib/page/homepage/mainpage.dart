@@ -7,6 +7,7 @@ import 'package:get/route_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 class MainPage extends StatelessWidget {
   String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
