@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/homepage.dart';
 import 'package:capstone/page/onboarding/Certification.dart';
 import 'package:capstone/page/onboarding/PasswordReset.dart';
+import 'package:capstone/page/domainpage/Domainpage.dart';
 import 'package:capstone/component/alerdialog.dart';
 
 class loginpage extends StatefulWidget {
@@ -17,6 +19,8 @@ class loginpage extends StatefulWidget {
 class _loginpageState extends State<loginpage> {
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> login() async {
     try {
@@ -26,7 +30,20 @@ class _loginpageState extends State<loginpage> {
         password: passwordController.text.trim(),
       );
       // 로그인 성공 시 홈 페이지로 이동
-      Get.to(() => HomePage());
+      DocumentSnapshot userDoc = await firestore
+          .collection('User')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      // 사용자 데이터에서 manager 필드 값 확인
+      bool isManager = userDoc['manager'] ?? false;
+
+      // manager가 true이면 DomainPage로, 아니면 HomePage로 이동
+      if (isManager) {
+        Get.to(() => DomainPage());
+      } else {
+        Get.to(() => HomePage());
+      }
     } on FirebaseAuthException catch (e) {
       // 오류 발생 시 다이얼로그 표시
       String message = '아이디나 비밀번호가 틀렸습니다.';
