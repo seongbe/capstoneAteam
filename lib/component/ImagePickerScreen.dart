@@ -1,8 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerScreen extends StatefulWidget {
@@ -15,26 +12,16 @@ class ImagePickerScreen extends StatefulWidget {
 class _ImagePickerScreenState extends State<ImagePickerScreen> {
   final ImagePicker _picker = ImagePicker();
   final List<XFile?> _pickedImages = [];
-  XFile? _pickedFile;
-
-  // 카메라, 갤러리에서 이미지 1개 불러오기
-  // ImageSource.galley , ImageSource.camera
-  void getImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
-
-    setState(() {
-      _pickedImages.add(image);
-    });
-  }
 
   // 이미지 여러개 불러오기
-  void getMultiImage() async {
+  Future<List<XFile?>> pickImages(List<XFile?> _pickedImages) async {
     final List<XFile>? images = await _picker.pickMultiImage();
     if (images != null) {
       setState(() {
         _pickedImages.addAll(images);
       });
     }
+    return _pickedImages;
   }
 
   @override
@@ -121,7 +108,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  getImage(ImageSource.camera);
+                  pickImages(_pickedImages);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffD0E4BC),
@@ -130,35 +117,9 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  //fixedSize: Size(300, 60),
                 ),
                 child: const Text(
-                  '사진찍기',
-                  style: TextStyle(
-                    fontFamily: 'skybori',
-                    fontSize: 20,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  getMultiImage();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xffD0E4BC),
-                  surfaceTintColor: Color(0xffD0E4BC),
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  //fixedSize: Size(300, 60),
-                ),
-                child: const Text(
-                  '라이브러리에서 불러오기',
+                  '사진 선택하기',
                   style: TextStyle(
                     fontFamily: 'skybori',
                     fontSize: 20,
