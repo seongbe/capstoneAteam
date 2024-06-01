@@ -78,11 +78,14 @@ class _CreatAccountState extends State<CreatAccount> {
 
     // Firestore에 사용자의 이메일을 저장합니다.
     await usersCollection.doc(uid).set({
+      'StudentID' : "",
       'created_at': FieldValue.serverTimestamp(),
       // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+      'department' : "학과",
+      'manager' : false,
       'nickname': nickname,
       'popular': 0,
-      'profile_url': '프로필 사진 URL',
+      'profile_url': "", //empty값으로 초기화
       'status': false,
       'user_id': email
     });

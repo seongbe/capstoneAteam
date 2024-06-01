@@ -9,7 +9,8 @@ class BookListItem extends StatelessWidget {
   final String subtitle1;
   final String subtitle2;
 
-  BookListItem({super.key, 
+  BookListItem({
+    super.key,
     required this.imagePath,
     required this.title,
     required this.subtitle1,
