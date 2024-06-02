@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alterdilog2.dart';
-import 'package:capstone/page/onboarding/createAcouunt.dart'; // 추가 정보 입력 페이지
+import 'package:capstone/page/onboarding/SelectStudentInfo.dart'; // 추가 정보 입력 페이지
 
 class Certification extends StatefulWidget {
   const Certification({Key? key}) : super(key: key);
@@ -109,7 +109,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
 
     if (isSent && user!.emailVerified) {
       // 이메일 인증이 완료된 경우 추가 정보 입력 페이지로 이동
-      Get.to(CreatAccount(user: user, email: _emailController.text));
+      Get.to(() => Selectstudentinfo(user: user, email: _emailController.text));
     } else {
       // 이메일 인증이 완료되지 않은 경우 경고 메시지 표시
       CustomDialog2.showAlert(

@@ -282,4 +282,3 @@ class _UserDataWidgetState extends State<UserDataWidget> {
   }
 
 }
-
