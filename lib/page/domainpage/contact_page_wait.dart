@@ -1,34 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import "contact_detail_wait.dart";
 import '../../component/contact_container_red.dart';
-import 'contact_detail_wait.dart';
-
-class ContactPageAllList extends StatelessWidget {
-  const ContactPageAllList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Contact Pages'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true, // ListView가 자신의 크기에 맞게 축소될 수 있도록 설정
-              physics: NeverScrollableScrollPhysics(), // 스크롤을 막음
-              itemCount: 6, // 생성할 ContactPageAll 위젯의 개수 (기존 5개 + 추가할 6개)
-              itemBuilder: (context, index) {
-                return ContactPageWait();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class ContactPageWait extends StatelessWidget {
   const ContactPageWait({Key? key}) : super(key: key);
@@ -36,28 +10,40 @@ class ContactPageWait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                    onTap: () {
-                      Get.to(ContactDetailWait());
-                    },
-                  child: ContactContainer_RED(
-                    inquiryName: '사기 당했습니다.',
-                    inquiryType: '허위 매물',
-                    id: '2024123123',
-                  ),
-                  );
-                }
-            ),
-          ],
-        ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('ContactTest').where('state', isEqualTo: false).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              var data = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+              String inquiryName = data['inquiry_name'];
+              String inquiryType = data['inquiry_type'];
+              String id = data['user_id'];
+              String date = data['date'];
+
+              return GestureDetector(
+                onTap: () {
+                  Get.to(ContactDetailWait());
+                },
+                child: ContactContainer_RED(
+                  inquiryName: inquiryName,
+                  inquiryType: inquiryType,
+                  id: id,
+                  date: date,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

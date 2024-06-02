@@ -41,7 +41,7 @@ class _SelectstudentinfoState extends State<Selectstudentinfo> {
     '교양과정부 (폐지)',
     '국어국문학과 (폐지)',
     '국제비즈니스어학부 (폐지)'
-    '군사학과',
+        '군사학과',
     '글로벌경영학과 (폐지)',
     '글로벌비즈니스어학부',
     '금융경제학과 (폐지)',
@@ -231,13 +231,51 @@ class _SelectstudentinfoState extends State<Selectstudentinfo> {
                   width: 350,
                   child: DropdownSearch<String>(
                     popupProps: PopupProps.menu(
+                      showSearchBox: true,
                       showSelectedItems: true,
+                      itemBuilder: (context, item, isSelected) {
+                        return Column(
+                          children: [
+                            Container(
+                              color: isSelected
+                                  ? Color(0xffF8FFF2)
+                                  : Colors.white, // 배경 색 설정
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      item,
+                                      style: TextStyle(
+                                        color: Colors.black, // 텍스트 색상
+                                        fontFamily: 'mitmi', // 원하는 글씨체로 변경
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(color: Colors.grey), // 항목 사이의 구분선
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                     items: departments,
                     dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
-                        //labelText: "Menu mode",
                         hintText: "학과를 선택하세요",
+                        hintStyle: TextStyle(
+                          color: Color(0xffC0C0C0),
+                          fontFamily: 'mitmi',
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffF8FFF2),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: Color(0xffD0E4BC),
+                          ),
+                        ),
                       ),
                     ),
                     selectedItem: selectedDepartment,
@@ -246,21 +284,7 @@ class _SelectstudentinfoState extends State<Selectstudentinfo> {
                         selectedDepartment = newValue;
                       });
                     },
-                  )
-                  // child: DropdownSearch<String>(
-                  //   mode: Mode.BOTTOM_SHEET,
-                  //   showSearchBox: true,
-                  //   items: departments,
-                  //   label: "학과를 선택하세요",
-                  //   selectedItem: selectedDepartment,
-                  //   popupItemDisabled: (String item) => item.startsWith('Disabled'),
-                  //   onChanged: (String? newValue) {
-                  //     setState(() {
-                  //       selectedDepartment = newValue;
-                  //     });
-                  //   },
-                  // ),
-                  ),
+                  )),
               SizedBox(height: 20),
               GreenButton(
                 text1: '다음',
@@ -274,6 +298,17 @@ class _SelectstudentinfoState extends State<Selectstudentinfo> {
                       20,
                       Colors.black,
                       () {},
+                    );
+                    return;
+                  }
+
+                  if (_studentIdController.text.trim().length != 10) {
+                    CustomDialog.showAlert(
+                      context,
+                      "학번은 제대로 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
                     );
                     return;
                   }
