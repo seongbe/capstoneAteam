@@ -2,11 +2,11 @@ import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/SetProfileImage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Setprofilepage extends StatelessWidget {
-  const Setprofilepage({super.key});
+  const Setprofilepage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +24,42 @@ class Setprofilepage extends StatelessWidget {
 }
 
 class Inputpass extends StatelessWidget {
-  const Inputpass({super.key});
+  const Inputpass({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController confirmPasswordController = TextEditingController();
+
+    void _validateAndNavigate() {
+      String password = passwordController.text;
+      String confirmPassword = confirmPasswordController.text;
+
+      // 두 비밀번호가 일치하는지 확인
+      if (password != confirmPassword) {
+        CustomDialog2.showAlert(
+            context, "입력한 비밀번호가 일치하지 않습니다.", 14, Colors.black);
+        return;
+      }
+
+      // 사용자의 현재 비밀번호 가져오기
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: password,
+        );
+
+        // 비밀번호 확인 후 다음 페이지로 이동
+        user.reauthenticateWithCredential(credential).then((value) {
+          Get.to(SetProfileImage());
+        }).catchError((error) {
+          CustomDialog2.showAlert(
+              context, "비밀번호가 일치하지 않습니다.", 14, Colors.black);
+        });
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -92,6 +124,7 @@ class Inputpass extends StatelessWidget {
             height: 20.0,
           ),
           TextFormField(
+            controller: passwordController,
             decoration: InputDecoration(
               labelText: '비밀번호를 입력하세요.',
               helperText: "* 필수 입력값입니다.",
@@ -127,6 +160,7 @@ class Inputpass extends StatelessWidget {
             height: 20.0,
           ),
           TextField(
+            controller: confirmPasswordController,
             decoration: InputDecoration(
               labelText: '비밀번호를 다시 입력해 주세요.',
               helperText: "* 필수 입력값입니다.",
@@ -141,17 +175,13 @@ class Inputpass extends StatelessWidget {
                 borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
               ),
             ),
+            obscureText: true,
           ),
           GreenButton(
-            // 버튼 글씨 사이즈 수정해야함
             text1: '본인인증',
             width: 756,
             height: 50,
-            onPressed: () {
-              CustomDialog2.showAlert(
-                  context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black, );
-              Get.to(SetProfileImage());    
-            },
+            onPressed: _validateAndNavigate,
           ),
         ],
       ),
@@ -160,7 +190,7 @@ class Inputpass extends StatelessWidget {
 }
 
 class SetProfile extends StatefulWidget {
-  const SetProfile({super.key});
+  const SetProfile({Key? key}) : super(key: key);
 
   @override
   State<SetProfile> createState() => _SetProfileState();
