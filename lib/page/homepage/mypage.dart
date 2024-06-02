@@ -5,10 +5,17 @@ import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:capstone/page/homepage/Interestlistpage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserProfileController extends GetxController {
+  var profileImageUrl = ''.obs;
+
+  void updateProfileImage(String imageUrl) {
+    profileImageUrl.value = imageUrl;
+  }
+}
 
 class Mypage extends StatelessWidget {
   const Mypage({Key? key});
@@ -67,6 +74,8 @@ class Pulip extends StatelessWidget {
               Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
               String profileImageUrl = userData['profile_url']; // 사용자 프로필 이미지 URL
               String nickname = userData['nickname'];
+              String studentID = userData['StudentID'].toString();
+              String department = userData['department'];
               return ListView(
                 padding: EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 0.0),
                 children: [
@@ -118,33 +127,6 @@ class Pulip extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 20.0,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.account_balance),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            '소속대학 : ',
-                            style: TextStyle(
-                              fontFamily: 'skybori',
-                              fontSize: 17,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                          Text(
-                            ' xxxx대학',
-                            style: TextStyle(
-                              fontFamily: 'skybori',
-                              fontSize: 17,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
                         height: 20,
                       ),
                       Row(
@@ -162,7 +144,7 @@ class Pulip extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            ' xxxxxxx과',
+                            department,
                             style: TextStyle(
                               fontFamily: 'skybori',
                               fontSize: 17,
@@ -189,7 +171,7 @@ class Pulip extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            ' 2xxxxxxxx',
+                            studentID,
                             style: TextStyle(
                               fontFamily: 'skybori',
                               fontSize: 17,
@@ -317,8 +299,10 @@ class Pulip extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        onPressed: () {
-                          Get.to(loginpage());
+                        onPressed: () async{
+                          // 파이어베이스 통한 로그아웃
+                          await FirebaseAuth.instance.signOut();
+                          Get.offAll(loginpage());
                         },
                         icon: Icon(
                           Icons.logout_rounded,
