@@ -1,48 +1,21 @@
+// lib/component/ImagePickerScreen.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '../controller/imagePickerController.dart'; // 컨트롤러를 임포트
 
-class ImagePickerScreen extends StatefulWidget {
+class ImagePickerScreen extends StatelessWidget {
   const ImagePickerScreen({Key? key}) : super(key: key);
 
   @override
-  State<ImagePickerScreen> createState() => _ImagePickerScreenState();
-}
-
-class _ImagePickerScreenState extends State<ImagePickerScreen> {
-  final ImagePicker _picker = ImagePicker();
-  final List<XFile?> _pickedImages = [];
-  XFile? _pickedFile;
-
-  // 카메라, 갤러리에서 이미지 1개 불러오기
-  // ImageSource.galley , ImageSource.camera
-  void getImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
-
-    setState(() {
-      _pickedImages.add(image);
-    });
-  }
-
-  // 이미지 여러개 불러오기
-  void getMultiImage() async {
-    final List<XFile>? images = await _picker.pickMultiImage();
-    if (images != null) {
-      setState(() {
-        _pickedImages.addAll(images);
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return _gridPhoto();
+    final ImagePickerController controller = Get.put(ImagePickerController());
+
+    return Obx(() => _gridPhoto(controller));
   }
 
-  Widget _gridPhoto() {
+  Widget _gridPhoto(ImagePickerController controller) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 20.0),
       height: 100,
@@ -55,11 +28,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
               icon: Icon(Icons.camera_alt_rounded),
               color: Colors.grey,
               onPressed: () {
-                _showBottomSheet();
+                _showBottomSheet(controller);
               },
             ),
             SizedBox(width: 10), // 간격 조절
-            ..._pickedImages.map((e) => _gridPhotoItem(e!)).toList(),
+            ...controller.pickedImages.map((e) => _gridPhotoItem(e!)).toList(),
             SizedBox(width: 10), // 간격 조절
           ],
         ),
@@ -86,9 +59,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
               right: 5,
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    _pickedImages.remove(e);
-                  });
+                  final controller = Get.find<ImagePickerController>();
+                  controller.pickedImages.remove(e);
                 },
                 child: const Icon(
                   Icons.cancel_rounded,
@@ -102,9 +74,9 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     );
   }
 
-  _showBottomSheet() {
+  _showBottomSheet(ImagePickerController controller) {
     return showModalBottomSheet(
-      context: context,
+      context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(25),
@@ -121,7 +93,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  getImage(ImageSource.camera);
+                  controller.getImageFromCamera();
+                  Get.back();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffD0E4BC),
@@ -130,7 +103,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  //fixedSize: Size(300, 60),
                 ),
                 child: const Text(
                   '사진찍기',
@@ -141,12 +113,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  getMultiImage();
+                  controller.getMultiImage();
+                  Get.back();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffD0E4BC),
@@ -155,7 +126,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  //fixedSize: Size(300, 60),
                 ),
                 child: const Text(
                   '라이브러리에서 불러오기',
