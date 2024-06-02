@@ -58,7 +58,9 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
                   backgroundImage: profileImageUrl.isNotEmpty
                       ? NetworkImage(profileImageUrl)
                       : AssetImage('assets/default_profile.png')
-                  as ImageProvider,
+
+                          as ImageProvider,
+
                   backgroundColor: Colors.grey[200],
                 ),
               ),
@@ -87,7 +89,9 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
     CustomDialog3.showConfirmationDialog(
       context,
       alertMessage.replaceFirst('해당 사용자', nickname),
-          () async {
+
+      () async {
+
         try {
           await FirebaseFirestore.instance
               .collection('UserDomainTest')
@@ -108,7 +112,9 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
                   '$nickname의 계정이\n$updatedStatus 되었습니다.',
                   25,
                   Colors.black,
-                      () async {
+
+                  () async {
+
                     // 상태 업데이트 후에 UserManagePage로 이동
                     Get.to(UserManagePage());
                   },
@@ -274,4 +280,6 @@ class _UserDataWidgetState extends State<UserDataWidget> {
       ],
     );
   }
+
 }
+
