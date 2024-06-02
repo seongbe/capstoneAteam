@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../component/button.dart';
 import '../../component/alterdilog3.dart';
 import '../../component/alerdialog.dart';
 
@@ -59,7 +58,9 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
                   backgroundImage: profileImageUrl.isNotEmpty
                       ? NetworkImage(profileImageUrl)
                       : AssetImage('assets/default_profile.png')
+
                           as ImageProvider,
+
                   backgroundColor: Colors.grey[200],
                 ),
               ),
@@ -88,7 +89,9 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
     CustomDialog3.showConfirmationDialog(
       context,
       alertMessage.replaceFirst('해당 사용자', nickname),
+
       () async {
+
         try {
           await FirebaseFirestore.instance
               .collection('UserDomainTest')
@@ -109,7 +112,9 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
                   '$nickname의 계정이\n$updatedStatus 되었습니다.',
                   25,
                   Colors.black,
+
                   () async {
+
                     // 상태 업데이트 후에 UserManagePage로 이동
                     Get.to(UserManagePage());
                   },
@@ -145,7 +150,7 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
 
         DateTime createdAtDateTime = DateTime.parse(fetchedCreatedAt);
         String formattedFetchedCreatedAt =
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(createdAtDateTime);
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(createdAtDateTime);
 
         setState(() {
           nickname = fetchedNickname;
@@ -275,4 +280,6 @@ class _UserDataWidgetState extends State<UserDataWidget> {
       ],
     );
   }
+
 }
+

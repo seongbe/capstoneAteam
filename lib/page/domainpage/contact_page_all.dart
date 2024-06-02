@@ -4,33 +4,7 @@ import "package:capstone/page/domainpage/contact_detail_end.dart";
 import "package:capstone/page/domainpage/contact_detail_wait.dart";
 import 'package:get/get.dart';
 import '../../component/contact_container_red.dart';
-
-class ContactPageAllList extends StatelessWidget {
-  const ContactPageAllList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Contact Pages'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true, // ListView가 자신의 크기에 맞게 축소될 수 있도록 설정
-              physics: NeverScrollableScrollPhysics(), // 스크롤을 막음
-              itemCount: 6, // 생성할 ContactPageAll 위젯의 개수 (기존 5개 + 추가할 6개)
-              itemBuilder: (context, index) {
-                return ContactPageAll();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ContactPageAll extends StatelessWidget {
   const ContactPageAll({Key? key}) : super(key: key);
@@ -38,45 +12,55 @@ class ContactPageAll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                if (index % 2 == 0) {
-                  // index가 짝수일 때는 ContactContainer_RED 반환
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to ContactDetailWait page
-                      Get.to(ContactDetailWait());
-                    },
-                    child: ContactContainer_RED(
-                      inquiryName: '사기 당했습니다.',
-                      inquiryType: '허위 매물',
-                      id: '2024123123',
-                    ),
-                  );
-                } else {
-                  // index가 홀수일 때는 ContactContainer_BLUE 반환
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to ContactDetailEnd page
-                      Get.to(ContactDetailEnd());
-                    },
-                    child: ContactContainer_BLUE(
-                      inquiryName: '이런 경우는 어떻게 해야하나요?',
-                      inquiryType: '기타 문의',
-                      id: '2024123123',
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('ContactTest').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              var data = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+              bool state = data['state'];
+              String inquiryName = data['inquiry_name'];
+              String inquiryType = data['inquiry_type'];
+              String id = data['user_id'];
+              String date = data['date'];
+              String contactId = data['contact_id'];
+
+              return GestureDetector(
+                onTap: () {
+                  if (state) {
+                    Get.to(ContactDetailEnd(contactId: contactId));
+                  } else {
+                    Get.to(ContactDetailWait());
+                  }
+                },
+
+
+                child: state
+                    ?ContactContainer_BLUE(
+                  inquiryName: inquiryName,
+                  inquiryType: inquiryType,
+                  id: id,
+                  date: date,
+                )
+                    : ContactContainer_RED(
+                  inquiryName: inquiryName,
+                  inquiryType: inquiryType,
+                  id: id,
+                  date: date,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

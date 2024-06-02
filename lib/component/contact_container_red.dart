@@ -5,11 +5,13 @@ class ContactContainer_RED extends StatelessWidget {
   final String inquiryName;
   final String inquiryType;
   final String id;
+  final String date;
 
   const ContactContainer_RED({
     required this.inquiryName,
     required this.inquiryType,
     required this.id,
+    required this.date,
     Key? key,
   }) : super(key: key);
 
@@ -17,8 +19,8 @@ class ContactContainer_RED extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 362,
-      height: 150,
-      margin: EdgeInsets.fromLTRB(12, 7, 0, 12), // 아래 마진 추가
+      height: 180, // 높이 조정
+      margin: EdgeInsets.fromLTRB(12, 7, 12, 12),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -68,13 +70,31 @@ class ContactContainer_RED extends StatelessWidget {
                   '                      ID : ',
                   style: TextStyle(fontSize: 16),
                 ),
+                Expanded(
+                  child: Text(
+                    id,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 5),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  id,
+                  '                   날짜 : ',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  date,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 5), // 간격 추가
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
