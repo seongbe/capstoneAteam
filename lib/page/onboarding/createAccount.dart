@@ -6,14 +6,14 @@ import 'package:capstone/page/homepage/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore import 추가
 import 'package:capstone/component/alerdialog.dart';
-import 'package:capstone/page/onboarding/loginpage.dart';
 
 class CreatAccount extends StatefulWidget {
   final User? user; // Certification 페이지로부터 전달된 사용자 객체
   final String email; // Certification 페이지로부터 전달된 이메일
+  final String studentId;
+  final String department;
 
-  CreatAccount({Key? key, required this.user, required this.email})
-      : super(key: key);
+  CreatAccount({required this.user, required this.email, required this.studentId, required this.department});
 
   @override
   _CreatAccountState createState() => _CreatAccountState();
@@ -22,22 +22,10 @@ class CreatAccount extends StatefulWidget {
 class _CreatAccountState extends State<CreatAccount> {
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController =  TextEditingController();
   String confirmnickname = '';
   late String email;
 
-  Future<void> checkLoginStatus() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      // 사용자가 로그인되어 있음
-      print('사용자가 로그인되어 있습니다.');
-    } else {
-      // 사용자가 로그인되어 있지 않음
-      print('사용자가 로그인되어 있지 않습니다.');
-    }
-  }
 
   // 닉네임 중복 확인 메서드
   Future<bool> _checkNickname() async {
@@ -49,7 +37,7 @@ class _CreatAccountState extends State<CreatAccount> {
 
     // 닉네임 중복 여부 확인
     QuerySnapshot querySnapshot =
-        await usersCollection.where('nickname', isEqualTo: nickname).get();
+    await usersCollection.where('nickname', isEqualTo: nickname).get();
 
     if (querySnapshot.docs.isNotEmpty) {
       return false; // 중복된 닉네임이 있음
@@ -73,16 +61,15 @@ class _CreatAccountState extends State<CreatAccount> {
     // Certification 페이지로부터 전달된 사용자 객체의 UID와 이메일을 가져옵니다.
     String uid = widget.user!.uid;
     String email = widget.email;
-
     String nickname = _nicknameController.text.trim();
 
     // Firestore에 사용자의 이메일을 저장합니다.
     await usersCollection.doc(uid).set({
-      'StudentID' : "",
+      'StudentID': widget.studentId,
       'created_at': FieldValue.serverTimestamp(),
       // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
-      'department' : "학과",
-      'manager' : false,
+      'department': widget.department,
+      'manager': false,
       'nickname': nickname,
       'popular': 0,
       'profile_url': "", //empty값으로 초기화
@@ -194,7 +181,7 @@ class _CreatAccountState extends State<CreatAccount> {
                             "닉네임을 입력해주세요.",
                             20,
                             Colors.black,
-                            () {},
+                                () {},
                           );
                           return;
                         }
@@ -208,7 +195,7 @@ class _CreatAccountState extends State<CreatAccount> {
                             "이미 사용중인 닉네임 입니다.\n 새로운 닉네임을 입력하세요.",
                             20,
                             Colors.black,
-                            () {},
+                                () {},
                           );
                         }
                       },
@@ -290,99 +277,50 @@ class _CreatAccountState extends State<CreatAccount> {
                   ),
                 ),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 20),
               GreenButton(
-                text1: '회원가입 완료',
-                width: 300,
-                height: 55,
+                text1: '회원가입',
+                width: 100,
+                height: 50,
                 onPressed: () async {
-                  // 닉네임 공백 확인
-                  String nickname = _nicknameController.text.trim();
-                  String password = _passwordController.text;
-
-                  if (nickname.isEmpty) {
+                  if (_nicknameController.text.trim().isEmpty) {
                     CustomDialog.showAlert(
                       context,
                       "닉네임을 입력해주세요.",
                       20,
                       Colors.black,
-                      () {},
+                          () {},
                     );
                     return;
                   }
 
-                  if (nickname != confirmnickname) {
-                    CustomDialog.showAlert(
-                      context,
-                      "중복확인을 해주세요.",
-                      20,
-                      Colors.black,
-                      () {},
-                    );
-                    return;
-                  }
-
-                  // 닉네임 중복 확인
-                  if (!await _checkNickname()) {
-                    CustomDialog.showAlert(
-                      context,
-                      "이미 사용 중인 닉네임입니다.\n새로운 닉네임을 입력하세요.",
-                      20,
-                      Colors.black,
-                      () {},
-                    );
-                    return;
-                  }
-
-                  //비밀번호 길이 확인
-                  if (password.length < 6) {
-                    CustomDialog.showAlert(
-                      context,
-                      "비밀번호는 6자리 이상이어야 합니다.",
-                      20,
-                      Colors.black,
-                      () {},
-                    );
-                    return;
-                  }
-
-                  // 비밀번호 일치 여부 확인
                   if (!_checkPassword()) {
                     CustomDialog.showAlert(
                       context,
-                      "비밀번호가 일치하지 않습니다.\n다시 입력해주세요.",
+                      "비밀번호가 일치하지 않습니다.",
                       20,
                       Colors.black,
-                      () {},
+                          () {},
                     );
-                    checkLoginStatus();
                     return;
                   }
 
-                  User? user = FirebaseAuth.instance.currentUser;
-                  String confirmPassword = _confirmPasswordController.text;
 
-                  try {
-                    await user!.updatePassword(confirmPassword);
+                  if (await _checkNickname()) {
                     SaveToFirestore();
-                  } catch (e) {
-                    print('오류 발생: $e');
+                    Get.offAll(() => HomePage());
+                  } else {
+                    CustomDialog.showAlert(
+                      context,
+                      "이미 사용중인 닉네임입니다.\n새로운 닉네임을 입력하세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
                   }
-
-                  checkLoginStatus();
-
-                  // 회원가입 완료 시 로그인 페이지로 이동
-                  CustomDialog.showAlert(
-                    context,
-                    "회원가입이 완료되었습니다.",
-                    20,
-                    Colors.black,
-                    () {
-                      Get.to(HomePage());
-                    },
-                  );
                 },
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),
