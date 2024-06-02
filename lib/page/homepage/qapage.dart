@@ -1,9 +1,16 @@
+import 'dart:io';
 import 'package:capstone/component/ImagePickerScreen.dart';
+import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/mypage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import '../../component/alerdialog.dart';
+import '../../controller/imagePickerController.dart';
+
 
 class QandApage extends StatefulWidget {
   const QandApage({super.key});
@@ -13,6 +20,85 @@ class QandApage extends StatefulWidget {
 }
 
 class _QandApageState extends State<QandApage> {
+  final ImagePickerController controller = Get.put(ImagePickerController());
+
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController typeController = TextEditingController();
+  final TextEditingController detailController = TextEditingController();
+
+  Future<void> uploadData() async {
+    if (titleController.text.isEmpty ||
+        typeController.text.isEmpty ||
+        detailController.text.isEmpty) {
+      CustomDialog2.showAlert(
+        context, '모든 필드를 입력해주세요.', 14,Colors.black,);
+      return;
+    }
+
+    try {
+      List<String> imageUrls = [];
+      for (var image in controller.pickedImages) {
+        if (image != null) {
+          String imageUrl = await uploadImageToFirebaseStorage(File(image.path));
+          imageUrls.add(imageUrl);
+        }
+      }
+
+      // 현재 로그인한 사용자 정보 가져오기
+      User? user = FirebaseAuth.instance.currentUser;
+      String userId = user != null ? user.uid : 'unknown_user';
+
+      // Firestore에 데이터 추가
+      DocumentReference docRef = await FirebaseFirestore.instance.collection('ContactTest').add({
+        'date': DateTime.now().toString(),
+        'detail': detailController.text,
+        'images_url': imageUrls,
+        'inquiry_name': titleController.text,
+        'inquiry_type': typeController.text,
+        'state': false,
+        'user_id': userId,
+      });
+
+      // 문서의 ID를 가져와서 contact_id 필드에 저장
+      await docRef.update({'contact_id': docRef.id});
+
+      // 작업이 완료되면 CustomDialog를 통해 알림 표시 후 Mypage로 이동
+      CustomDialog.showAlert(
+        context,
+        '문의가 성공적으로 접수되었습니다.',
+        18.0,
+        Colors.black,
+        () {
+          Get.to(() => Mypage());
+        },
+      );
+    } catch (error) {
+      print('Error uploading images: $error');
+      // 에러 처리
+      CustomDialog2.showAlert(
+        context, '오류가 발생했습니다.',14, Colors.black,
+      );
+    }
+
+    titleController.clear();
+    typeController.clear();
+    detailController.clear();
+    controller.clearImages();
+  }
+
+  Future<String> uploadImageToFirebaseStorage(File imageFile) async {
+    try {
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('complaintImages/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      await ref.putFile(imageFile);
+      return await ref.getDownloadURL();
+    } catch (error) {
+      print('Error uploading image to Firebase Storage: $error');
+      throw error;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,10 +124,11 @@ class _QandApageState extends State<QandApage> {
           SizedBox(width: 20),
         ],
         shape: Border(
-            bottom: BorderSide(
-          color: Colors.grey,
-          width: 0.8,
-        )),
+          bottom: BorderSide(
+            color: Colors.grey,
+            width: 0.8,
+          ),
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
@@ -62,15 +149,13 @@ class _QandApageState extends State<QandApage> {
                   letterSpacing: 2.0,
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              SizedBox(height: 20.0),
               TextField(
+                controller: titleController,
                 decoration: InputDecoration(
                   hintText: '제목을 입력하세요.',
                   helperText: "* 필수 입력값입니다.",
-                  hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -79,25 +164,22 @@ class _QandApageState extends State<QandApage> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              SizedBox(height: 20.0),
               Text(
-                '문의.신고 유형',
+                '문의/신고 유형',
                 style: TextStyle(
                   fontFamily: 'skybori',
                   fontSize: 20,
                   letterSpacing: 2.0,
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              SizedBox(height: 20.0),
               TextField(
+                controller: typeController,
                 decoration: InputDecoration(
-                  hintText: 'ex)사기, 비속어 사용 등',
-                  hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintText: '문의 유형을 입력하세요.',
+                  helperText: "* 필수 입력값입니다.",
+                  hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -106,56 +188,41 @@ class _QandApageState extends State<QandApage> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              SizedBox(height: 20.0),
               Text(
-                '자세한 설명',
+                '문의 내용',
                 style: TextStyle(
                   fontFamily: 'skybori',
                   fontSize: 20,
                   letterSpacing: 2.0,
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              SizedBox(height: 20.0),
               TextField(
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'skybori',
-                ),
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
+                controller: detailController,
+                maxLines: 5,
                 decoration: InputDecoration(
                   hintText: '문의사항과 신고에 대해 자세히 설명해주세요.',
-                  hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  helperText: "* 필수 입력값입니다.",
+                  hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
                   ),
-                 // contentPadding: EdgeInsets.symmetric(vertical: 20.0),
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                height: 70,
-                child: GreenButton(
-                  // 버튼 글씨 사이즈 수정해야함
-                  text1: '신고하기',
-                  width: 756,
-                  height: 50,
-                  onPressed: () {
-                    //신고 완료 alert 띄우기
-                    Get.to(Mypage());
-                  },
+              SizedBox(height: 20.0),
+              GreenButton(
+                text1: '신고하기', 
+                width: 756,
+                height: 50,
+                onPressed: uploadData,
                 ),
-              )
+              
             ],
-          )
+          ),
         ],
       ),
     );
