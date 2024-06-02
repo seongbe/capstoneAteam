@@ -66,6 +66,7 @@ class Pulip extends StatelessWidget {
               // 사용자 정보 가져오기
               Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
               String profileImageUrl = userData['profile_url']; // 사용자 프로필 이미지 URL
+              String nickname = userData['nickname'];
               return ListView(
                 padding: EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 0.0),
                 children: [
@@ -82,16 +83,14 @@ class Pulip extends StatelessWidget {
                             width: 20.0,
                           ),
                           Text(
-                            '풀잎이 닉네임',
+                            nickname,
                             style: TextStyle(
                               fontFamily: 'skybori',
                               fontSize: 22,
                               letterSpacing: 2.0,
                             ),
                           ),
-                          SizedBox(
-                            width: 20.0,
-                          ),
+                          Spacer(),
                           GreenButton(
                             text1: '프로필수정',
                             width: 100,

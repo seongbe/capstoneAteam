@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,6 +24,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  TextEditingController _nicknameController = TextEditingController();
+
   String? _profileUrl;
 
   @override
@@ -39,6 +42,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
             await _firestore.collection('User').doc(user.uid).get();
         setState(() {
           _profileUrl = userInfo['profile_url'];
+          _nicknameController.text = userInfo['nickname'];
         });
       }
     } catch (e) {
@@ -47,7 +51,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
   }
 
 
-  Future<void> _uploadImage() async {
+  Future<void> _uploadProfile() async {
   if (_pickedFile != null) {
     try {
       final now = DateTime.now();
@@ -62,7 +66,6 @@ class _SetProfileImageState extends State<SetProfileImage> {
       });
     } catch (e) {
       print('Failed to upload image: $e');
-      // 예외 발생 시 적절히 처리
     }
   } else {
     if (kDebugMode) {
@@ -70,6 +73,17 @@ class _SetProfileImageState extends State<SetProfileImage> {
     }
   }
 }
+
+Future<void> _updateNickname() async {
+    try {
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance.collection('User').doc(userId).update({
+        'nickname': _nicknameController.text,
+      });
+    } catch (e) {
+      print('Failed to update nickname: $e');
+    }
+  }
 
 
   @override
@@ -176,6 +190,7 @@ class _SetProfileImageState extends State<SetProfileImage> {
           ),
           SizedBox(height: 10,),
           TextField(
+            controller: _nicknameController,
             decoration: InputDecoration(
               hintText: '바꾸고 싶은 닉네임을 입력해주세요.',
               hintStyle:
@@ -196,7 +211,8 @@ class _SetProfileImageState extends State<SetProfileImage> {
             width: 756,
             height: 50,
             onPressed: () {
-              _uploadImage();
+              _uploadProfile();
+              _updateNickname();
               CustomDialog.showAlert(
                 context, "프로필 수정이 완료되었습니다.", 20, Colors.black,(){
                   Get.to(Mypage());
