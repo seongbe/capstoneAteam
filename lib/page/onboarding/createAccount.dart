@@ -72,7 +72,7 @@ class _CreatAccountState extends State<CreatAccount> {
       'manager': false,
       'nickname': nickname,
       'popular': 0,
-      'profile_url': "", //empty값으로 초기화
+      'profile_url': "https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs", //empty값으로 초기화
       'status': false,
       'user_id': email
     });

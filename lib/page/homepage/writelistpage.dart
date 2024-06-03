@@ -59,12 +59,12 @@ class Writelist extends StatelessWidget {
             child: ListView(
               children: [
                 WriteListItem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
+                  imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
                   title: '운영체제 공룡책', // 제목
                   date: '3일전', //날짜
                 ),
                 WriteListItem(
-                  imagePath: 'assets/images/book.png', // 이미지 경로
+                  imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
                   title: '운영체제 공룡책', // 제목
                   date: '5일전', //날짜
                 ),
