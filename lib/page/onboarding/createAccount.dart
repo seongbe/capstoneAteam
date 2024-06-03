@@ -55,6 +55,7 @@ class _CreatAccountState extends State<CreatAccount> {
   }
 
   Future<void> SaveToFirestore() async {
+  Future<void> SaveToFirestore() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference usersCollection = firestore.collection('User');
 
@@ -100,6 +101,57 @@ class _CreatAccountState extends State<CreatAccount> {
             () {},
       );
     }
+    String confirmPassword = _confirmPasswordController.text;
+
+    User? user = FirebaseAuth.instance.currentUser;
+    try {
+      // Firestore에 사용자의 이메일을 저장합니다.
+      await usersCollection.doc(uid).set({
+        'StudentID': widget.studentId,
+        'created_at': FieldValue.serverTimestamp(),
+        // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+        'department': widget.department,
+        'manager': false,
+        'nickname': nickname,
+        'popular': 0,
+        'profile_url': "", //empty값으로 초기화
+        'status': false,
+        'user_id': email
+      });
+
+      await widget.user!.updatePassword(confirmPassword);
+
+      // 저장이 성공적으로 완료된 경우 HomePage로 이동
+      CustomDialog.showAlert(
+        context,
+        "회원가입이 완료되었습니다.",
+        20,
+        Colors.black,
+            () {Get.offAll(() => HomePage());},
+      );
+    } catch (e) {
+      print('Firestore 저장 중 오류 발생: $e');
+      CustomDialog.showAlert(
+        context,
+        "데이터 저장 중 오류가 발생했습니다.",
+        20,
+        Colors.black,
+            () {},
+      );
+    }
+    // Firestore에 사용자의 이메일을 저장합니다.
+    await usersCollection.doc(uid).set({
+      'StudentID': widget.studentId,
+      'created_at': FieldValue.serverTimestamp(),
+      // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+      'department': widget.department,
+      'manager': false,
+      'nickname': nickname,
+      'popular': 0,
+      'profile_url': "https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs", //empty값으로 초기화
+      'status': false,
+      'user_id': email
+    });
   }
 
   Future<void> deleteUser() async {
@@ -312,6 +364,11 @@ class _CreatAccountState extends State<CreatAccount> {
                   
 
                   if (nickname.isEmpty) {
+                  String nickname = _nicknameController.text.trim();
+                  String password = _passwordController.text.trim();
+                  
+
+                  if (nickname.isEmpty) {
                     CustomDialog.showAlert(
                       context,
                       "닉네임을 입력해주세요.",
@@ -322,6 +379,19 @@ class _CreatAccountState extends State<CreatAccount> {
                     return;
                   }
 
+                  // 닉네임이 중복 확인되었는지 확인
+                  if (confirmnickname != nickname) {
+                    CustomDialog.showAlert(
+                      context,
+                      "닉네임 중복을 확인해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (password.isEmpty) {
                   // 닉네임이 중복 확인되었는지 확인
                   if (confirmnickname != nickname) {
                     CustomDialog.showAlert(
@@ -348,6 +418,18 @@ class _CreatAccountState extends State<CreatAccount> {
                   if (password.trim().length < 6) {
                     CustomDialog.showAlert(
                       context,
+                      "비밀번호를 입력해주세요.",
+                      "비밀번호는 6자리 이상으로 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (password.trim().length < 6) {
+                    CustomDialog.showAlert(
+                      context,
                       "비밀번호는 6자리 이상으로 입력해주세요.",
                       20,
                       Colors.black,
@@ -357,15 +439,24 @@ class _CreatAccountState extends State<CreatAccount> {
                   }
 
                   if (!_checkPassword()) {
+                  if (!_checkPassword()) {
+
+                  if (await _checkNickname()) {
+                    SaveToFirestore();
+                    Get.offAll(() => HomePage(0));
+                  } else {
                     CustomDialog.showAlert(
                       context,
+                      "비밀번호가 일치하지 않습니다.",
                       "비밀번호가 일치하지 않습니다.",
                       20,
                       Colors.black,
                           () {},
                     );
                     return;
+                    return;
                   }
+                  SaveToFirestore();
                   SaveToFirestore();
                 },
               ),
