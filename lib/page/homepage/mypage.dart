@@ -231,7 +231,7 @@ class Pulip extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         onPressed: () {
-                          Get.to(Writelistpage());
+                          Get.to(Writelistpage(),arguments: 'yourUserId');
                         },
                         icon: Icon(
                           Icons.list_alt_rounded,

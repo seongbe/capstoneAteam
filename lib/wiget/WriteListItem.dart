@@ -30,7 +30,13 @@ class WriteListItem extends StatelessWidget {
           ),
           Row(
             children: [
-              Image(image: AssetImage(imagePath)),
+              Image.network(
+                imagePath,
+                width: 100, // 이미지의 너비
+                height: 100, // 이미지의 높이
+                fit: BoxFit.cover, // 이미지 맞추기 방식
+              ),
+              //Image(image: AssetImage(imagePath)),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
