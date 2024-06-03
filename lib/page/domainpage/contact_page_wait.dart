@@ -29,16 +29,18 @@ class ContactPageWait extends StatelessWidget {
               String inquiryType = data['inquiry_type'];
               String id = data['user_id'];
               String date = data['date'];
+              String contactId = data['contact_id'];
 
               return GestureDetector(
                 onTap: () {
-                  Get.to(ContactDetailWait());
+                  Get.to(ContactDetailWait(contactId:contactId));
                 },
                 child: ContactContainer_RED(
                   inquiryName: inquiryName,
                   inquiryType: inquiryType,
                   id: id,
                   date: date,
+                  contactId: contactId,
                 ),
               );
             },

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class ContactContainer_BLUE extends StatelessWidget {
-  // 변수 정의
+
   final String inquiryName;
   final String inquiryType;
   final String id;
   final String date;
+  final String contactId;
 
   const ContactContainer_BLUE({
     required this.inquiryName,
     required this.inquiryType,
     required this.id,
     required this.date,
+    required this.contactId,
     Key? key,
   }) : super(key: key);
 

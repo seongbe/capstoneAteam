@@ -1,4 +1,4 @@
-import 'package:capstone/component/contact_container_BLUE.dart';
+import 'package:capstone/component/contact_container_blue.dart';
 import 'package:flutter/material.dart';
 import "package:capstone/page/domainpage/contact_detail_end.dart";
 import "package:capstone/page/domainpage/contact_detail_wait.dart";
@@ -39,7 +39,7 @@ class ContactPageAll extends StatelessWidget {
                   if (state) {
                     Get.to(ContactDetailEnd(contactId: contactId));
                   } else {
-                    Get.to(ContactDetailWait());
+                    Get.to(ContactDetailWait(contactId: contactId));
                   }
                 },
 
@@ -50,12 +50,14 @@ class ContactPageAll extends StatelessWidget {
                   inquiryType: inquiryType,
                   id: id,
                   date: date,
+                  contactId: contactId,
                 )
                     : ContactContainer_RED(
                   inquiryName: inquiryName,
                   inquiryType: inquiryType,
                   id: id,
                   date: date,
+                  contactId: contactId,
                 ),
               );
             },
