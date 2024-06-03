@@ -41,8 +41,9 @@ class _loginpageState extends State<loginpage> {
       // manager가 true이면 DomainPage로, 아니면 HomePage로 이동
       if (isManager) {
         Get.offAll(() => DomainPage());
+        Get.offAll(() => DomainPage());
       } else {
-        Get.offAll(() => HomePage(0));
+        Get.offAll(() => HomePage());
       }
     } on FirebaseAuthException catch (e) {
       // 오류 발생 시 다이얼로그 표시
