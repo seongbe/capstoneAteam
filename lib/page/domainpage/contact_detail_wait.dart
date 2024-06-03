@@ -1,18 +1,76 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
 
-class ContactDetailWait extends StatelessWidget {
-  const ContactDetailWait({Key? key}) : super(key: key);
+class ContactDetailWait extends StatefulWidget {
+  final String contactId;
 
-  get inquiryName => '사기 당했습니다 ㅠㅠ';
-  get id => '2024123123';
-  get inquiryType => '사기';
-  get detail =>'판매자가 책을 1권 안주고 돈을 받아갔습니다';
-  get date => '2024-03-28-18-25-56';
+  const ContactDetailWait({Key? key, required this.contactId}) : super(key: key);
+
+  @override
+  _ContactDetailWaitState createState() => _ContactDetailWaitState();
+}
+
+class _ContactDetailWaitState extends State<ContactDetailWait> {
+  final TextEditingController _answerController = TextEditingController();
+
+  Future<Map<String, dynamic>?> getContactDetail() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('ContactTest')
+        .where('contact_id', isEqualTo: widget.contactId)
+        .get();
+
+    if (doc.docs.isNotEmpty) {
+      return doc.docs.first.data();
+    }
+    return null;
+  }
+
+  void _submitAnswer() async {
+    String answer = _answerController.text;
+
+    if (answer.isNotEmpty) {
+      final docRef = FirebaseFirestore.instance
+          .collection('ContactTest')
+          .doc(widget.contactId);
+
+
+      try {
+        await docRef.update({
+          'answer': answer,
+          'state': true,
+        });
+
+        print('Firestore document updated successfully.');
+
+        CustomDialog.showAlert(
+          context,
+          "문의 / 신고글\n답변이 정상 등록되었습니다. ",
+          27,
+          Colors.black,
+              () {
+            Get.to(ContactPage());
+          },
+        );
+      } catch (e) {
+        print('Firestore update failed: $e');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('답변 등록 실패: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('답변을 입력해주세요')),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,164 +99,135 @@ class ContactDetailWait extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: getContactDetail(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return Center(child: Text('No contact found'));
+          } else {
+            final contact = snapshot.data!;
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  buildInfoContainer('문의 / 신고명', contact['inquiry_name']),
+                  buildInfoContainer('문의 종류', contact['inquiry_type']),
+                  buildInfoContainer('사용자 ID', contact['user_id']),
+                  buildDetailContainer('내용', contact['detail']),
+                  buildInfoContainer('작성일시', contact['date']),
+                  buildStatusContainer('처리상태', contact['state'] ? '처리됨' : '미처리'),
+                  SizedBox(height: 10),
+                  Container(
+                    height: 50.0,
+                    margin: EdgeInsets.symmetric(horizontal: 30.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Color(0xffD0E4BC), width: 1.0),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _answerController,
+                      decoration: InputDecoration(
+                        labelText: '답변을 입력해주세요',
+                        labelStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'skybori'),
+                        filled: true,
+                        fillColor: Color(0xffF8FFF2),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GreenButton(
+                    text1: '답변 남기기',
+                    width: 288,
+                    height: 55,
+                    onPressed: _submitAnswer,
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildInfoContainer(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color(0xffF8FFF2),
+          border: Border.all(width: 1, color: Color(0xffD0E4BC)),
+        ),
+        child: Text(
+          '$label : $value',
+          style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDetailContainer(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color(0xffF8FFF2),
+          border: Border.all(width: 1, color: Color(0xffD0E4BC)),
+        ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffF8FFF2),
-                  border: Border.all(width: 1, color: Color(0xffD0E4BC)),
-                ),
-                child: Text(
-                  '문의 / 신고명 : $inquiryName',
-                  style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
-                ),
-              ),
+            Text(
+              label,
+              style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffF8FFF2),
-                  border: Border.all(width: 1, color: Color(0xffD0E4BC)),
-                ),
-                child: Text(
-                  '문의 종류 : $inquiryType',
-                  style: TextStyle(fontSize: 20,fontFamily: 'skybori'),
-                ),
-              ),
+            SizedBox(height: 5), // 내용과 : $detail 사이의 간격 조절
+            Text(
+              ': $value',
+              style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffF8FFF2),
-                  border: Border.all(width: 1, color: Color(0xffD0E4BC)),
-                ),
-                child: Text(
-                  '사용자 ID : $id',
-                  style: TextStyle(fontSize: 20,fontFamily: 'skybori'),
-                ),
-              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildStatusContainer(String label, String status) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color(0xffF8FFF2),
+          border: Border.all(width: 1, color: Color(0xffD0E4BC)),
+        ),
+        child: Row(
+          children: [
+            Text(
+              '$label : ',
+              style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffF8FFF2),
-                  border: Border.all(width: 1, color: Color(0xffD0E4BC)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '내용',
-                      style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
-                    ),
-                    SizedBox(height: 5), // 내용과 : $detail 사이의 간격 조절
-                    Text(
-                      ': $detail',
-                      style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffF8FFF2),
-                  border: Border.all(width: 1, color: Color(0xffD0E4BC)),
-                ),
-                child: Text(
-                  '작성일시 : $date',
-                  style: TextStyle(fontSize: 20,fontFamily: 'skybori'),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffF8FFF2),
-                  border: Border.all(width: 1, color: Color(0xffD0E4BC)),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      '처리상태 : ',
-                      style: TextStyle(fontSize: 20,fontFamily: 'skybori'),
-                    ),
-                    Text(
-                      '미처리',
-                      style: TextStyle(fontSize: 20,fontFamily: 'skybori', color: Colors.red),
-                    ),
-                  ],
-                )
-              ),
-            ),
-            SizedBox(height: 10,),
-            Container(
-              height: 50.0,
-              margin: EdgeInsets.symmetric(horizontal: 30.0),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Color(0xffD0E4BC), width: 1.0),
-                ),
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-            decoration: InputDecoration(
-              labelText: '답변을 입력해주세요',
-              labelStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'skybori'),
-              filled: true,
-              fillColor: Color(0xffF8FFF2),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
-              ),
-            ),
-            ),
-          ),
-            GreenButton(
-              text1: '답변 남기기',
-              width: 288,
-              height: 55,
-              onPressed: () {
-                CustomDialog.showAlert(
-                    context,
-                    "문의 / 신고글\n답변이 정상 등록되었습니다. ",
-                    27,
-                    Colors.black,
-                        () {
-                      // 답변 남기기 버튼이 눌렸을 때 이동할 페이지를 지정합니다
-                          Get.to(ContactPage());
-                    }
-                );
-              },
+            Text(
+              status,
+              style: TextStyle(fontSize: 20, fontFamily: 'skybori', color: Colors.red),
             ),
           ],
         ),
@@ -207,10 +236,14 @@ class ContactDetailWait extends StatelessWidget {
   }
 }
 
-
 class CustomDialog {
   static void showAlert(
-      BuildContext context, String message, double fontSize, Color textColor,VoidCallback moveToPage) {
+      BuildContext context,
+      String message,
+      double fontSize,
+      Color textColor,
+      VoidCallback moveToPage,
+      ) {
     // 텍스트의 폭과 높이를 측정
     TextPainter textPainter = TextPainter(
       text: TextSpan(

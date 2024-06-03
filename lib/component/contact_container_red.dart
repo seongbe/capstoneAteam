@@ -6,12 +6,14 @@ class ContactContainer_RED extends StatelessWidget {
   final String inquiryType;
   final String id;
   final String date;
+  final String contactId;
 
   const ContactContainer_RED({
     required this.inquiryName,
     required this.inquiryType,
     required this.id,
     required this.date,
+    required this.contactId,
     Key? key,
   }) : super(key: key);
 
