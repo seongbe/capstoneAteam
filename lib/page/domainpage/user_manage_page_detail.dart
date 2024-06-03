@@ -145,9 +145,7 @@ class _UserManagePageDetailState extends State<UserManagePageDetail> {
         String fetchedNickname = userData['nickname'] ?? 'N/A';
         bool fetchedAccountStatus = userData['status'] ?? false;
         String fetchedCreatedAt = userData['created_at'] ?? 'N/A';
-        String fetchedProfileImageUrl = userData['profile_image_url'] ??
-            'https://firebasestorage.googleapis.com/v0/b/sku-market-5910e.appspot.com/o/profileImages%2F2024-05-31%2002:08:55.252352.jpg?alt=media&token=eb1f6766-0f7d-4195-b8fa-f2bb2cd7db4b';
-
+        String fetchedProfileImageUrl = userData['profile_url'] ?? '';
         DateTime createdAtDateTime = DateTime.parse(fetchedCreatedAt);
         String formattedFetchedCreatedAt =
         DateFormat('yyyy-MM-dd HH:mm:ss').format(createdAtDateTime);
