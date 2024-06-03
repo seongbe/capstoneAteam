@@ -8,7 +8,8 @@ class Chatlistitem extends StatelessWidget {
   final String subtitle1;
   final String subtitle2;
 
-  Chatlistitem({super.key, 
+  Chatlistitem({
+    super.key,
     required this.imagePath,
     required this.title,
     required this.subtitle1,
@@ -27,10 +28,11 @@ class Chatlistitem extends StatelessWidget {
           Divider(),
           Row(
             children: [
-              Image(
-                  image: AssetImage(
-                imagePath,
-              )),
+              SizedBox(
+                width: 100, // 이미지 너비 고정
+                height: 100, // 이미지 높이 고정
+                child: Image(image: NetworkImage(imagePath), fit: BoxFit.cover),
+              ),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
