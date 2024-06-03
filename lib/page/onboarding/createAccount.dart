@@ -54,7 +54,7 @@ class _CreatAccountState extends State<CreatAccount> {
     return password == confirmPassword; // 비밀번호가 일치하면 true 반환
   }
 
-  void SaveToFirestore() async {
+  Future<void> SaveToFirestore() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference usersCollection = firestore.collection('User');
 
@@ -62,20 +62,44 @@ class _CreatAccountState extends State<CreatAccount> {
     String uid = widget.user!.uid;
     String email = widget.email;
     String nickname = _nicknameController.text.trim();
+    String confirmPassword = _confirmPasswordController.text;
 
-    // Firestore에 사용자의 이메일을 저장합니다.
-    await usersCollection.doc(uid).set({
-      'StudentID': widget.studentId,
-      'created_at': FieldValue.serverTimestamp(),
-      // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
-      'department': widget.department,
-      'manager': false,
-      'nickname': nickname,
-      'popular': 0,
-      'profile_url': "", //empty값으로 초기화
-      'status': false,
-      'user_id': email
-    });
+    User? user = FirebaseAuth.instance.currentUser;
+    try {
+      // Firestore에 사용자의 이메일을 저장합니다.
+      await usersCollection.doc(uid).set({
+        'StudentID': widget.studentId,
+        'created_at': FieldValue.serverTimestamp(),
+        // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+        'department': widget.department,
+        'manager': false,
+        'nickname': nickname,
+        'popular': 0,
+        'profile_url': "", //empty값으로 초기화
+        'status': false,
+        'user_id': email
+      });
+
+      await widget.user!.updatePassword(confirmPassword);
+
+      // 저장이 성공적으로 완료된 경우 HomePage로 이동
+      CustomDialog.showAlert(
+        context,
+        "회원가입이 완료되었습니다.",
+        20,
+        Colors.black,
+            () {Get.offAll(() => HomePage());},
+      );
+    } catch (e) {
+      print('Firestore 저장 중 오류 발생: $e');
+      CustomDialog.showAlert(
+        context,
+        "데이터 저장 중 오류가 발생했습니다.",
+        20,
+        Colors.black,
+            () {},
+      );
+    }
   }
 
   Future<void> deleteUser() async {
@@ -283,10 +307,48 @@ class _CreatAccountState extends State<CreatAccount> {
                 width: 100,
                 height: 50,
                 onPressed: () async {
-                  if (_nicknameController.text.trim().isEmpty) {
+                  String nickname = _nicknameController.text.trim();
+                  String password = _passwordController.text.trim();
+                  
+
+                  if (nickname.isEmpty) {
                     CustomDialog.showAlert(
                       context,
                       "닉네임을 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  // 닉네임이 중복 확인되었는지 확인
+                  if (confirmnickname != nickname) {
+                    CustomDialog.showAlert(
+                      context,
+                      "닉네임 중복을 확인해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (password.isEmpty) {
+                    CustomDialog.showAlert(
+                      context,
+                      "비밀번호를 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (password.trim().length < 6) {
+                    CustomDialog.showAlert(
+                      context,
+                      "비밀번호는 6자리 이상으로 입력해주세요.",
                       20,
                       Colors.black,
                           () {},
@@ -304,20 +366,7 @@ class _CreatAccountState extends State<CreatAccount> {
                     );
                     return;
                   }
-
-
-                  if (await _checkNickname()) {
-                    SaveToFirestore();
-                    Get.offAll(() => HomePage());
-                  } else {
-                    CustomDialog.showAlert(
-                      context,
-                      "이미 사용중인 닉네임입니다.\n새로운 닉네임을 입력하세요.",
-                      20,
-                      Colors.black,
-                          () {},
-                    );
-                  }
+                  SaveToFirestore();
                 },
               ),
               SizedBox(height: 20),
