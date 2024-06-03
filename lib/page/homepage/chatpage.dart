@@ -1,11 +1,16 @@
+import 'package:capstone/wiget/BookListItem.dart';
 import 'package:capstone/wiget/chatListitem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
@@ -50,51 +55,44 @@ class ChatPage extends StatelessWidget {
           centerTitle: true,
           elevation: 0.0,
         ),
-        body: ListView(
+        body: Column(
           children: [
-            Column(
-              children: [
-                GestureDetector(
-                  child: Chatlistitem(
-                    imagePath: 'assets/images/book.png', // 이미지 경로
-                    title: '운영체제 공룡책', // 제목
-                    subtitle1: '소프트웨어학과 3일전', // 부제목1
-                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
-                  ),
-                ),
-                GestureDetector(
-                  child: Chatlistitem(
-                    imagePath: 'assets/images/book.png', // 이미지 경로
-                    title: '운영체제 공룡책', // 제목
-                    subtitle1: '소프트웨어학과 3일전', // 부제목1
-                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
-                  ),
-                ),
-                GestureDetector(
-                  child: Chatlistitem(
-                    imagePath: 'assets/images/book.png', // 이미지 경로
-                    title: '운영체제 공룡책', // 제목
-                    subtitle1: '소프트웨어학과 3일전', // 부제목1
-                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
-                  ),
-                ),
-                GestureDetector(
-                  child: Chatlistitem(
-                    imagePath: 'assets/images/book.png', // 이미지 경로
-                    title: '운영체제 공룡책', // 제목
-                    subtitle1: '소프트웨어학과 3일전', // 부제목1
-                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
-                  ),
-                ),
-                GestureDetector(
-                  child: Chatlistitem(
-                    imagePath: 'assets/images/book.png', // 이미지 경로
-                    title: '운영체제 공룡책', // 제목
-                    subtitle1: '소프트웨어학과 3일전', // 부제목1
-                    subtitle2: '저는 화요일 5시 이후로 가능합니다',
-                  ),
-                ),
-              ],
+            Expanded(
+              //이스트림 빌더가 데이터를 끌어오는 코드이다
+              child: StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection('Book').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data == null) {
+                    return Center(child: Text('데이터 끌어오는거 실패해서 오류난거임'));
+                  }
+
+                  final books = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: books.length,
+                    itemBuilder: (context, index) {
+                      final book = books[index];
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            child: Chatlistitem(
+                                imagePath: book['imagepath'],
+                                title: book['title'],
+                                subtitle1: book['subtitle1'],
+                                subtitle2: book['subtitle2']),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
