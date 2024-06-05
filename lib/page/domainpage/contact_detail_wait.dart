@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
+import 'package:photo_view/photo_view.dart';
 
 class ContactDetailWait extends StatefulWidget {
   final String contactId;
@@ -110,13 +111,14 @@ class _ContactDetailWaitState extends State<ContactDetailWait> {
             return Center(child: Text('No contact found'));
           } else {
             final contact = snapshot.data!;
+            final List<String> imageUrls = List<String>.from(contact['images_url'] ?? []);
             return SingleChildScrollView(
               child: Column(
                 children: [
                   buildInfoContainer('문의 / 신고명', contact['inquiry_name']),
                   buildInfoContainer('문의 종류', contact['inquiry_type']),
                   buildInfoContainer('사용자 ID', contact['user_id']),
-                  buildDetailContainer('내용', contact['detail']),
+                  buildDetailContainer('내용', contact['detail'], imageUrls),
                   buildInfoContainer('작성일시', contact['date']),
                   buildStatusContainer('처리상태', contact['state'] ? '처리됨' : '미처리'),
                   SizedBox(height: 10),
@@ -179,7 +181,7 @@ class _ContactDetailWaitState extends State<ContactDetailWait> {
     );
   }
 
-  Widget buildDetailContainer(String label, String value) {
+  Widget buildDetailContainer(String label, String detail, List<String> imageUrls) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -197,11 +199,47 @@ class _ContactDetailWaitState extends State<ContactDetailWait> {
               label,
               style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
-            SizedBox(height: 5), // 내용과 : $detail 사이의 간격 조절
+            SizedBox(height: 5),
             Text(
-              ': $value',
+              detail,
               style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
+            SizedBox(height: 10),
+            if (imageUrls.isNotEmpty)
+              ...imageUrls.map((url) =>
+                  GestureDetector(
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (context) => Dialog(
+                        insetPadding: EdgeInsets.zero,
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: PhotoView(
+                                imageProvider: NetworkImage(url),
+                              ),
+                            ),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Image.network(url),
+                    ),
+                  )).toList(),
           ],
         ),
       ),
