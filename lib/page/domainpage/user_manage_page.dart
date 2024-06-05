@@ -16,6 +16,7 @@ class UserManagePage extends StatefulWidget {
 
 class _UserManagePageState extends State<UserManagePage> {
   late List<Map<String, dynamic>> userDataList = [];
+  late List<Map<String, dynamic>> filteredDataList = [];
 
   @override
   void initState() {
@@ -26,7 +27,7 @@ class _UserManagePageState extends State<UserManagePage> {
   Future<void> fetchUserData() async {
     try {
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('UserDomainTest').get();
+          await FirebaseFirestore.instance.collection('UserDomainTest').get();
       List<Map<String, dynamic>> tempList = [];
 
       querySnapshot.docs.forEach((doc) {
@@ -40,14 +41,31 @@ class _UserManagePageState extends State<UserManagePage> {
 
       setState(() {
         userDataList = tempList;
+        filteredDataList = tempList;
       });
     } catch (e) {
       print('Error fetching user data: $e');
     }
   }
 
+  void filterUsers(String query) {
+    print('필터링 값: $query'); // 검색창 필터링 값 출력
+    List<Map<String, dynamic>> filteredUsers = userDataList.where((userData) {
+      String name = userData['name'].toLowerCase();
+      String id = userData['id'].toLowerCase();
+      return name.contains(query.toLowerCase()) ||
+          id.contains(query.toLowerCase());
+    }).toList();
+
+    setState(() {
+      filteredDataList = filteredUsers;
+    });
+    print('필터링된 데이터: $filteredDataList'); // 필터링된 데이터 출력
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(' ! UI렌더링 호출 ! ');
     return MaterialApp(
       home: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -80,7 +98,7 @@ class _UserManagePageState extends State<UserManagePage> {
           slivers: [
             SliverPersistentHeader(
               pinned: true,
-              delegate: _SearchHeaderDelegate(),
+              delegate: _SearchHeaderDelegate(this),
             ),
             SliverAppBar(
               pinned: true,
@@ -108,14 +126,14 @@ class _UserManagePageState extends State<UserManagePage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+                    (BuildContext context, int index) {
                   return _buildUserInfoTile(
-                    name: userDataList[index]['name'],
-                    id: userDataList[index]['id'],
-                    accountStatus: userDataList[index]['accountStatus'],
+                    name: filteredDataList[index]['name'],
+                    id: filteredDataList[index]['id'],
+                    accountStatus: filteredDataList[index]['accountStatus'],
                   );
                 },
-                childCount: userDataList.length,
+                childCount: filteredDataList.length,
               ),
             ),
           ],
@@ -177,54 +195,54 @@ class _UserManagePageState extends State<UserManagePage> {
                     String alertMessage = '해당 사용자을(를) \n$action 하시겠습니까?';
                     CustomDialog3.showConfirmationDialog(
                         context, alertMessage.replaceFirst('해당 사용자', name),
-                            () async {
-                          try {
-                            // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
-                            DocumentSnapshot userSnapshot = await FirebaseFirestore
-                                .instance
-                                .collection('UserDomainTest')
-                                .where('nickname', isEqualTo: name)
-                                .where('user_id', isEqualTo: id)
-                                .get()
-                                .then((querySnapshot) => querySnapshot.docs.first);
+                        () async {
+                      try {
+                        // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
+                        DocumentSnapshot userSnapshot = await FirebaseFirestore
+                            .instance
+                            .collection('UserDomainTest')
+                            .where('nickname', isEqualTo: name)
+                            .where('user_id', isEqualTo: id)
+                            .get()
+                            .then((querySnapshot) => querySnapshot.docs.first);
 
-                            // 사용자의 UID 가져오기
-                            String userID = userSnapshot.id;
+                        // 사용자의 UID 가져오기
+                        String userID = userSnapshot.id;
 
-                            // Firestore에서 해당 사용자의 계정 상태 업데이트
-                            await FirebaseFirestore.instance
-                                .collection('UserDomainTest')
-                                .doc(userID)
-                                .update({
-                              'status': accountStatus == '활성화' ? false : true
-                            });
-
-                            // 다이얼로그 닫기
-                            Navigator.of(context).pop();
-
-                            String updatedStatus =
-                            accountStatus == '활성화' ? '정지' : '활성화';
-                            CustomDialog.showAlert(
-                              context,
-                              '$name의 계정이\n $updatedStatus 되었습니다.',
-                              25,
-                              Colors.black,
-                                  () async {
-                                // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
-                              },
-                            );
-
-                            // 데이터 새로 고침
-                            await fetchUserData();
-                            setState(() {}); // UI 갱신
-                          } catch (e) {
-                            print('Error updating account status: $e');
-                            // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('계정 상태를 업데이트하는 도중 오류가 발생했습니다.'),
-                            ));
-                          }
+                        // Firestore에서 해당 사용자의 계정 상태 업데이트
+                        await FirebaseFirestore.instance
+                            .collection('UserDomainTest')
+                            .doc(userID)
+                            .update({
+                          'status': accountStatus == '활성화' ? false : true
                         });
+
+                        // 다이얼로그 닫기
+                        Navigator.of(context).pop();
+
+                        String updatedStatus =
+                            accountStatus == '활성화' ? '정지' : '활성화';
+                        CustomDialog.showAlert(
+                          context,
+                          '$name의 계정이\n $updatedStatus 되었습니다.',
+                          25,
+                          Colors.black,
+                          () async {
+                            // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
+                          },
+                        );
+
+                        // 데이터 새로 고침
+                        await fetchUserData();
+                        setState(() {}); // UI 갱신
+                      } catch (e) {
+                        print('Error updating account status: $e');
+                        // 업데이트 오류가 발생한 경우 사용자에게 알림을 표시할 수 있습니다.
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('계정 상태를 업데이트하는 도중 오류가 발생했습니다.'),
+                        ));
+                      }
+                    });
                   },
                 ),
               ],
@@ -249,26 +267,44 @@ class _UserManagePageState extends State<UserManagePage> {
 }
 
 class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final _UserManagePageState userManagePageState;
+
+  _SearchHeaderDelegate(this.userManagePageState);
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       color: Colors.white,
       child: SizedBox(
-        height: 80,
-        child: TextField(
-          decoration: InputDecoration(
-            labelText: '이름 또는 ID를 검색하세요.',
-            labelStyle: TextStyle(
-              color: Color(0xffC0C0C0),
-              fontFamily: 'mitmi',
-            ),
-            filled: true,
-            fillColor: Color(0xffF8FFF2),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
+        height: 60, // 높이를 조정하여 위아래로 길어지도록 함
+        child: Center(
+          child: TextFormField( // TextField 대신 TextFormField 사용
+            onChanged: (query) {
+              print('검색창 입력값: $query');
+              userManagePageState.setState(() {
+                userManagePageState.filterUsers(query);
+              });
+            },
+            decoration: InputDecoration(
+              hintText: '이름 또는 ID를 검색하세요.',
+              hintStyle: TextStyle(
+                color: Color(0xffC0C0C0),
+                fontFamily: 'mitmi',
+              ),
+              filled: true,
+              fillColor: Color(0xffF8FFF2),
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              ),
+              prefixIcon: Icon(Icons.search),
+              prefixIconConstraints: BoxConstraints(minWidth: 48),
             ),
           ),
         ),
