@@ -59,19 +59,19 @@ class InterList extends StatelessWidget {
           child: ListView(
             children: [
               BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
+                imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
                 title: '운영체제 공룡책', // 제목
                 subtitle1: '소프트웨어학과 3일전', // 부제목1
                 subtitle2: '10,000원', // 부제목2
               ),
               BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
+                imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
                 title: '운영체제 공룡책', // 제목
                 subtitle1: '소프트웨어학과 3일전', // 부제목1
                 subtitle2: '10,000원', // 부제목2
               ),
               BookListItem(
-                imagePath: 'assets/images/book.png', // 이미지 경로
+                imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
                 title: '운영체제 공룡책', // 제목
                 subtitle1: '소프트웨어학과 3일전', // 부제목1
                 subtitle2: '10,000원', // 부제목2
