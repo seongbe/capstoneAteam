@@ -64,6 +64,7 @@ class _CreatAccountState extends State<CreatAccount> {
     String nickname = _nicknameController.text.trim();
     String confirmPassword = _confirmPasswordController.text;
 
+<<<<<<< HEAD
     User? user = FirebaseAuth.instance.currentUser;
     try {
       // Firestore에 사용자의 이메일을 저장합니다.
@@ -101,6 +102,21 @@ class _CreatAccountState extends State<CreatAccount> {
             () {},
       );
     }
+=======
+    // Firestore에 사용자의 이메일을 저장합니다.
+    await usersCollection.doc(uid).set({
+      'StudentID': widget.studentId,
+      'created_at': FieldValue.serverTimestamp(),
+      // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+      'department': widget.department,
+      'manager': false,
+      'nickname': nickname,
+      'popular': 0,
+      'profile_url': "https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs", //empty값으로 초기화
+      'status': false,
+      'user_id': email
+    });
+>>>>>>> 492c4f7 (.)
   }
 
   Future<void> deleteUser() async {
