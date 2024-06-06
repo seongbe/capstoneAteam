@@ -1,8 +1,11 @@
 import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/wiget/chat_button.dart';
 import 'package:capstone/wiget/slideImage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+
+import '../../component/alertdialog_login.dart';
 
 class DetailItemPage extends StatelessWidget {
   final List<String> imgPaths = [
@@ -209,7 +212,12 @@ class DetailItemPage extends StatelessWidget {
                       text1: '채팅하기',
                       textsize: 14,
                       onPressed: () {
-                        Get.to(Chatingchang());
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          CustomDialogLogin.showAlert(context, '채팅기능은\n로그인 후 이용가능합니다.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+                        }  else {
+                          // 현재 사용자가 로그인되어 있는 경우, 채팅 페이지로 이동
+                          Get.to(Chatingchang());
+                        }
                       },
                     ),
                   ],
