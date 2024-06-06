@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
-import 'package:capstone/page/homepage/mypage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../component/alerdialog.dart';
 import '../../controller/imagePickerController.dart';
+import 'homePage.dart';
 
 
 class QandApage extends StatefulWidget {
@@ -74,7 +75,7 @@ class _QandApageState extends State<QandApage> {
         18.0,
         Colors.black,
         () {
-          Get.to(() => Mypage());
+          Get.to(() => HomePage(2));
         },
       );
     } catch (error) {
