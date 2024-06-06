@@ -1,4 +1,7 @@
 import 'package:capstone/wiget/bottom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
@@ -24,6 +27,11 @@ class Writelistpage extends StatelessWidget {
 
 class Writelist extends StatelessWidget {
   const Writelist({super.key});
+
+  Future<String> getUserId() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    return user != null ? user.uid : '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +64,36 @@ class Writelist extends StatelessWidget {
           )),
         ),
         body:  SafeArea(
-            child: ListView(
+            child: 
+            // FutureBuilder<String>(
+            //   future: getUserId(),
+            //   builder: (context, snapshot) {
+            //     final userId = snapshot.data!;
+            //     return StreamBuilder<QuerySnapshot>(
+            //       stream: FirebaseFirestore.instance.collection('Prodouct').where('user_id', isEqualTo: userId).snapshots(),
+            //       builder: (BuildContext context, AsyncSnapshot snapshot) {
+            //         if (!snapshot.hasData) {
+            //           return Center(child: CircularProgressIndicator());
+            //         }
+
+            //         final List <WriteListItem>writings = snapshot.data!.docs.map((doc) {
+            //           return WriteListItem(
+            //             imagePath: doc['image_url'][0], // 첫 번째 이미지
+            //             title: doc['title'],
+            //             date: doc['created_at'],
+            //           );
+            //         }).toList();
+            //         return ListView(
+            //           children: writings,
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
+            
+            
+            
+            ListView(
               children: [
                 WriteListItem(
                   imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
