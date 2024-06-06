@@ -308,7 +308,7 @@ class _CreatAccountState extends State<CreatAccount> {
 
                   if (await _checkNickname()) {
                     SaveToFirestore();
-                    Get.offAll(() => HomePage());
+                    Get.offAll(() => HomePage(0));
                   } else {
                     CustomDialog.showAlert(
                       context,

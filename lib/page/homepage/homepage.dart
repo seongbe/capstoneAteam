@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 class HomePage extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
 
-  HomePage({super.key});
+  HomePage(int i, {super.key});
 
   @override
   Widget build(BuildContext context) {

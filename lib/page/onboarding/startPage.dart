@@ -73,7 +73,7 @@ class StartPage extends StatelessWidget {
                     height: 55,
                     onPressed: () {
                       logoClickCount = 0;
-                      Get.to(HomePage());
+                      Get.to(HomePage(0));
                     },
                   ),
                   SizedBox(
