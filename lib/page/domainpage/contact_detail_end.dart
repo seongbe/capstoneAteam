@@ -134,7 +134,7 @@ class ContactDetailEnd extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              label,
+              '$label : ',
               style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
             SizedBox(height: 5),

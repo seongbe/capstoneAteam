@@ -196,7 +196,7 @@ class _ContactDetailWaitState extends State<ContactDetailWait> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              label,
+              '$label : ',
               style: TextStyle(fontSize: 20, fontFamily: 'skybori'),
             ),
             SizedBox(height: 5),
