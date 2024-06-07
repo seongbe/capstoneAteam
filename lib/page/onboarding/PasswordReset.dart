@@ -94,7 +94,7 @@ class _PasswordReset extends State<PasswordReset>
                     Row(
                       children: const [
                         SizedBox(width: 35),
-                        Text('이메일 주소(아이디로 사용됩니다.)',
+                        Text('이메일 주소(아이디)',
                             style: TextStyle(
                               color: Colors.black,
                               fontFamily: 'SKYBORI',

@@ -112,7 +112,7 @@ Future<void> _updateNickname() async {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () {
-              Get.to(Mypage());
+              Get.offAll(Mypage());
             },
           ),
           actions: [
@@ -215,7 +215,7 @@ Future<void> _updateNickname() async {
               _updateNickname();
               CustomDialog.showAlert(
                 context, "프로필 수정이 완료되었습니다.", 20, Colors.black,(){
-                  Get.to(Mypage());
+                  Get.offAll(Mypage());
                 });
             },
             letterspace: 30,
@@ -241,15 +241,15 @@ Future<void> _updateNickname() async {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [            
+            children: [
               ElevatedButton(
                 onPressed: () {_getCameraImage();},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffD0E4BC),
                   surfaceTintColor: Color(0xffD0E4BC),
                   foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(  
-                    borderRadius: BorderRadius.circular(12),  
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   fixedSize: Size(300, 60),
                 ),
@@ -269,8 +269,8 @@ Future<void> _updateNickname() async {
                   backgroundColor: Color(0xffD0E4BC),
                   surfaceTintColor: Color(0xffD0E4BC),
                   foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(  
-                    borderRadius: BorderRadius.circular(12),  
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   fixedSize: Size(300, 60),
                 ),
