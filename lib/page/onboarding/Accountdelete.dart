@@ -88,7 +88,7 @@ class _CreatAccountState extends State<CreatAccount> {
         "회원가입이 완료되었습니다.",
         20,
         Colors.black,
-            () {Get.offAll(() => HomePage());},
+            () {Get.offAll(() => HomePage(0));},
       );
     } catch (e) {
       print('Firestore 저장 중 오류 발생: $e');
