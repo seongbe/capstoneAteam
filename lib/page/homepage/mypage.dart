@@ -1,8 +1,9 @@
 import 'package:capstone/component/Button.dart';
+import 'package:capstone/component/alterdilog3.dart';
 import 'package:capstone/page/homepage/Writelistpage.dart';
 import 'package:capstone/page/homepage/Setprofilepage.dart';
 import 'package:capstone/page/homepage/qapage.dart';
-import 'package:capstone/page/onboarding/Certification.dart';
+import 'package:capstone/page/onboarding/StartPage.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:capstone/page/homepage/Interestlistpage.dart';
 import 'package:flutter/material.dart';
@@ -58,13 +59,17 @@ class Pulip extends StatelessWidget {
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(
-            '마이페이지',
-            style: TextStyle(
-              fontFamily: 'skybori',
-              fontSize: 30,
-              letterSpacing: 2.0,
-            ),
+          title: Column(
+            children: [
+              Text(
+                '마이페이지',
+                style: TextStyle(
+                  fontFamily: 'skybori',
+                  fontSize: 30,
+                  letterSpacing: 2.0,
+                ),
+              ),
+            ],
           ),
           centerTitle: true,
           elevation: 0.0,
@@ -130,13 +135,18 @@ class Pulip extends StatelessWidget {
       // 로그인된 경우 사용자 정보를 표시
       return Scaffold(
         appBar: AppBar(
-          title: Text(
-            '마이페이지',
-            style: TextStyle(
-              fontFamily: 'skybori',
-              fontSize: 30,
-              letterSpacing: 2.0,
-            ),
+          shape: const Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+          title: Column(
+            children: [
+              Text(
+                '마이페이지',
+                style: TextStyle(
+                  fontFamily: 'skybori',
+                  fontSize: 30,
+                  letterSpacing: 2.0,
+                ),
+              ),
+            ],
           ),
           centerTitle: true,
           elevation: 0.0,
@@ -383,9 +393,48 @@ class Pulip extends StatelessWidget {
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             onPressed: () async {
+                              CustomDialog3.showConfirmationDialog(
+                                context,
+                                '비밀번호 재설정 메일을 전송하니\n'
+                                    '메일함에서 절차를 진행해 주십시오.\n'
+                                    '메일 전송후에는 로그아웃 됩니다.\n'
+                                    '진행하시겠습니까?\n',
+                                    () async {
+                                      FirebaseAuth auth = FirebaseAuth.instance;
+                                      await auth.sendPasswordResetEmail(email: user.email!);
+                                      await auth.signOut();
+                                      await Get.offAll(loginpage());
+                                  return Future.value(); // 예시: 비동기적으로 작업을 수행하지 않는 경우에 사용
+                                },
+                              );
+                            },
+                            icon: Icon(
+                              Icons.logout_rounded,
+                              color: Color.fromRGBO(29, 29, 29, 1),
+                            ),
+                            label: Text(
+                              '비밀번호 변경',
+                              style: TextStyle(
+                                color: Color.fromRGBO(29, 29, 29, 1),
+                                fontFamily: 'skybori',
+                                fontSize: 17,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          TextButton.icon(
+                            style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () async {
                               // 파이어베이스 통한 로그아웃
                               await FirebaseAuth.instance.signOut();
-                              Get.offAll(loginpage());
+                              Get.offAll(StartPage());
                             },
                             icon: Icon(
                               Icons.logout_rounded,
@@ -393,6 +442,32 @@ class Pulip extends StatelessWidget {
                             ),
                             label: Text(
                               '로그아웃',
+                              style: TextStyle(
+                                color: Color.fromRGBO(29, 29, 29, 1),
+                                fontFamily: 'skybori',
+                                fontSize: 17,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          TextButton.icon(
+                            style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () async {
+                              //회원탈퇴 추가
+                            },
+                            icon: Icon(
+                              Icons.logout_rounded,
+                              color: Color.fromRGBO(29, 29, 29, 1),
+                            ),
+                            label: Text(
+                              '회원탈퇴',
                               style: TextStyle(
                                 color: Color.fromRGBO(29, 29, 29, 1),
                                 fontFamily: 'skybori',
