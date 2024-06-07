@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:capstone/component/alertdialog_login.dart';
 import 'package:capstone/page/homepage/postwritepage.dart';
 import 'package:capstone/wiget/BookListItem.dart';
 import 'package:capstone/wiget/mainpost.dart';
@@ -112,7 +113,12 @@ class _MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Color(0xFF78BE39),
           onPressed: () {
-            Get.to(PostWritePage());
+            if (FirebaseAuth.instance.currentUser == null) {
+              CustomDialogLogin.showAlert(context, '게시 기능은\n로그인 후 이용가능합니다.',
+                  15.0, Color.fromRGBO(29, 29, 29, 1));
+            } else {
+              Get.to(PostWritePage());
+            }
           },
           child: Icon(Icons.add),
         ),

@@ -18,6 +18,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   bool isLoggedIn = false; // 로그인 상태를 저장할 변수
+  bool isLoading = true; // 로딩 상태를 저장할 변수
 
   @override
   void initState() {
@@ -27,10 +28,11 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  void checkUserStatus() {
+  void checkUserStatus() async {
     final user = FirebaseAuth.instance.currentUser;
     setState(() {
       isLoggedIn = user != null; // 사용자가 로그인한 경우에만 true로 설정
+      isLoading = false; // 로딩 완료
     });
   }
 
@@ -41,6 +43,15 @@ class _ChatPageState extends State<ChatPage> {
     final double screenHeight = screenSize.height;
     // Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
+
+    // 로딩 중일 때 로딩 화면을 보여줌
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     // 사용자가 로그인하지 않은 경우 "로그인이 필요합니다" 텍스트를 보여줌
     if (!isLoggedIn) {
