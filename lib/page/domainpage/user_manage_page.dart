@@ -27,7 +27,7 @@ class _UserManagePageState extends State<UserManagePage> {
   Future<void> fetchUserData() async {
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('UserDomainTest').get();
+          await FirebaseFirestore.instance.collection('User').get();
       List<Map<String, dynamic>> tempList = [];
 
       querySnapshot.docs.forEach((doc) {
@@ -200,7 +200,7 @@ class _UserManagePageState extends State<UserManagePage> {
                         // Firestore에서 사용자 문서의 UID를 가져오는 쿼리
                         DocumentSnapshot userSnapshot = await FirebaseFirestore
                             .instance
-                            .collection('UserDomainTest')
+                            .collection('User')
                             .where('nickname', isEqualTo: name)
                             .where('user_id', isEqualTo: id)
                             .get()
@@ -211,7 +211,7 @@ class _UserManagePageState extends State<UserManagePage> {
 
                         // Firestore에서 해당 사용자의 계정 상태 업데이트
                         await FirebaseFirestore.instance
-                            .collection('UserDomainTest')
+                            .collection('User')
                             .doc(userID)
                             .update({
                           'status': accountStatus == '활성화' ? false : true
