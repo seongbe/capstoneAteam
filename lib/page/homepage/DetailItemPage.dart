@@ -1,6 +1,7 @@
 import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/wiget/chat_button.dart';
 import 'package:capstone/wiget/slideImage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -8,14 +9,9 @@ import 'package:get/route_manager.dart';
 import '../../component/alertdialog_login.dart';
 
 class DetailItemPage extends StatelessWidget {
-  final List<String> imgPaths = [
-    'assets/images/book.png',
-    'https://via.placeholder.com/600x400?text=Image+1',
-    'https://via.placeholder.com/600x400?text=Image+2',
-    'https://via.placeholder.com/600x400?text=Image+3',
-    'https://via.placeholder.com/600x400?text=Image+4',
-    'https://via.placeholder.com/600x400?text=Image+5',
-  ];
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+ 
+   
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +29,37 @@ class DetailItemPage extends StatelessWidget {
           ),
           title: Text('상세페이지'), // 앱 바 제목 설정
         ),
+      
         body: SafeArea(
-          child: ListView(
+
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('ProductDetail').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return Center(child: Text('데이터 끌어오는거 실패해서 오류난거임'));
+                }
+
+                final products = snapshot.data!.docs;
+                  
+
+                return ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    
+                 final List<String> imgPaths = [
+                  product['imagepath']
+    
+                  ];
+                   
+
+                    return Column(
             children: [
               Column(
                 children: [
@@ -79,15 +104,21 @@ class DetailItemPage extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    '  운영체제 공룡책 팝니다',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontFamily: 'inter',
-                      fontWeight: FontWeight.w700,
-                      height: 0.09,
-                    ),
+           
+                  Row(
+                    children: [
+                      SizedBox(width: 20,),
+                      Text(
+                        product['maintitle'],
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontFamily: 'inter',
+                          fontWeight: FontWeight.w700,
+                          height: 0.09,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 25,
@@ -97,10 +128,26 @@ class DetailItemPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
+                        width: 20,
+                      ),
+
+                      Text(
+                        product['subject'],
+                        style: TextStyle(
+                          color: Color(0xFF8C8C8C),
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 0.12,
+                        ),
+                      ),
+
+                      SizedBox(
                         width: 10,
                       ),
+
                       Text(
-                        '디지털 기기 끝올 1일전',
+                        product['day'],
                         style: TextStyle(
                           color: Color(0xFF8C8C8C),
                           fontSize: 12,
@@ -114,14 +161,21 @@ class DetailItemPage extends StatelessWidget {
                   SizedBox(
                     height: 30,
                   ),
-                  SizedBox(
-                    child: Text(
-                      '  운영체제 공부하시는 분들\n  비싼 돈 내고 사지 마시고\n  이책 사가는 거 어때요~?\n  (feat.거의 새 거임 ㅎㅋ))',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    ),
+                  Row(
+                    children: [
+                       SizedBox(
+                    width: 20,
+                  ),
+                      SizedBox(
+                        child: Text(
+                        product['detail'],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 15,
@@ -131,10 +185,20 @@ class DetailItemPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
                       Text(
-                        '관심 15 조회 311 신고',
+                        '관심  ',
+                        style: TextStyle(
+                          color: Color(0xFF8C8C8C),
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 0.12,
+                        ),
+                      ),
+                      Text(
+                        product['관심'],
                         style: TextStyle(
                           color: Color(0xFF8C8C8C),
                           fontSize: 12,
@@ -224,7 +288,11 @@ class DetailItemPage extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          );
+                  }
+        );
+              }
+      ),
         ),
       ),
     );
