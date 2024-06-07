@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import 'homePage.dart';
+
 class SetProfileImage extends StatefulWidget {
   const SetProfileImage({super.key});
   @override
@@ -215,7 +217,7 @@ Future<void> _updateNickname() async {
               _updateNickname();
               CustomDialog.showAlert(
                 context, "프로필 수정이 완료되었습니다.", 20, Colors.black,(){
-                  Get.offAll(Mypage());
+                  Get.offAll(HomePage(2));
                 });
             },
             letterspace: 30,

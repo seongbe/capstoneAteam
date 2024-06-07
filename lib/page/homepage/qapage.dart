@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/component/button.dart';
-import 'package:capstone/page/homepage/mypage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../component/alerdialog.dart';
 import '../../controller/imagePickerController.dart';
+import 'homePage.dart';
 
 
 class QandApage extends StatefulWidget {
@@ -44,11 +45,15 @@ class _QandApageState extends State<QandApage> {
         }
       }
 
-      // 현재 로그인한 사용자 정보 가져오기
+// 현재 로그인한 사용자 정보 가져오기
       User? user = FirebaseAuth.instance.currentUser;
-      String userId = user != null ? user.uid : 'unknown_user';
+      String uid = user != null ? user.uid : 'unknown_user';
 
-      // Firestore에 데이터 추가
+      //User컬렉션에서 문서명이 uid인 문서에서 user_id값 받아서 userId변수에 저장
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('User').doc(uid).get();
+      String userId = userDoc.exists ? userDoc.get('user_id') : 'unknown_user';
+
+// Firestore에 데이터 추가
       DocumentReference docRef = await FirebaseFirestore.instance.collection('ContactTest').add({
         'date': DateTime.now().toString(),
         'detail': detailController.text,
@@ -58,6 +63,7 @@ class _QandApageState extends State<QandApage> {
         'state': false,
         'user_id': userId,
       });
+
 
       // 문서의 ID를 가져와서 contact_id 필드에 저장
       await docRef.update({'contact_id': docRef.id});
@@ -69,7 +75,7 @@ class _QandApageState extends State<QandApage> {
         18.0,
         Colors.black,
         () {
-          Get.to(() => Mypage());
+          Get.to(() => HomePage(2));
         },
       );
     } catch (error) {

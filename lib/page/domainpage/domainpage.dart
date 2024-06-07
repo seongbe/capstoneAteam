@@ -1,9 +1,12 @@
-import 'package:capstone/page/onboarding/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capstone/page/domainpage/user_manage_page.dart';
 import 'package:capstone/page/domainpage/contact_page.dart';
 import 'package:capstone/component/button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:capstone/page/onboarding/StartPage.dart';
+import '../homepage/homePage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
@@ -134,11 +137,23 @@ class DomainPage extends StatelessWidget {
                 SizedBox(height: 40),
                 Center(
                   child: GreenButton(
+                    text1: '시작하기',
+                    width: 288,
+                    height: 55,
+                    onPressed: () async {
+                      Get.to(HomePage(0));
+                    },
+                  ),
+                ),
+                SizedBox(height: 10),
+                Center(
+                  child: GreenButton(
                     text1: '로그아웃',
                     width: 288,
                     height: 55,
-                      onPressed: () {
-                        Get.to(loginpage());
+                    onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        Get.offAll(StartPage());
                       },
                   ),
                 ),

@@ -53,7 +53,7 @@ class _PasswordReset extends State<PasswordReset>
 
 
       CustomDialog.showAlert(
-          context, "입력한 이메일 주소로 인증 메일이 발송되었습니다.", 20, Colors.black,() {Get.to(loginpage());});
+          context, "입력한 이메일 주소로 인증 메일이 발송되었습니다.", 20, Colors.black,() {Get.off(loginpage());});
     } catch (e) {
       CustomDialog2.showAlert(context, "오류가 발생했습니다: $e", 20, Colors.black);
     }

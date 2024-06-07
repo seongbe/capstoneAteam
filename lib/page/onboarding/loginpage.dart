@@ -42,7 +42,7 @@ class _loginpageState extends State<loginpage> {
       if (isManager) {
         Get.offAll(() => DomainPage());
       } else {
-        Get.offAll(() => HomePage());
+        Get.offAll(() => HomePage(0));
       }
     } on FirebaseAuthException catch (e) {
       // 오류 발생 시 다이얼로그 표시
