@@ -8,11 +8,13 @@ class WriteListItem extends StatelessWidget {
   final String imagePath;
   final String title;
   final String date;
+   final Map<String, dynamic>? product; // product 데이터 추가
 
   const WriteListItem({
     required this.imagePath,
     required this.title,
     required this.date,
+        this.product, // nullable product 데이터
   });
 
   @override

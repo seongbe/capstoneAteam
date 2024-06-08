@@ -7,6 +7,7 @@ class Chatlistitem extends StatelessWidget {
   final String title;
   final String subtitle1;
   final String subtitle2;
+  final Map<String, dynamic>? product; // product 데이터 추가
 
   Chatlistitem({
     super.key,
@@ -14,14 +15,15 @@ class Chatlistitem extends StatelessWidget {
     required this.title,
     required this.subtitle1,
     required this.subtitle2,
+    this.product, // nullable product 데이터
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // 클릭되었을 때 다른 페이지로 이동
-        Get.to(DetailItemPage());
+        // 클릭되었을 때 다른 페이지로 이동하며 product 데이터를 전달
+        Get.to(() => DetailItemPage(product: product));
       },
       child: Column(
         children: [
