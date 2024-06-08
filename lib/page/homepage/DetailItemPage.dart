@@ -19,11 +19,32 @@ class DetailItemPage extends StatefulWidget {
 
 class _DetailItemPageState extends State<DetailItemPage> {
   bool isLiked = false;
+  int likeCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.product != null) {
+      likeCount = widget.product!['like_count'] ?? 0;
+    }
+  }
 
   void _toggleHeart() {
     setState(() {
       isLiked = !isLiked;
+      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+      _updateLikeCount();
     });
+  }
+
+  Future<void> _updateLikeCount() async {
+    if (widget.product != null) {
+      DocumentReference productRef = FirebaseFirestore.instance
+          .collection('Product')
+          .doc(widget.product!['post_id']);
+      
+      await productRef.update({'like_count': likeCount});
+    }
   }
 
   @override
@@ -149,7 +170,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                             ),
                           ),
                           Text(
-                            '좋아요수',
+                            '좋아요수: $likeCount',
                             style: TextStyle(
                               color: Color(0xFF8C8C8C),
                               fontSize: 12,
