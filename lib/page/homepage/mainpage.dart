@@ -100,8 +100,9 @@ class _MainPageState extends State<MainPage> {
                     imagePath: imageUrl,
                     title: product['title'],
                     subtitle1: product['description'],
-                    subtitle2: product['price'],
+                    subtitle2:  "${product['price']} 원",
                     product: product, // 전달할 데이터 추가
+                    likecount:  product['like_count'].toString(),
                   );
                 },
               );

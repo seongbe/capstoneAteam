@@ -7,6 +7,7 @@ class BookListItem extends StatelessWidget {
   final String title;
   final String subtitle1;
   final String subtitle2;
+  final String likecount;
   final Map<String, dynamic> product;
 
   BookListItem({
@@ -16,6 +17,7 @@ class BookListItem extends StatelessWidget {
     required this.subtitle1,
     required this.subtitle2,
     required this.product,
+    required this.likecount,
   });
 
   @override
@@ -56,7 +58,7 @@ class BookListItem extends StatelessWidget {
                         width: 20,
                         image: AssetImage('assets/icons/icon_heart.png')
                       ),
-                      Text('3')
+                      Text(likecount)
                     ],
                   )
                 ],
