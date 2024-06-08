@@ -186,32 +186,38 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             // 이스트림 빌더가 데이터를 끌어오는 코드이다
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('Book').snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (!snapshot.hasData || snapshot.data == null) {
-                  return Center(child: Text('데이터 끌어오는거 실패해서 오류난거임'));
-                }
+            child: StreamBuilder<QuerySnapshot>(
+  stream: FirebaseFirestore.instance.collection('Product').snapshots(),
+  builder: (context, imageSnapshot) {
+    if (imageSnapshot.hasError) {
+      return Center(child: Text('Error: ${imageSnapshot.error}'));
+    }
+    if (imageSnapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
 
-                final books = snapshot.data!.docs;
+    // Firestore에서 데이터를 가져와서 products 리스트를 생성합니다.
+    final products = imageSnapshot.data!.docs.map((DocumentSnapshot document) {
+      return document.data() as Map<String, dynamic>;
+    }).toList();
+
                 return ListView.builder(
-                  itemCount: books.length,
+                  itemCount: products.length,
                   itemBuilder: (context, index) {
-                    final book = books[index];
+                    final product = products[index];
+                     final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
+    
+                
                     return Column(
                       children: [
                         GestureDetector(
                           child: Chatlistitem(
-                              imagePath: book['imagepath'],
-                              title: book['title'],
-                              subtitle1: book['subtitle1'],
-                              subtitle2: book['subtitle2']),
+                              imagePath: imageUrl, // 이미지 경로
+                            title: product['title'], // 제목
+                            subtitle1: product['description'], // 부제목1
+                            subtitle2: product['price'], //
+                            product: product, 
+                              ),
                         ),
                       ],
                     );

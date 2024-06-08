@@ -76,66 +76,32 @@ class _MainPageState extends State<MainPage> {
           child: Icon(Icons.add),
         ),
         body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('Book').snapshots(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+            stream: FirebaseFirestore.instance.collection('Product').snapshots(),
+            builder: (context, productSnapshot) {
+              if (productSnapshot.hasError) {
+                return Center(child: Text('Error: ${productSnapshot.error}'));
+              }
+              if (productSnapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               }
 
-              final books = snapshot.data!.docs;
+              // Firestore에서 데이터를 가져와서 products 리스트를 생성합니다.
+              final products = productSnapshot.data!.docs.map((DocumentSnapshot document) {
+                return document.data() as Map<String, dynamic>;
+              }).toList();
 
-              return StreamBuilder<QuerySnapshot>(
-                stream:
-                    FirebaseFirestore.instance.collection('Images').snapshots(),
-                builder: (context, imageSnapshot) {
-                  if (imageSnapshot.hasError) {
-                    return Center(child: Text('Error: ${imageSnapshot.error}'));
-                  }
-                  if (imageSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
+              return ListView.builder(
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
 
-                  return ListView.builder(
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      final book = books[index];
-                      return Column(
-                        children: [
-                          BookListItem(
-                            imagePath: book['imagepath'], // 이미지 경로
-                            title: book['title'], // 제목
-                            subtitle1: book['subtitle1'], // 부제목1
-                            subtitle2: book['subtitle2'], // 부제목2
-                          ),
-                          BookListItem(
-                            imagePath: book['imagepath'], // 이미지 경로
-                            title: book['title'], // 제목
-                            subtitle1: book['subtitle1'], // 부제목1
-                            subtitle2: book['subtitle2'], // 부제목2
-                          ),
-                          BookListItem(
-                            imagePath: book['imagepath'], // 이미지 경로
-                            title: book['title'], // 제목
-                            subtitle1: book['subtitle1'], // 부제목1
-                            subtitle2: book['subtitle2'], // 부제목2
-                          ),
-                          BookListItem(
-                            imagePath: book['imagepath'], // 이미지 경로
-                            title: book['title'], // 제목
-                            subtitle1: book['subtitle1'], // 부제목1
-                            subtitle2: book['subtitle2'], // 부제목2
-                          ),
-                          BookListItem(
-                            imagePath: book['imagepath'], // 이미지 경로
-                            title: book['title'], // 제목
-                            subtitle1: book['subtitle1'], // 부제목1
-                            subtitle2: book['subtitle2'], // 부제목2
-                          ),
-                          
-                        ],
-                      );
-                    },
+                  return BookListItem(
+                    imagePath: imageUrl,
+                    title: product['title'],
+                    subtitle1: product['description'],
+                    subtitle2: product['price'],
+                    product: product, // 전달할 데이터 추가
                   );
                 },
               );
