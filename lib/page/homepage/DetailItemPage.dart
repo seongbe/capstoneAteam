@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:intl/intl.dart';
 
 import '../../component/alertdialog_login.dart';
 
@@ -45,6 +46,12 @@ class _DetailItemPageState extends State<DetailItemPage> {
       
       await productRef.update({'like_count': likeCount});
     }
+  }
+
+  String _formatDate(String dateTimeString) {
+    final DateTime dateTime = DateTime.parse(dateTimeString);
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(dateTime);
   }
 
   @override
@@ -115,19 +122,9 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(width: 20),
+                      
                           Text(
-                            '과목',
-                            style: TextStyle(
-                              color: Color(0xFF8C8C8C),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 0.12,
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            product['created_at'],
+                            _formatDate(product['created_at']),
                             style: TextStyle(
                               color: Color(0xFF8C8C8C),
                               fontSize: 12,

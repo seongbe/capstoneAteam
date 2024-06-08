@@ -215,7 +215,7 @@ class _ChatPageState extends State<ChatPage> {
                               imagePath: imageUrl, // 이미지 경로
                             title: product['title'], // 제목
                             subtitle1: product['description'], // 부제목1
-                            subtitle2: product['price'], //
+                            subtitle2: "${product['price']} 원",
                             product: product, 
                               ),
                         ),
