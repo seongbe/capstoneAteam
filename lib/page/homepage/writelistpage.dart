@@ -106,11 +106,12 @@ class Writelist extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final product = products[index];
                   final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
-
+                  final description = product['description'];
+                  final shortDescription = description.length <= 20 ? description : '${description.substring(0, 20)} ... 더 보기';
                   return BookListItem(
                     imagePath: imageUrl,
                     title: product['title'],
-                    subtitle1: product['description'],
+                    subtitle1: shortDescription,
                     subtitle2: "${product['price']} 원",
                     product: product, // 전달할 데이터 추가
                     likecount: product['like_count'].toString(),
