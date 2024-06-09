@@ -5,6 +5,7 @@ import 'package:capstone/page/homepage/Setprofilepage.dart';
 import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/page/onboarding/StartPage.dart';
 import 'package:capstone/page/onboarding/LoginPage.dart';
+import 'package:capstone/page/onboarding/Accountdelete.dart';
 import 'package:capstone/page/homepage/Interestlistpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -178,8 +179,9 @@ class Pulip extends StatelessWidget {
                             children: <Widget>[
                               CircleAvatar(
                                 radius: 30,
-                                backgroundImage: NetworkImage(
-                                    profileImageUrl), // 사용자 프로필 이미지 표시
+                                backgroundImage: profileImageUrl.isNotEmpty
+                                    ? NetworkImage(profileImageUrl) as ImageProvider
+                                    : AssetImage('assets/images/skon_fly.png') as ImageProvider,
                               ),
                               SizedBox(
                                 width: 20.0,
@@ -409,7 +411,7 @@ class Pulip extends StatelessWidget {
                               );
                             },
                             icon: Icon(
-                              Icons.logout_rounded,
+                              Icons.lock,
                               color: Color.fromRGBO(29, 29, 29, 1),
                             ),
                             label: Text(
@@ -461,9 +463,10 @@ class Pulip extends StatelessWidget {
                             ),
                             onPressed: () async {
                               //회원탈퇴 추가
+                              Get.to(Accountdelete());
                             },
                             icon: Icon(
-                              Icons.logout_rounded,
+                              Icons.delete,
                               color: Color.fromRGBO(29, 29, 29, 1),
                             ),
                             label: Text(
