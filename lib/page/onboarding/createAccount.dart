@@ -55,7 +55,6 @@ class _CreatAccountState extends State<CreatAccount> {
   }
 
   Future<void> SaveToFirestore() async {
-  Future<void> SaveToFirestore() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference usersCollection = firestore.collection('User');
 
@@ -330,11 +329,6 @@ class _CreatAccountState extends State<CreatAccount> {
                   
 
                   if (nickname.isEmpty) {
-                  String nickname = _nicknameController.text.trim();
-                  String password = _passwordController.text.trim();
-                  
-
-                  if (nickname.isEmpty) {
                     CustomDialog.showAlert(
                       context,
                       "닉네임을 입력해주세요.",
@@ -358,34 +352,9 @@ class _CreatAccountState extends State<CreatAccount> {
                   }
 
                   if (password.isEmpty) {
-                  // 닉네임이 중복 확인되었는지 확인
-                  if (confirmnickname != nickname) {
-                    CustomDialog.showAlert(
-                      context,
-                      "닉네임 중복을 확인해주세요.",
-                      20,
-                      Colors.black,
-                          () {},
-                    );
-                    return;
-                  }
-
-                  if (password.isEmpty) {
                     CustomDialog.showAlert(
                       context,
                       "비밀번호를 입력해주세요.",
-                      20,
-                      Colors.black,
-                          () {},
-                    );
-                    return;
-                  }
-
-                  if (password.trim().length < 6) {
-                    CustomDialog.showAlert(
-                      context,
-                      "비밀번호를 입력해주세요.",
-                      "비밀번호는 6자리 이상으로 입력해주세요.",
                       20,
                       Colors.black,
                           () {},
@@ -405,24 +374,15 @@ class _CreatAccountState extends State<CreatAccount> {
                   }
 
                   if (!_checkPassword()) {
-                  if (!_checkPassword()) {
-
-                  if (await _checkNickname()) {
-                    SaveToFirestore();
-                    Get.offAll(() => HomePage(0));
-                  } else {
                     CustomDialog.showAlert(
                       context,
-                      "비밀번호가 일치하지 않습니다.",
                       "비밀번호가 일치하지 않습니다.",
                       20,
                       Colors.black,
                           () {},
                     );
                     return;
-                    return;
                   }
-                  SaveToFirestore();
                   SaveToFirestore();
                 },
               ),
