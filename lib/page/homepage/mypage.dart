@@ -409,7 +409,7 @@ class Pulip extends StatelessWidget {
                               );
                             },
                             icon: Icon(
-                              Icons.logout_rounded,
+                              Icons.lock_reset,
                               color: Color.fromRGBO(29, 29, 29, 1),
                             ),
                             label: Text(
@@ -463,7 +463,7 @@ class Pulip extends StatelessWidget {
                               //회원탈퇴 추가
                             },
                             icon: Icon(
-                              Icons.logout_rounded,
+                              Icons.remove_circle_outline,
                               color: Color.fromRGBO(29, 29, 29, 1),
                             ),
                             label: Text(

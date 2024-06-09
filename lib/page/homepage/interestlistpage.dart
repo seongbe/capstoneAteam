@@ -1,11 +1,12 @@
 import 'package:capstone/wiget/bottom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
 import 'package:capstone/wiget/BookListItem.dart';
 
 class Interestlistpage extends StatelessWidget {
-  const Interestlistpage({super.key});
+  const Interestlistpage({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,70 +15,102 @@ class Interestlistpage extends StatelessWidget {
     final double screenHeight = screenSize.height;
     // Container의 너비와 높이를 동일하게 설정합니다.
     final containerSize = screenWidth;
+
+    final String userId = FirebaseAuth.instance.currentUser?.uid ?? ''; // userId 추가
+
     return MaterialApp(
       title: 'InterestListPage',
       debugShowCheckedModeBanner: false,
-      home: InterList(),
+      home: InterList(userId: userId), // userId 전달
     );
   }
 }
 
 class InterList extends StatelessWidget {
-  const InterList({super.key});
-
+  final String userId; // userId 추가
+  const InterList({Key? key, required this.userId}) : super(key: key); // userId를 받는 생성자 추가
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '관심목록',
-            style: TextStyle(
-              fontFamily: 'skybori',
-              fontSize: 30,
-              letterSpacing: 2.0,
-            ),
+      appBar: AppBar(
+        title: Text(
+          '관심목록',
+          style: TextStyle(
+            fontFamily: 'skybori',
+            fontSize: 30,
+            letterSpacing: 2.0,
           ),
-          centerTitle: true,
-          elevation: 0.0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-          actions: [
-            Image.asset('assets/images/skon_fly.png'),
-            SizedBox(width: 20),
-          ],
-          shape: Border(
-              bottom: BorderSide(
+        ),
+        centerTitle: true,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        actions: [
+          Image.asset('assets/images/skon_fly.png'),
+          SizedBox(width: 20),
+        ],
+        shape: Border(
+          bottom: BorderSide(
             color: Colors.grey,
             width: 0.8,
-          )),
+          ),
         ),
-        body: SafeArea(
-          child: ListView(
-            children: [
-              // BookListItem(
-              //   imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
-              //   title: '운영체제 공룡책', // 제목
-              //   subtitle1: '소프트웨어학과 3일전', // 부제목1
-              //   subtitle2: '10,000원', // 부제목2
-              // ),
-              // BookListItem(
-              //   imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
-              //   title: '운영체제 공룡책', // 제목
-              //   subtitle1: '소프트웨어학과 3일전', // 부제목1
-              //   subtitle2: '10,000원', // 부제목2
-              // ),
-              // BookListItem(
-              //   imagePath: 'https://lh4.googleusercontent.com/proxy/LyuGLKHAOWiVns2fni1cDeac-kwfzemwnP1zJXq2lB-CEwH8eXFe0wHbmWqyaq3Z0h6C7BLIl_5_pm6WswtyES-36rLj6zsimqzaD5tc7VtphA1a4YNzQyyYXqCTJQFy1sfbXK3-NjZIBtJViv44mBJG0xUiv4KPuWLs', // 이미지 경로
-              //   title: '운영체제 공룡책', // 제목
-              //   subtitle1: '소프트웨어학과 3일전', // 부제목1
-              //   subtitle2: '10,000원', // 부제목2
-              // ),
-            ],
-            ),),
-        bottomNavigationBar: CustomBottomNavigationBar());
+      ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance.collection('User').doc(userId).snapshots(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.hasError) {
+            return Center(child: Text('Error: ${userSnapshot.error}'));
+          }
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          // 사용자 문서에서 관심 상품 목록 가져오기
+          List<dynamic> interests = userSnapshot.data!.get('interests');
+
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('Product').snapshots(),
+            builder: (context, productSnapshot) {
+              if (productSnapshot.hasError) {
+                return Center(child: Text('Error: ${productSnapshot.error}'));
+              }
+              if (productSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              // Firestore에서 데이터를 가져와서 products 리스트를 생성합니다.
+              final products = productSnapshot.data!.docs.where((document) => interests.contains(document['post_id']))
+                  .map((document) {
+                return document.data() as Map<String, dynamic>;
+              }).toList();
+
+              return ListView.builder(
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
+
+                  return BookListItem(
+                    imagePath: imageUrl,
+                    title: product['title'],
+                    subtitle1: product['description'],
+                    subtitle2: "${product['price']} 원",
+                    product: product, // 전달할 데이터 추가
+                    likecount: product['like_count'].toString(),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(),
+    );
   }
 }

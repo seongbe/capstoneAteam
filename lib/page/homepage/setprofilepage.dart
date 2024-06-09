@@ -1,12 +1,17 @@
+import 'package:capstone/component/alerdialog.dart';
 import 'package:capstone/component/alterdilog2.dart';
+import 'package:capstone/component/alterdilog3.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/homepage/SetProfileImage.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:capstone/page/homepage/mypage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 
 class Setprofilepage extends StatelessWidget {
-  const Setprofilepage({Key? key}) : super(key: key);
+  const Setprofilepage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +133,6 @@ class _InputpassState extends State<Inputpass> {
           ),
           SizedBox(height: 20.0),
           TextFormField(
-            controller: passwordController,
             decoration: InputDecoration(
               labelText: '비밀번호를 입력하세요.',
               helperText: "* 필수 입력값입니다.",
@@ -160,7 +164,6 @@ class _InputpassState extends State<Inputpass> {
           ),
           SizedBox(height: 20.0),
           TextField(
-            controller: confirmPasswordController,
             decoration: InputDecoration(
               labelText: '비밀번호를 다시 입력해 주세요.',
               helperText: "* 필수 입력값입니다.",
@@ -173,13 +176,17 @@ class _InputpassState extends State<Inputpass> {
                 borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
               ),
             ),
-            obscureText: true,
           ),
           GreenButton(
+            // 버튼 글씨 사이즈 수정해야함
             text1: '본인인증',
             width: 756,
             height: 50,
-            onPressed: _validateAndNavigate,
+            onPressed: () {
+              CustomDialog2.showAlert(
+                context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black, );
+              Get.to(SetProfileImage());
+            },
           ),
         ],
       ),

@@ -74,7 +74,7 @@ class WriteListItem extends StatelessWidget {
                 width: 69,
                 height: 30,
                 onPressed: () {
-                  Get.to(ReWritePage());
+                  //Get.to(ReWritePage());
                 },
                 textsize: 20,
               ),
