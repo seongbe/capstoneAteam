@@ -114,7 +114,7 @@ Future<void> _updateNickname() async {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () {
-              Get.offAll(Mypage());
+              Get.back();
             },
           ),
           actions: [
