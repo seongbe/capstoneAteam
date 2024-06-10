@@ -125,10 +125,10 @@ class _InputpassState extends State<Inputpass> {
           SizedBox(height: 20.0),
           TextFormField(
             decoration: InputDecoration(
-              labelText: '비밀번호를 입력하세요.',
+              hintText: '비밀번호를 입력하세요.',
               helperText: "* 필수 입력값입니다.",
               helperStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              labelStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+              hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
               fillColor: Color(0xffF8FFF2),
               enabledBorder: OutlineInputBorder(
@@ -157,10 +157,10 @@ class _InputpassState extends State<Inputpass> {
           SizedBox(height: 20.0),
           TextField(
             decoration: InputDecoration(
-              labelText: '비밀번호를 다시 입력해 주세요.',
+              hintText: '비밀번호를 다시 입력해 주세요.',
               helperText: "* 필수 입력값입니다.",
               helperStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              labelStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+              hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
               fillColor: Color(0xffF8FFF2),
               enabledBorder: OutlineInputBorder(
