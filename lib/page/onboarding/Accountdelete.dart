@@ -53,9 +53,9 @@ class _InputpassState extends State<Inputpass> {
           '모든 활동 기록이 삭제됩니다.\n '
               '진행하시겠습니까?\n',
               () async {
-                deleteUser();
-                await Get.offAll(StartPage());
-                return Future.value(); // 예시: 비동기적으로 작업을 수행하지 않는 경우에 사용
+            deleteUser();
+            await Get.offAll(StartPage());
+            return Future.value(); // 예시: 비동기적으로 작업을 수행하지 않는 경우에 사용
           },
         );
       }).catchError((error) {
@@ -72,6 +72,9 @@ class _InputpassState extends State<Inputpass> {
       try {
         String userId = user.uid;
 
+        // 사용자가 작성한 게시물을 먼저 삭제합니다.
+        await deletePostsByUser(userId);
+
         // Firestore에서 사용자 데이터 삭제
         await deleteUserData(userId);
 
@@ -81,6 +84,19 @@ class _InputpassState extends State<Inputpass> {
         String message = '계정 삭제 중 오류가 발생했습니다: $e';
         CustomDialog2.showAlert(context, message, 20, Colors.black,);
       }
+    }
+  }
+
+  Future<void> deletePostsByUser(String userId) async {
+    try {
+      // 해당 사용자가 작성한 모든 게시물을 Firestore에서 삭제합니다.
+      QuerySnapshot postsSnapshot = await FirebaseFirestore.instance.collection('Product').where('user_id', isEqualTo: userId).get();
+      postsSnapshot.docs.forEach((doc) async {
+        await doc.reference.delete();
+      });
+    } catch (e) {
+      String message = '게시물 삭제 중 오류가 발생했습니다: $e';
+      CustomDialog2.showAlert(context, message, 20, Colors.black);
     }
   }
 

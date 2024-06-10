@@ -77,7 +77,8 @@ class _CreatAccountState extends State<CreatAccount> {
         'popular': 0,
         'profile_url': "", //empty값으로 초기화
         'status': true,
-        'user_id': email
+        'user_id': email,
+        'interests': [],  //interests 필드를 빈 리스트로 초기화
       });
 
       await widget.user!.updatePassword(confirmPassword);
