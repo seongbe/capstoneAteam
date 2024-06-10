@@ -1,96 +1,116 @@
-import 'package:capstone/component/alterdilog2.dart';
-import 'package:capstone/component/alterdilog3.dart';
-import 'package:capstone/component/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:capstone/page/onboarding/StartPage.dart';
+import 'package:capstone/component/button.dart';
+import 'package:capstone/page/homepage/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore import 추가
+import 'package:capstone/component/alerdialog.dart';
 
-class Accountdelete extends StatelessWidget {
-  const Accountdelete({Key? key}) : super(key: key);
+class CreatAccount extends StatefulWidget {
+  final User? user; // Certification 페이지로부터 전달된 사용자 객체
+  final String email; // Certification 페이지로부터 전달된 이메일
+  final String studentId;
+  final String department;
+
+  CreatAccount({required this.user, required this.email, required this.studentId, required this.department});
 
   @override
-  Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final double screenWidth = screenSize.width;
-    final double screenHeight = screenSize.height;
-    // Container의 너비와 높이를 동일하게 설정합니다.
-    final containerSize = screenWidth;
-    return MaterialApp(
-      title: 'Set_Profile_Page',
-      debugShowCheckedModeBanner: false,
-      home: Inputpass(),
-    );
+  _CreatAccountState createState() => _CreatAccountState();
+}
+
+class _CreatAccountState extends State<CreatAccount> {
+  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =  TextEditingController();
+  String confirmnickname = '';
+  late String email;
+
+
+  // 닉네임 중복 확인 메서드
+  Future<bool> _checkNickname() async {
+    String nickname = _nicknameController.text.trim();
+
+    // Firestore 인스턴스 생성
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference usersCollection = firestore.collection('User');
+
+    // 닉네임 중복 여부 확인
+    QuerySnapshot querySnapshot =
+    await usersCollection.where('nickname', isEqualTo: nickname).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return false; // 중복된 닉네임이 있음
+    } else {
+      confirmnickname = nickname;
+      return true; // 중복되지 않은 닉네임임
+    }
   }
-}
 
-class Inputpass extends StatefulWidget {
-  const Inputpass({Key? key}) : super(key: key);
+  // 비밀번호 확인 메서드
+  bool _checkPassword() {
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+    return password == confirmPassword; // 비밀번호가 일치하면 true 반환
+  }
 
-  @override
-  _InputpassState createState() => _InputpassState();
-}
+  Future<void> SaveToFirestore() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference usersCollection = firestore.collection('User');
 
-class _InputpassState extends State<Inputpass> {
-  final TextEditingController passwordController = TextEditingController();
+    // Certification 페이지로부터 전달된 사용자 객체의 UID와 이메일을 가져옵니다.
+    String uid = widget.user!.uid;
+    String email = widget.email;
+    String nickname = _nicknameController.text.trim();
+    String confirmPassword = _confirmPasswordController.text;
 
-  void _validateAndNavigate() {
-    String password = passwordController.text;
-
-    // 사용자의 현재 비밀번호 가져오기
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      AuthCredential credential = EmailAuthProvider.credential(
-        email: user.email!,
-        password: password,
-      );
-
-      // 비밀번호 확인 후 다음 페이지로 이동
-      user.reauthenticateWithCredential(credential).then((value) {
-        CustomDialog3.showConfirmationDialog(
-          context,
-          '모든 활동 기록이 삭제됩니다.\n '
-              '진행하시겠습니까?\n',
-              () async {
-                deleteUser();
-                await Get.offAll(StartPage());
-                return Future.value(); // 예시: 비동기적으로 작업을 수행하지 않는 경우에 사용
-          },
-        );
-      }).catchError((error) {
-        String message = '비밀번호가 일치하지 않습니다.';
-        CustomDialog2.showAlert(context, message, 20, Colors.black);
+    try {
+      // Firestore에 사용자의 이메일을 저장합니다.
+      await usersCollection.doc(uid).set({
+        'StudentID': widget.studentId,
+        'created_at': FieldValue.serverTimestamp(),
+        // Firebase 서버 시간을 사용하여 생성 시간을 기록합니다.
+        'department': widget.department,
+        'manager': false,
+        'nickname': nickname,
+        'popular': 0,
+        'profile_url': "", //empty값으로 초기화
+        'status': false,
+        'user_id': email
       });
+
+      await widget.user!.updatePassword(confirmPassword);
+
+      // 저장이 성공적으로 완료된 경우 HomePage로 이동
+      CustomDialog.showAlert(
+        context,
+        "회원가입이 완료되었습니다.",
+        20,
+        Colors.black,
+            () {Get.offAll(() => HomePage());},
+      );
+    } catch (e) {
+      print('Firestore 저장 중 오류 발생: $e');
+      CustomDialog.showAlert(
+        context,
+        "데이터 저장 중 오류가 발생했습니다.",
+        20,
+        Colors.black,
+            () {},
+      );
     }
   }
 
   Future<void> deleteUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
+    if (widget.user != null) {
       try {
-        String userId = user.uid;
-
-        // Firestore에서 사용자 데이터 삭제
-        await deleteUserData(userId);
-
-        // Firebase Authentication에서 사용자 삭제
-        await user.delete();
+        await widget.user!.delete();
       } catch (e) {
-        String message = '계정 삭제 중 오류가 발생했습니다: $e';
-        CustomDialog2.showAlert(context, message, 20, Colors.black,);
+        // 사용자 삭제 중에 오류가 발생한 경우 예외 처리를 수행합니다.
+        print('사용자 삭제 중 오류 발생: $e');
+        // 오류 메시지를 사용자에게 표시할 수도 있습니다.
       }
-    }
-  }
-
-  Future<void> deleteUserData(String userId) async {
-    try {
-      // 사용자 데이터가 있는 Firestore 컬렉션의 문서를 삭제
-      await FirebaseFirestore.instance.collection('User').doc(userId).delete();
-    } catch (e) {
-      String message = '계정 삭제 중 오류가 발생했습니다: $e';
-      CustomDialog2.showAlert(context, message, 20, Colors.black,);
     }
   }
 
@@ -98,95 +118,261 @@ class _InputpassState extends State<Inputpass> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
-          '회원 탈퇴',
+          '회원가입',
           style: TextStyle(
-            fontFamily: 'skybori',
-            fontSize: 30,
-            letterSpacing: 5.0,
+            fontSize: 40,
+            color: Colors.black,
+            fontFamily: 'mitmi',
           ),
         ),
-        centerTitle: true,
-        elevation: 0.0,
+        shape: Border(
+          bottom: BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            deleteUser(); // 뒤로가기 버튼을 누를 때 deleteUser 함수 호출
             Get.back();
           },
         ),
         actions: [
           Image.asset('assets/images/skon_fly.png'),
-          SizedBox(width: 20),
+          SizedBox(width: 10),
         ],
-        shape: Border(
-          bottom: BorderSide(
-            color: Colors.grey,
-            width: 0.8,
-          ),
-        ),
       ),
-      body: ListView(
-        padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
-        children: <Widget>[
-          Container(
-            height: 135,
-            width: 280,
-            margin: EdgeInsets.only(left: 30.0, top: 30.0, right: 30.0, bottom: 20.0),
-            decoration: BoxDecoration(
-              border: Border.all(width: 1.7, color: Color(0xffD0E4BC)),
-              borderRadius: BorderRadius.circular(40),
-              color: Color(0xffF8FFF2),
-            ),
-            child: Center(
-              child: Text(
-                '본인 확인을 위해 \n비밀번호를 입력해주세요.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'skybori',
-                  fontSize: 20,
-                  letterSpacing: 2.0,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  SizedBox(width: 35),
+                  Text(
+                    '닉네임',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'SKYBORI',
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 220,
+                    child: TextField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9a-zA-Zㄱ-ㅎ가-힣]')),
+                      ],
+                      controller: _nicknameController,
+                      decoration: InputDecoration(
+                        labelText: '닉네임을 입력하세요',
+                        labelStyle: TextStyle(
+                          color: Color(0xffC0C0C0),
+                          fontFamily: 'mitmi',
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffF8FFF2),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(
+                            width: 1,
+                            color: Color(0xffD0E4BC),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    child: GreenButton(
+                      text1: '중복확인',
+                      width: 80,
+                      height: 40,
+                      onPressed: () async {
+                        String nickname = _nicknameController.text.trim();
+                        if (nickname.isEmpty) {
+                          CustomDialog.showAlert(
+                            context,
+                            "닉네임을 입력해주세요.",
+                            20,
+                            Colors.black,
+                                () {},
+                          );
+                          return;
+                        }
+
+                        if (await _checkNickname()) {
+                          CustomDialog.showAlert(context, "사용할 수 있는 닉네임 입니다.",
+                              20, Colors.black, () {});
+                        } else {
+                          CustomDialog.showAlert(
+                            context,
+                            "이미 사용중인 닉네임 입니다.\n 새로운 닉네임을 입력하세요.",
+                            20,
+                            Colors.black,
+                                () {},
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  SizedBox(width: 35),
+                  Text(
+                    '비밀번호',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'SKYBORI',
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 350,
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: '비밀번호를 입력하세요',
+                    labelStyle: TextStyle(
+                      color: Color(0xffC0C0C0),
+                      fontFamily: 'mitmi',
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffF8FFF2),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xffD0E4BC),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Text(
-            '비밀번호',
-            style: TextStyle(
-              fontFamily: 'skybori',
-              fontSize: 20,
-              letterSpacing: 2.0,
-            ),
-          ),
-          SizedBox(height: 20.0),
-          TextFormField(
-            controller: passwordController,
-            decoration: InputDecoration(
-              labelText: '비밀번호를 입력하세요.',
-              helperText: "* 필수 입력값입니다.",
-              helperStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              labelStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              filled: true,
-              fillColor: Color(0xffF8FFF2),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  SizedBox(width: 35),
+                  Text(
+                    '비밀번호 확인',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'SKYBORI',
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            obscureText: true, // 비밀번호 안 보이게
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '비밀번호를 입력해주세요.';
-              }
-              return null;
-            },
+              SizedBox(
+                width: 350,
+                child: TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: '비밀번호를 한 번 더 입력하세요',
+                    labelStyle: TextStyle(
+                      color: Color(0xffC0C0C0),
+                      fontFamily: 'mitmi',
+                    ),
+                    filled: true,
+                    fillColor: Color(0xffF8FFF2),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xffD0E4BC),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              GreenButton(
+                text1: '회원가입',
+                width: 100,
+                height: 50,
+                onPressed: () async {
+                  String nickname = _nicknameController.text.trim();
+                  String password = _passwordController.text.trim();
+                  
+
+                  if (nickname.isEmpty) {
+                    CustomDialog.showAlert(
+                      context,
+                      "닉네임을 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  // 닉네임이 중복 확인되었는지 확인
+                  if (confirmnickname != nickname) {
+                    CustomDialog.showAlert(
+                      context,
+                      "닉네임 중복을 확인해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (password.isEmpty) {
+                    CustomDialog.showAlert(
+                      context,
+                      "비밀번호를 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (password.trim().length < 6) {
+                    CustomDialog.showAlert(
+                      context,
+                      "비밀번호는 6자리 이상으로 입력해주세요.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+
+                  if (!_checkPassword()) {
+                    CustomDialog.showAlert(
+                      context,
+                      "비밀번호가 일치하지 않습니다.",
+                      20,
+                      Colors.black,
+                          () {},
+                    );
+                    return;
+                  }
+                  SaveToFirestore();
+                },
+              ),
+              SizedBox(height: 20),
+            ],
           ),
-          GreenButton(
-            text1: '본인인증',
-            width: 756,
-            height: 50,
-            onPressed: _validateAndNavigate,
-          ),
-        ],
+        ),
       ),
     );
   }

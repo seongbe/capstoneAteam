@@ -1,6 +1,9 @@
+import 'package:capstone/component/button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:capstone/page/homepage/DetailItemPage.dart';
+
+import '../page/homepage/rewritepage.dart';
 
 class BookListItem extends StatelessWidget {
   final String imagePath;
@@ -9,6 +12,7 @@ class BookListItem extends StatelessWidget {
   final String subtitle2;
   final String likecount;
   final Map<String, dynamic> product;
+  final bool showButton;
 
   BookListItem({
     super.key,
@@ -18,6 +22,7 @@ class BookListItem extends StatelessWidget {
     required this.subtitle2,
     required this.product,
     required this.likecount,
+    this.showButton = false,
   });
 
   @override
@@ -43,8 +48,13 @@ class BookListItem extends StatelessWidget {
                 children: [
                   Text(title, style: TextStyle(fontSize: 16)),
                   Text(subtitle1),
-                  Text(subtitle2),
+                  Text(subtitle2),  
+                  if(showButton) 
+                    GreenButton(text1: '수정', width: 70, height:30, textsize: 15, onPressed: (){
+                      Get.to(() => ReWritePage(product: product));
+                    },),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       SizedBox(width: 200),
                       Row(

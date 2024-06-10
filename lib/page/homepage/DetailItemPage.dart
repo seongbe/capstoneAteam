@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
-
 import '../../component/alertdialog_login.dart';
 
 class DetailItemPage extends StatefulWidget {
@@ -27,15 +26,42 @@ class _DetailItemPageState extends State<DetailItemPage> {
     super.initState();
     if (widget.product != null) {
       likeCount = widget.product!['like_count'] ?? 0;
+      _checkIfLiked();
     }
   }
 
-  void _toggleHeart() {
+  Future<void> _checkIfLiked() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('User').doc(user.uid).get();
+      if (userSnapshot.exists) {
+        List<dynamic> interests = userSnapshot['interests'] ?? [];
+        setState(() {
+          isLiked = interests.contains(widget.product!['post_id']);
+        });
+      }
+    }
+  }
+
+  void _toggleHeart() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      CustomDialogLogin.showAlert(
+        context,
+        '채팅기능은\n로그인 후 이용가능합니다.',
+        15.0,
+        Color.fromRGBO(29, 29, 29, 1),
+      );
+      return;
+    }
+
     setState(() {
       isLiked = !isLiked;
       likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-      _updateLikeCount();
     });
+
+    await _updateLikeCount();
+    await _toggleInterest(widget.product!['post_id']);
   }
 
   Future<void> _updateLikeCount() async {
@@ -46,6 +72,28 @@ class _DetailItemPageState extends State<DetailItemPage> {
       
       await productRef.update({'like_count': likeCount});
     }
+  }
+
+  Future<void> _toggleInterest(String postId) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final DocumentReference userRef = FirebaseFirestore.instance.collection('User').doc(user.uid);
+    final DocumentSnapshot userSnapshot = await userRef.get();
+
+    if (!userSnapshot.exists) {
+      await userRef.set({'interests': []});
+    }
+
+    List<dynamic> interests = userSnapshot['interests'] ?? [];
+    
+    if (isLiked) {
+      interests.add(postId);
+    } else {
+      interests.remove(postId);
+    }
+
+    await userRef.update({'interests': interests});
   }
 
   String _formatDate(String dateTimeString) {
@@ -122,7 +170,6 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(width: 20),
-                      
                           Text(
                             _formatDate(product['created_at']),
                             style: TextStyle(

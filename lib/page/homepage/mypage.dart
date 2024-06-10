@@ -411,7 +411,7 @@ class Pulip extends StatelessWidget {
                               );
                             },
                             icon: Icon(
-                              Icons.lock,
+                              Icons.lock_reset,
                               color: Color.fromRGBO(29, 29, 29, 1),
                             ),
                             label: Text(
@@ -466,7 +466,7 @@ class Pulip extends StatelessWidget {
                               Get.to(Accountdelete());
                             },
                             icon: Icon(
-                              Icons.delete,
+                              Icons.remove_circle_outline,
                               color: Color.fromRGBO(29, 29, 29, 1),
                             ),
                             label: Text(
