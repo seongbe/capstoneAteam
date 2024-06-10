@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:capstone/component/ImagePickerScreen.dart';
 import 'package:capstone/component/button.dart';
+import 'package:capstone/controller/imagePickerController.dart';
 import 'package:capstone/page/homepage/homePage.dart';
 import 'package:capstone/page/homepage/writelistpage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,9 +15,9 @@ import '../../component/alerdialog.dart';
 import '../../component/alterdilog2.dart';
 
 class ReWritePage extends StatefulWidget {
-  final Map<String, dynamic> product;
+  final Map<String, dynamic>? product;
 
-  const ReWritePage({Key? key, required this.product}) : super(key: key);
+  const ReWritePage({this.product});
 
   @override
   State<ReWritePage> createState() => _ReWritePageState();
@@ -26,13 +27,16 @@ class _ReWritePageState extends State<ReWritePage> {
   late TextEditingController _titleController;
   late TextEditingController _priceController;
   late TextEditingController _descriptionController;
+  late ImagePickerController imageController = Get.put(ImagePickerController());
+  late List<String> initialImages;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.product['title']);
-    _priceController = TextEditingController(text: widget.product['price']);
-    _descriptionController = TextEditingController(text: widget.product['description']);
+    _titleController = TextEditingController(text: widget.product!['title']);
+    _priceController = TextEditingController(text: widget.product!['price']);
+    _descriptionController = TextEditingController(text: widget.product!['description']);
+    initialImages = List<String>.from(widget.product!['image_url'] ?? []);
   }
 
   Future<void> _updateProduct() async {
@@ -49,10 +53,11 @@ class _ReWritePageState extends State<ReWritePage> {
     try {
       final String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-      await FirebaseFirestore.instance.collection('Product').doc(widget.product['post_id']).update({
+      await FirebaseFirestore.instance.collection('Product').doc(widget.product!['post_id']).update({
         'title': _titleController.text,
         'price': _priceController.text,
         'description': _descriptionController.text,
+        // 'image_url': imageController.imageUrls,
         // 다른 필드도 필요하다면 여기에 추가
       });
 
