@@ -37,18 +37,9 @@ class Inputpass extends StatefulWidget {
 
 class _InputpassState extends State<Inputpass> {
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
 
   void _validateAndNavigate() {
     String password = passwordController.text;
-    String confirmPassword = confirmPasswordController.text;
-
-    // 두 비밀번호가 일치하는지 확인
-    if (password != confirmPassword) {
-      CustomDialog2.showAlert(
-          context, "입력한 비밀번호가 일치하지 않습니다.", 14, Colors.black);
-      return;
-    }
 
     // 사용자의 현재 비밀번호 가져오기
     User? user = FirebaseAuth.instance.currentUser;
@@ -60,10 +51,10 @@ class _InputpassState extends State<Inputpass> {
 
       // 비밀번호 확인 후 다음 페이지로 이동
       user.reauthenticateWithCredential(credential).then((value) {
-        Get.to(SetProfileImage());
+        Get.off(SetProfileImage());
       }).catchError((error) {
         CustomDialog2.showAlert(
-            context, "비밀번호가 일치하지 않습니다.", 14, Colors.black);
+            context, "비밀번호가 일치하지 않습니다.", 20, Colors.black);
       });
     }
   }
@@ -153,6 +144,7 @@ class _InputpassState extends State<Inputpass> {
               return null;
             },
           ),
+
           SizedBox(height: 20.0),
           Text(
             '비밀번호 확인',
@@ -177,6 +169,7 @@ class _InputpassState extends State<Inputpass> {
               ),
             ),
           ),
+
           GreenButton(
             // 버튼 글씨 사이즈 수정해야함
             text1: '본인인증',

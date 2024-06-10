@@ -63,6 +63,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
+        //게시물 작성 페이지로 이동
         floatingActionButton: FloatingActionButton(
           backgroundColor: Color(0xFF78BE39),
           onPressed: () {
