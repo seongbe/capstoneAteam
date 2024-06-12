@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:capstone/component/alertdialog_contact.dart';
 import 'package:capstone/component/alertdialog_login.dart';
 import 'package:capstone/page/homepage/postwritepage.dart';
+import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/wiget/BookListItem.dart';
 import 'package:capstone/wiget/mainpost.dart';
 import 'package:flutter/material.dart';
@@ -66,15 +68,30 @@ class _MainPageState extends State<MainPage> {
         //게시물 작성 페이지로 이동
         floatingActionButton: FloatingActionButton(
           backgroundColor: Color(0xFF78BE39),
-          onPressed: () {
-            if (FirebaseAuth.instance.currentUser == null) {
-              CustomDialogLogin.showAlert(context, '게시 기능은\n로그인 후 이용가능합니다.',
-                  15.0, Color.fromRGBO(29, 29, 29, 1));
-            } else {
-              Get.to(PostWritePage());
-            }
-          },
-          child: Icon(Icons.add),
+            onPressed: () async {
+              if (FirebaseAuth.instance.currentUser == null) {
+                CustomDialogLogin.showAlert(context, '게시 기능은\n로그인 후 이용가능합니다.',
+                    15.0, Color.fromRGBO(29, 29, 29, 1));
+              } else {
+
+                String uid = FirebaseAuth.instance.currentUser!.uid;
+
+                DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                    .collection('User')
+                    .doc(uid)
+                    .get();
+
+                bool status = userDoc['status'];
+
+                  if (status == false) {
+                    CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+                        15.0, Color.fromRGBO(29, 29, 29, 1));
+                  } else {
+                    Get.to(QandApage());
+                  }
+              }
+            },
+            child: Icon(Icons.add),
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance.collection('Product').snapshots(),
