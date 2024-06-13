@@ -63,7 +63,7 @@ class CustomDialogContact {
                     ),
                   ),
                   child: Text(
-                    ' 문의 하러가기',
+                    ' 문의하기',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
