@@ -1,8 +1,10 @@
 import 'package:capstone/component/button.dart';
 import 'package:capstone/page/onboarding/loginpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../homepage/homePage.dart';
+import 'package:capstone/component/alerdialog.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({Key? key}) : super(key: key);
@@ -12,7 +14,6 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
-
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
@@ -85,8 +86,20 @@ class _StartPageState extends State<StartPage> {
                       width: 30,
                     ),
                     TextButton(
-                      onPressed: () {
-                        Get.to(loginpage());
+                      onPressed: () async {
+                        // 현재 로그인 상태 확인
+                        User? user = FirebaseAuth.instance.currentUser;
+
+                        if (user != null) {
+                          String message = '이미 로그인 된 상태입니다.\n '
+                              '시작 화면으로 이동합니다.';
+                          CustomDialog.showAlert(
+                              context, message, 20, Colors.black, () {
+                            Get.to(() => HomePage(0));
+                          });
+                        } else {
+                          Get.to(loginpage());
+                        }
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: Color(0xFF78BE39),

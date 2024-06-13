@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:capstone/page/onboarding/startPage.dart';
 import 'package:capstone/component/button.dart';
 import 'package:capstone/component/alterdilog2.dart';
 import 'package:capstone/page/onboarding/SelectStudentInfo.dart'; // 추가 정보 입력 페이지
@@ -44,12 +45,28 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
     WidgetsBinding.instance.addObserver(this);
   }
 
+  //AppLifecycleState.detached
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
-      deleteUser();
-    }
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference usersCollection = firestore.collection('User');
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    usersCollection.doc(uid).get().then((DocumentSnapshot snapshot) {
+      if (!snapshot.exists) {
+        // 사용자 정보가 없으면 삭제 가능
+        if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+          deleteUser();
+          Get.offAll(StartPage());
+        }
+      } else {
+        // 사용자 정보가 있으면 아무 동작도 하지 않음
+        print('Firestore에 사용자 정보가 있어서 삭제를 막습니다.');
+      }
+    });
   }
+
+
 
   Future<void> _sendVerificationEmail() async {
     try {
