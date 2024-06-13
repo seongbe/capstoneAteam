@@ -1,4 +1,7 @@
+import 'package:capstone/component/alertdialog_contact.dart';
 import 'package:capstone/page/homepage/chatingchang.dart';
+import 'package:capstone/page/homepage/chatpage.dart';
+import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/wiget/chat_button.dart';
 import 'package:capstone/wiget/slideImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,7 +61,17 @@ class _DetailItemPageState extends State<DetailItemPage> {
 
   void _toggleHeart() async {
     final User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
+
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('User')
+        .doc(uid)
+        .get();
+
+    bool status = userDoc['status'];
+
+    if (user == null) { //로그인 x
       CustomDialogLogin.showAlert(
         context,
         '좋아요 기능은\n로그인 후 이용가능합니다.',
@@ -67,8 +80,16 @@ class _DetailItemPageState extends State<DetailItemPage> {
       );
       return;
     }
-
-    if (currentUserId == widget.product?['user_id']) {
+    else if (status == false) { //계정 정지 상태
+      CustomDialogContact.showAlert(
+          context,
+          '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+          15.0,
+          Color.fromRGBO(29, 29, 29, 1));
+      return;
+    }
+    else
+    if (currentUserId == widget.product?['user_id']) { //자신의 게시글에 좋아요 누르는 경우
       CustomDialog.showAlert(
         context,
         '자신의 게시글에는 좋아요를 누를수 없습니다',
@@ -80,14 +101,15 @@ class _DetailItemPageState extends State<DetailItemPage> {
       );
       return;
     }
+    else { //예외가 없을 경우, 좋아요 기능 실행
+      setState(() {
+        isLiked = !isLiked;
+        likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+      });
 
-    setState(() {
-      isLiked = !isLiked;
-      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-    });
-
-    await _updateLikeCount();
-    await _toggleInterest(widget.product!['post_id']);
+      await _updateLikeCount();
+      await _toggleInterest(widget.product!['post_id']);
+    }
   }
 
 
@@ -337,16 +359,27 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         height: 34,
                         text1: '채팅하기',
                         textsize: 14,
-                        onPressed: () {
+                        onPressed: () async {
                           if (FirebaseAuth.instance.currentUser == null) {
-                            CustomDialogLogin.showAlert(
-                              context,
-                              '채팅기능은\n로그인 후 이용가능합니다.',
-                              15.0,
-                              Color.fromRGBO(29, 29, 29, 1),
-                            );
+                            CustomDialogLogin.showAlert(context, '채팅 기능은\n로그인 후 이용가능합니다.',
+                                15.0, Color.fromRGBO(29, 29, 29, 1));
                           } else {
-                            Get.to(Chatingchang());
+
+                            String uid = FirebaseAuth.instance.currentUser!.uid;
+
+                            DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                                .collection('User')
+                                .doc(uid)
+                                .get();
+
+                            bool status = userDoc['status'];
+
+                            if (status == false) {
+                              CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+                                  15.0, Color.fromRGBO(29, 29, 29, 1));
+                            } else {
+                              Get.to(ChatPage());
+                            }
                           }
                         },
                       ),

@@ -87,7 +87,7 @@ class _MainPageState extends State<MainPage> {
                     CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
                         15.0, Color.fromRGBO(29, 29, 29, 1));
                   } else {
-                    Get.to(QandApage());
+                    Get.to(PostWritePage());
                   }
               }
             },
