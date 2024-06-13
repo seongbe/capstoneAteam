@@ -53,8 +53,8 @@ class _InputpassState extends State<Inputpass> {
       user.reauthenticateWithCredential(credential).then((value) {
         Get.off(SetProfileImage());
       }).catchError((error) {
-        CustomDialog2.showAlert(
-            context, "비밀번호가 일치하지 않습니다.", 20, Colors.black);
+        String message = '비밀번호가 일치하지 않습니다.';
+        CustomDialog2.showAlert(context, message, 20, Colors.black);
       });
     }
   }
@@ -124,11 +124,12 @@ class _InputpassState extends State<Inputpass> {
           ),
           SizedBox(height: 20.0),
           TextFormField(
+            controller: passwordController,
             decoration: InputDecoration(
-              hintText: '비밀번호를 입력하세요.',
+              labelText: '비밀번호를 입력하세요.',
               helperText: "* 필수 입력값입니다.",
               helperStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+              labelStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
               filled: true,
               fillColor: Color(0xffF8FFF2),
               enabledBorder: OutlineInputBorder(
@@ -144,42 +145,11 @@ class _InputpassState extends State<Inputpass> {
               return null;
             },
           ),
-
-          SizedBox(height: 20.0),
-          Text(
-            '비밀번호 확인',
-            style: TextStyle(
-              fontFamily: 'skybori',
-              fontSize: 20,
-              letterSpacing: 2.0,
-            ),
-          ),
-          SizedBox(height: 20.0),
-          TextField(
-            decoration: InputDecoration(
-              hintText: '비밀번호를 다시 입력해 주세요.',
-              helperText: "* 필수 입력값입니다.",
-              helperStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
-              filled: true,
-              fillColor: Color(0xffF8FFF2),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                borderSide: BorderSide(width: 1, color: Color(0xffD0E4BC)),
-              ),
-            ),
-          ),
-
           GreenButton(
-            // 버튼 글씨 사이즈 수정해야함
             text1: '본인인증',
             width: 756,
             height: 50,
-            onPressed: () {
-              CustomDialog2.showAlert(
-                context, "비밀번호가 일치하지 않습니다. ", 14, Colors.black, );
-              Get.to(SetProfileImage());
-            },
+            onPressed: _validateAndNavigate,
           ),
         ],
       ),
