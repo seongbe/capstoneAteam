@@ -189,6 +189,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
           final userDoc = snapshot.data!;
           final String nickname = userDoc['nickname'] ?? '닉네임 없음';
           final String department = userDoc['department'] ?? '학과 없음';
+          final String profileUrl = userDoc['profile_url'] ?? 'default_profile_image_url';
 
           return SafeArea(
             child: ListView(
@@ -208,10 +209,23 @@ class _DetailItemPageState extends State<DetailItemPage> {
                 SizedBox(height: 20),
                 Row(
                   children: [
-                    Image(
-                      width: 46,
-                      height: 45,
-                      image: AssetImage('assets/images/skon_fly.png'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: ClipOval(
+                        child: Image.network(
+                          profileUrl,
+                          width: 46,
+                          height: 45,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/skon_fly.png',
+                              width: 46,
+                              height: 45,
+                            );
+                          },
+                        ),
+                      ),
                     ),
                     SizedBox(width: 10),
                     Column(
