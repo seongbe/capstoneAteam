@@ -287,7 +287,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                     Row(
                       children: [
                         SizedBox(width: 20),
-                        SizedBox(
+                        Flexible(
                           child: Text(
                             product['description'],
                             style: TextStyle(
@@ -374,7 +374,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                           ),
                         ],
                       ),
-                      SizedBox(width: 140),
+                      Spacer(),
                       ChatButton(
                         width: 80,
                         height: 34,

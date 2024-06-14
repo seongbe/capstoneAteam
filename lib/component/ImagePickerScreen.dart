@@ -1,9 +1,8 @@
-// lib/component/ImagePickerScreen.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../controller/imagePickerController.dart'; // 컨트롤러를 임포트
+import '../controller/imagePickerController.dart';
 
 class ImagePickerScreen extends StatelessWidget {
   const ImagePickerScreen({Key? key}) : super(key: key);
@@ -49,10 +48,15 @@ class ImagePickerScreen extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.file(
-                File(e.path),
-                fit: BoxFit.cover,
-              ),
+              child: e.path.startsWith('http')
+                  ? Image.network(
+                      e.path,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.file(
+                      File(e.path),
+                      fit: BoxFit.cover,
+                    ),
             ),
             Positioned(
               top: 5,
@@ -67,7 +71,7 @@ class ImagePickerScreen extends StatelessWidget {
                   color: Colors.black87,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

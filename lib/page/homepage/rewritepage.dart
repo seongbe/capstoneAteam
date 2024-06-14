@@ -1,18 +1,13 @@
-import 'dart:io';
-import 'package:capstone/component/ImagePickerScreen.dart';
-import 'package:capstone/component/button.dart';
-import 'package:capstone/controller/imagePickerController.dart';
-import 'package:capstone/page/homepage/homePage.dart';
-import 'package:capstone/page/homepage/writelistpage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../component/ImagePickerScreen.dart';
+import '../../component/button.dart';
+import '../../controller/imagePickerController.dart';
 import '../../component/alerdialog.dart';
 import '../../component/alterdilog2.dart';
+import '../homepage/homePage.dart';
 
 class ReWritePage extends StatefulWidget {
   final Map<String, dynamic>? product;
@@ -28,7 +23,6 @@ class _ReWritePageState extends State<ReWritePage> {
   late TextEditingController _priceController;
   late TextEditingController _descriptionController;
   late ImagePickerController imageController = Get.put(ImagePickerController());
-  late List<String> initialImages;
 
   @override
   void initState() {
@@ -36,7 +30,7 @@ class _ReWritePageState extends State<ReWritePage> {
     _titleController = TextEditingController(text: widget.product!['title']);
     _priceController = TextEditingController(text: widget.product!['price']);
     _descriptionController = TextEditingController(text: widget.product!['description']);
-    initialImages = List<String>.from(widget.product!['image_url'] ?? []);
+    imageController.loadInitialImages(List<String>.from(widget.product!['image_url'] ?? []));
   }
 
   Future<void> _updateProduct() async {
@@ -53,12 +47,14 @@ class _ReWritePageState extends State<ReWritePage> {
     try {
       final String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
+      // 이미지 업로드
+      List<String> imageUrls = await imageController.uploadImages();
+
       await FirebaseFirestore.instance.collection('Product').doc(widget.product!['post_id']).update({
         'title': _titleController.text,
         'price': _priceController.text,
         'description': _descriptionController.text,
-        // 'image_url': imageController.imageUrls,
-        // 다른 필드도 필요하다면 여기에 추가
+        'image_url': imageUrls,
       });
 
       CustomDialog.showAlert(
@@ -80,7 +76,7 @@ class _ReWritePageState extends State<ReWritePage> {
       );
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,8 +134,7 @@ class _ReWritePageState extends State<ReWritePage> {
                 decoration: InputDecoration(
                   hintText: '제목을 입력하세요.',
                   helperText: "* 필수 입력값입니다.",
-                  hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -166,8 +161,7 @@ class _ReWritePageState extends State<ReWritePage> {
                 controller: _priceController,
                 decoration: InputDecoration(
                   hintText: '가격을 입력하세요.',
-                  hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -196,8 +190,7 @@ class _ReWritePageState extends State<ReWritePage> {
                 maxLines: null,
                 decoration: InputDecoration(
                   hintText: '내용을 입력하세요.',
-                  hintStyle:
-                      TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
+                  hintStyle: TextStyle(color: Color(0xffC0C0C0), fontFamily: 'mitmi'),
                   filled: true,
                   fillColor: Color(0xffF8FFF2),
                   enabledBorder: OutlineInputBorder(
@@ -211,16 +204,16 @@ class _ReWritePageState extends State<ReWritePage> {
                 width: double.infinity,
                 height: 70,
                 child: GreenButton(
-                  // 버튼 글씨 사이즈 수정해야함
                   text1: '수정하기',
                   width: 756,
                   height: 50,
                   onPressed: _updateProduct,
                 ),
-              )
+              ),
             ],
-        ),
-         ], ),
+          ),
+        ],
+      ),
     );
   }
 }
