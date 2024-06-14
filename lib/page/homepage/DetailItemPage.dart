@@ -2,6 +2,7 @@ import 'package:capstone/component/alertdialog_contact.dart';
 import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/page/homepage/chatpage.dart';
 import 'package:capstone/page/homepage/qapage.dart';
+import 'package:capstone/page/homepage/user_detail.dart';
 import 'package:capstone/wiget/chat_button.dart';
 import 'package:capstone/wiget/slideImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -207,35 +208,41 @@ class _DetailItemPageState extends State<DetailItemPage> {
                     child: Text('이미지가 없습니다.'),
                   ),
                 SizedBox(height: 20),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: ClipOval(
-                        child: Image.network(
-                          profileUrl,
-                          width: 46,
-                          height: 45,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              'assets/images/skon_fly.png',
-                              width: 46,
-                              height: 45,
-                            );
-                          },
+
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => UserDetail(uid: uid));
+                  },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: ClipOval(
+                          child: Image.network(
+                            profileUrl,
+                            width: 46,
+                            height: 45,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/skon_fly.png',
+                                width: 46,
+                                height: 45,
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(nickname, style: TextStyle(fontSize: 16)),
-                        Text(department, style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                  ],
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(nickname, style: TextStyle(fontSize: 16)),
+                          Text(department, style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 10),
                 Divider(),
