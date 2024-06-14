@@ -322,16 +322,17 @@ class _ChatPageState extends State<ChatPage> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
-                     final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
-    
+                    final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
+                    final description = product['description'];
+                    final shortDescription = description.length <= 20 ? description : '${description.substring(0, 20)} ... 더 보기';
                 
                     return Column(
                       children: [
                         GestureDetector(
                           child: Chatlistitem(
-                              imagePath: imageUrl, // 이미지 경로
+                            imagePath: imageUrl, // 이미지 경로
                             title: product['title'], // 제목
-                            subtitle1: product['description'], // 부제목1
+                            subtitle1: shortDescription, // 부제목1
                             subtitle2: "${product['price']} 원",
                             product: product, 
                               ),
