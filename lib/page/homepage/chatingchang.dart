@@ -1,234 +1,115 @@
-import 'package:capstone/component/chat.dart';
-import 'package:capstone/component/chat2.dart';
-import 'package:capstone/page/homepage/yaksookget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Chatingchang extends StatelessWidget {
-  const Chatingchang({super.key});
+class ChatPage2 extends StatefulWidget {
+  final String chatRoomId;
+  final String productOwnerId;
+
+  ChatPage2({required this.chatRoomId, required this.productOwnerId});
+
+  @override
+  _ChatPageState createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage2> {
+  final TextEditingController _messageController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _sendMessage() async {
+    if (_messageController.text.isEmpty) return;
+
+    final User? user = _auth.currentUser;
+    if (user == null) return;
+
+    await _firestore.collection('chatRooms')
+      .doc(widget.chatRoomId)
+      .collection('messages')
+      .add({
+        'senderId': user.uid,
+        'message': _messageController.text,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+    _messageController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-          title: Column(
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () {}, // 클릭 이벤트 추가
-                    child: Container(
-                      width: 150,
-                      height: 50,
-                      decoration: ShapeDecoration(
-                          color: Color(0xCCF8FFF2),
-                          shape: RoundedRectangleBorder(
-                            side:
-                                BorderSide(width: 1, color: Color(0xFFCFE4BC)),
-                            borderRadius: BorderRadius.circular(10),
-                          )),
-                      child: Stack(
-                        children: [
-                          Image(
-                              width: 35,
-                              height: 45,
-                              image: AssetImage('assets/images/book.png')),
-                          Positioned(
-                              left: 40,
-                              top: 10,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '판매중',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Color(0xFF78BE39),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    '운영체제 공룡책',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ],
-                              )),
-                          Positioned(
-                            left: 40,
-                            top: 26,
-                            child: Text(
-                              '10,000',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.to(Yaksookget());
-                    }, // 클릭 이벤트 추가
-                    child: Container(
-                      width: 82,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Color(0xFF78BE39),
-                        border: Border.all(
-                          color: Color(0xFF66AA28),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          Image(
-                              image: AssetImage('assets/icons/icon_clock.png')),
-                          Text(
-                            '약속잡기',
-                            style: TextStyle(
-                              fontFamily: 'mitmi',
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('채팅'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('chatRooms')
+                .doc(widget.chatRoomId)
+                .collection('messages')
+                .orderBy('timestamp', descending: true)
+                .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                final messages = snapshot.data!.docs;
+
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final message = messages[index];
+                    final messageText = message['message'];
+                    final senderId = message['senderId'];
+                    final isMe = senderId == _auth.currentUser?.uid;
+
+                    return ListTile(
+                      title: Align(
+                        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                          decoration: BoxDecoration(
+                            color: isMe ? Colors.blue : Colors.grey,
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
-                        ],
+                          child: Text(
+                            messageText,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: '메시지를 입력하세요...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
                       ),
                     ),
                   ),
-                ],
-              ),
-              Divider(
-                height: 10.0,
-                color: Color(0xffCCCCCC),
-                thickness: 1.0,
-                endIndent: 30.0,
-              ),
-            ],
-          ),
-          centerTitle: true,
-          elevation: 0.0,
-        ),
-        body: ListView(
-          children: [
-            Column(
-              children: [
-                Divider(),
-                SizedBox(
-                  height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text('오전 09:43',
-                            style: TextStyle(
-                              color: Color(0xFF9F9F9F),
-                              fontSize: 8,
-                              fontFamily: 'Work Sans',
-                              fontWeight: FontWeight.w500,
-                              height: 0.34,
-                              letterSpacing: -0.41,
-                            )),
-                      ],
-                    ),
-                    rightChatting(
-                      text: '8000원 가능하실까요?',
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    leftChatting(
-                      text: '9,000원으로 거래하시죠',
-                    ),
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text('오전 09:43  ',
-                            style: TextStyle(
-                              color: Color(0xFF9F9F9F),
-                              fontSize: 8,
-                              fontFamily: 'Work Sans',
-                              fontWeight: FontWeight.w500,
-                              height: 0.34,
-                              letterSpacing: -0.41,
-                            )),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text('오전 09:43',
-                            style: TextStyle(
-                              color: Color(0xFF9F9F9F),
-                              fontSize: 8,
-                              fontFamily: 'Work Sans',
-                              fontWeight: FontWeight.w500,
-                              height: 0.34,
-                              letterSpacing: -0.41,
-                            )),
-                      ],
-                    ),
-                    rightChatting(
-                      text: '8000원 가능하실까요?',
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: _sendMessage,
                 ),
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
