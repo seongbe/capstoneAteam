@@ -165,11 +165,10 @@ class _DetailItemPageState extends State<DetailItemPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            '상세 페이지',
-            style: TextStyle(fontFamily: 'skybori', fontSize: 24),
-          ),
+        centerTitle: true, // 제목을 중앙 정렬
+        title: Text(
+          '상세 페이지',
+          style: TextStyle(fontFamily: 'skybori', fontSize: 24),
         ),
       ),
       body: product == null
