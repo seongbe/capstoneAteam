@@ -138,17 +138,17 @@ class _PostWritePageState extends State<PostWritePage> {
             Get.back();
           },
         ),
-        actions: [
-          Text(
-            '임시저장',
-            style: TextStyle(
-              color: Color(0xFF78BE39),
-              fontSize: 20,
-              fontFamily: 'skybori',
-            ),
-          ),
-          SizedBox(width: 20),
-        ],
+        // actions: [
+        //   Text(
+        //     '임시저장',
+        //     style: TextStyle(
+        //       color: Color(0xFF78BE39),
+        //       fontSize: 20,
+        //       fontFamily: 'skybori',
+        //     ),
+        //   ),
+        //   SizedBox(width: 20),
+        // ],
         shape: Border(
           bottom: BorderSide(
             color: Colors.grey,
