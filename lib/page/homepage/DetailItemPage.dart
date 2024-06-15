@@ -244,7 +244,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                     Row(
                       children: [
                         SizedBox(width: 20),
-                        SizedBox(
+                        Flexible(
                           child: Text(
                             product['description'],
                             style: TextStyle(
@@ -252,6 +252,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
+                                                   
                           ),
                         ),
                       ],

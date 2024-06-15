@@ -206,7 +206,8 @@ class _ChatPageState extends State<ChatPage> {
                   itemBuilder: (context, index) {
                     final product = products[index];
                      final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
-    
+                     final description = product['description'];
+                    final shortDescription = description.length <= 20 ? description : '${description.substring(0, 20)} ... 더 보기';
                 
                     return Column(
                       children: [
@@ -214,7 +215,7 @@ class _ChatPageState extends State<ChatPage> {
                           child: Chatlistitem(
                               imagePath: imageUrl, // 이미지 경로
                             title: product['title'], // 제목
-                            subtitle1: product['description'], // 부제목1
+                            subtitle1: shortDescription,
                             subtitle2: "${product['price']} 원",
                             product: product, 
                               ),
