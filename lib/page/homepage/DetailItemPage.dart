@@ -69,7 +69,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     DocumentSnapshot userDoc =
-        await FirebaseFirestore.instance.collection('User').doc(uid).get();
+    await FirebaseFirestore.instance.collection('User').doc(uid).get();
 
     bool status = userDoc['status'];
 
@@ -97,7 +97,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
         '자신의 게시글에는 좋아요를 누를수 없습니다',
         20,
         Colors.black,
-        () async {
+            () async {
           // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
         },
       );
@@ -133,7 +133,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
     if (user == null) return;
 
     final DocumentReference userRef =
-        FirebaseFirestore.instance.collection('User').doc(user.uid);
+    FirebaseFirestore.instance.collection('User').doc(user.uid);
     final DocumentSnapshot userSnapshot = await userRef.get();
 
     if (!userSnapshot.exists) {
