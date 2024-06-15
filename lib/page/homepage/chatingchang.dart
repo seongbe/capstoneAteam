@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage2 extends StatefulWidget {
   final String chatRoomId;
@@ -35,6 +36,12 @@ class _ChatPageState extends State<ChatPage2> {
     _messageController.clear();
   }
 
+    String _formatTimestamp(Timestamp timestamp) {
+    var format = DateFormat('yyyy-MM-dd HH:mm'); // 'yyyy-MM-dd HH:mm:ss' 형태로 표시
+    return format.format(timestamp.toDate());
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,23 +71,39 @@ class _ChatPageState extends State<ChatPage2> {
                     final message = messages[index];
                     final messageText = message['message'];
                     final senderId = message['senderId'];
+                         final timestamp = message['timestamp'] as Timestamp;
                     final isMe = senderId == _auth.currentUser?.uid;
 
                     return ListTile(
                       title: Align(
                         alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                          decoration: BoxDecoration(
-                            color: isMe ? Colors.blue : Colors.grey,
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Text(
-                            messageText,
-                            style: TextStyle(color: Colors.white),
-                          ),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                              decoration: BoxDecoration(
+                                color: isMe ? Colors.blue : Colors.grey,
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: Text(
+                                messageText,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              _formatTimestamp(timestamp),
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
                         ),
+                        
                       ),
+                      
                     );
                   },
                 );
