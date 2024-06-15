@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:capstone/component/alertdialog_contact.dart';
 import 'package:capstone/component/alertdialog_login.dart';
+import 'package:capstone/page/homepage/mypage.dart';
 import 'package:capstone/page/homepage/postwritepage.dart';
 import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/wiget/BookListItem.dart';
@@ -21,6 +22,20 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String sortOrder = '최신순';
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,22 +71,27 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
           ),
+          title: TextField(
+    controller: _searchController,
+    decoration: InputDecoration(
+      hintText: '검색...',
+      border: InputBorder.none,
+    ),
+    onChanged: _updateSearchQuery,
+  ),
           actions: [
             IconButton(
               onPressed: () {
-                // 맨 오른쪽에 위치한 첫 번째 아이콘의 클릭 이벤트 처리
-              },
+               setState(() {
+          _searchQuery = _searchController.text;
+        });
+              },  
               icon: Icon(Icons.search), // 맨 오른쪽 첫 번째 아이콘
             ),
+             
             IconButton(
               onPressed: () {
-                // 맨 오른쪽에 위치한 두 번째 아이콘의 클릭 이벤트 처리
-              },
-              icon: Icon(Icons.notifications), // 맨 오른쪽 두 번째 아이콘
-            ),
-            IconButton(
-              onPressed: () {
-                // 맨 오른쪽에 위치한 세 번째 아이콘의 클릭 이벤트 처리
+               Get.to(Mypage());
               },
               icon: Icon(Icons.settings), // 맨 오른쪽 세 번째 아이콘
             ),
@@ -103,53 +123,59 @@ class _MainPageState extends State<MainPage> {
           },
           child: Icon(Icons.add),
         ),
-        body: StreamBuilder(
-          stream: sortOrder == '최신순'
-              ? FirebaseFirestore.instance
+        body:StreamBuilder(
+  stream: (_searchQuery.isEmpty)
+      ? (sortOrder == '최신순'
+          ? FirebaseFirestore.instance
               .collection('Product')
               .orderBy('created_at', descending: true)
               .snapshots()
-              : FirebaseFirestore.instance
+          : FirebaseFirestore.instance
               .collection('Product')
               .orderBy('like_count', descending: true)
-              .snapshots(),
-          builder: (context, productSnapshot) {
-            if (productSnapshot.hasError) {
-              return Center(child: Text('Error: ${productSnapshot.error}'));
-            }
-            if (productSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
+              .snapshots())
+      : FirebaseFirestore.instance
+          .collection('Product')
+          .where('title', isGreaterThanOrEqualTo: _searchQuery)
+          .where('title', isLessThanOrEqualTo: _searchQuery + '\uf8ff')
+          .snapshots(),
+  builder: (context, productSnapshot) {
+    if (productSnapshot.hasError) {
+      return Center(child: Text('Error: ${productSnapshot.error}'));
+    }
+    if (productSnapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
 
-            final products = productSnapshot.data!.docs
-                .map((DocumentSnapshot document) {
-              return document.data() as Map<String, dynamic>;
-            }).toList();
+    final products = productSnapshot.data!.docs.map((DocumentSnapshot document) {
+      return document.data() as Map<String, dynamic>;
+    }).toList();
 
-            return ListView.builder(
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                final imageUrl = product['image_url'].isNotEmpty
-                    ? product['image_url'][0]
-                    : null;
-                final description = product['description'];
-                final shortDescription = description.length <= 20
-                    ? description
-                    : '${description.substring(0, 20)} ... 더 보기';
+    return ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        final product = products[index];
+        final imageUrl = product['image_url'].isNotEmpty
+            ? product['image_url'][0]
+            : null;
+        final description = product['description'];
+        final shortDescription = description.length <= 20
+            ? description
+            : '${description.substring(0, 20)} ... 더 보기';
 
-                return BookListItem(
-                  imagePath: imageUrl,
-                  title: product['title'],
-                  subtitle1: shortDescription,
-                  subtitle2: "${product['price']} 원",
-                  product: product,
-                  likecount: product['like_count'].toString(),
-                );
-              },
-            );
-          },
-        ),
+        return BookListItem(
+          imagePath: imageUrl,
+          title: product['title'],
+          subtitle1: shortDescription,
+          subtitle2: "${product['price']} 원",
+          product: product,
+          likecount: product['like_count'].toString(),
+        );
+      },
+    );
+  },
+),
+
       ),
     );
   }

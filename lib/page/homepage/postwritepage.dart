@@ -56,6 +56,7 @@ class _PostWritePageState extends State<PostWritePage> {
         'title': titleController.text,
         'price': priceController.text,
         'description': detailController.text,
+        'like_count': 0,
         'image_url': imageUrls,
         'user_id': userId,
       });
