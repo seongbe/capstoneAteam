@@ -36,11 +36,15 @@ class _ChatPageState extends State<ChatPage2> {
     _messageController.clear();
   }
 
-    String _formatTimestamp(Timestamp timestamp) {
+  Future<String> _getUserNickname(String userId) async {
+    DocumentSnapshot userDoc = await _firestore.collection('User').doc(userId).get();
+    return userDoc['nickname'] ?? 'Unknown';
+  }
+
+  String _formatTimestamp(Timestamp timestamp) {
     var format = DateFormat('yyyy-MM-dd HH:mm'); // 'yyyy-MM-dd HH:mm:ss' 형태로 표시
     return format.format(timestamp.toDate());
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,39 +75,56 @@ class _ChatPageState extends State<ChatPage2> {
                     final message = messages[index];
                     final messageText = message['message'];
                     final senderId = message['senderId'];
-                         final timestamp = message['timestamp'] as Timestamp;
+                    final timestamp = message['timestamp'] as Timestamp;
                     final isMe = senderId == _auth.currentUser?.uid;
 
-                    return ListTile(
-                      title: Align(
-                        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                              decoration: BoxDecoration(
-                                color: isMe ? Colors.blue : Colors.grey,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              child: Text(
-                                messageText,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              
+                    return FutureBuilder<String>(
+                      future: _getUserNickname(senderId),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        final nickname = snapshot.data!;
+
+                        return ListTile(
+                          title: Align(
+                            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  nickname,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                                  decoration: BoxDecoration(
+                                    color: isMe ? Colors.blue : Colors.grey,
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Text(
+                                    messageText,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  _formatTimestamp(timestamp),
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              _formatTimestamp(timestamp),
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-                        
-                      ),
-                      
+                          ),
+                        );
+                      },
                     );
                   },
                 );
