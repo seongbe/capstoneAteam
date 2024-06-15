@@ -1,6 +1,7 @@
 import 'package:capstone/component/alertdialog_contact.dart';
 import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/page/homepage/chatpage.dart';
+import 'package:capstone/page/homepage/chatpage3.dart';
 import 'package:capstone/page/homepage/comments_section.dart';
 import 'package:capstone/page/homepage/qapage.dart';
 import 'package:capstone/page/homepage/user_detail.dart';
@@ -400,29 +401,32 @@ class _DetailItemPageState extends State<DetailItemPage> {
                   ),
                   Spacer(),
                   if (currentUserId != widget.product!['user_id'])
-                    ChatButton(
-                      width: 80,
-                      height: 34,
-                      text1: '채팅하기',
-                      textsize: 14,
-                      onPressed: () async {
-                        if (FirebaseAuth.instance.currentUser == null) {
-                          CustomDialogLogin.showAlert(context, '채팅 기능은\n로그인 후 이용가능합니다.', 15.0, Color.fromRGBO(29, 29, 29, 1));
-                        } else {
-                          String uid = FirebaseAuth.instance.currentUser!.uid;
+                   ChatButton(
+  width: 80,
+  height: 34,
+  text1: '채팅하기',
+  textsize: 14,
+  onPressed: () async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      CustomDialogLogin.showAlert(context, '채팅 기능은\n로그인 후 이용가능합니다.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+    } else {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
 
-                          DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('User').doc(uid).get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('User').doc(uid).get();
 
-                          bool status = userDoc['status'];
+      bool status = userDoc['status'];
 
-                          if (status == false) {
-                            CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.', 15.0, Color.fromRGBO(29, 29, 29, 1));
-                          } else {
-                            _navigateToChatPage(widget.product!['user_id']);
-                          }
-                        }
-                      },
-                    ),
+      if (status == false) {
+        CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+      } else {
+        final productOwnerId = widget.product!['user_id']; // productOwnerId 가져오기
+        final productId = widget.product!['post_id']; // productId 가져오기
+        _navigateToChatPage(productOwnerId, productId);
+      }
+    }
+  },
+),
+
 
                 ],
 
@@ -436,13 +440,15 @@ class _DetailItemPageState extends State<DetailItemPage> {
   }
 }
 
-Future<void> _navigateToChatPage(String productOwnerId) async {
+Future<void> _navigateToChatPage(String productOwnerId, String productId) async {
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
-  // Check if chat room already exists between the two users
+  // Check if chat room already exists between the two users for this product
   final QuerySnapshot chatRoomSnapshot = await FirebaseFirestore.instance
-      .collection('chatRooms')
-      .where('users', arrayContainsAny: [currentUserId, productOwnerId]).get();
+      .collection('chatRooms2')
+      .where('productId', isEqualTo: productId)
+      .where('users', arrayContains: currentUserId)
+      .get();
 
   DocumentReference chatRoomRef;
 
@@ -451,12 +457,17 @@ Future<void> _navigateToChatPage(String productOwnerId) async {
     chatRoomRef = chatRoomSnapshot.docs.first.reference;
   } else {
     // Create a new chat room
-    chatRoomRef = await FirebaseFirestore.instance.collection('chatRooms').add({
+    chatRoomRef = await FirebaseFirestore.instance.collection('chatRooms2').add({
       'users': [currentUserId, productOwnerId],
+      'productId': productId, // productId 추가
       'created_at': Timestamp.now(),
     });
   }
 
-  Get.to(() =>
-      ChatPage2(chatRoomId: chatRoomRef.id, productOwnerId: productOwnerId));
+  Get.to(() => ChatPage3(
+    chatRoomId: chatRoomRef.id, 
+    productOwnerId: productOwnerId,
+    productId: productId // productId 추가
+  ));
 }
+
