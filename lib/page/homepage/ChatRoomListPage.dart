@@ -11,14 +11,14 @@ import '../onboarding/loginpage.dart';
 import 'chatpage3.dart'; // 추가된 import
 import 'homePage.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+class ChatRoomListPage extends StatefulWidget {
+  const ChatRoomListPage({Key? key}) : super(key: key);
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<ChatRoomListPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatRoomListPage> {
   bool isLoggedIn = false; // 로그인 상태를 저장할 변수
   bool isLoading = true;
   bool isStatusValid = true;
@@ -125,7 +125,7 @@ class _ChatPageState extends State<ChatPage> {
                 decoration: BoxDecoration(
                   color: Color(0xFFCFE4BC), // 배경색
                   borderRadius: BorderRadius.circular(40),
-                  border: Border.all( // 테두리 스타일
+                  border: Border.all(
                     color: Color(0xFF65AA28), // 테두리 색상
                     width: 1.7, // 테두리 두께
                   ), // 테두리 모양
@@ -218,7 +218,7 @@ class _ChatPageState extends State<ChatPage> {
                 decoration: BoxDecoration(
                   color: Color(0xFFCFE4BC), // 배경색
                   borderRadius: BorderRadius.circular(40),
-                  border: Border.all( // 테두리 스타일
+                  border: Border.all(
                     color: Color(0xFF65AA28), // 테두리 색상
                     width: 1.7, // 테두리 두께
                   ), // 테두리 모양
@@ -315,17 +315,25 @@ class _ChatPageState extends State<ChatPage> {
                 }
 
                 final chatRooms = snapshot.data!.docs;
+                final uniqueProductChatRooms = <String, QueryDocumentSnapshot>{};
+
+                for (var chatRoom in chatRooms) {
+                  final chatRoomData = chatRoom.data() as Map<String, dynamic>?;
+                  if (chatRoomData != null && chatRoomData.containsKey('productId')) {
+                    uniqueProductChatRooms[chatRoomData['productId']] = chatRoom;
+                  }
+                }
+
+                if (uniqueProductChatRooms.isEmpty) {
+                  return Center(child: Text('참여한 채팅방이 없습니다.'));
+                }
 
                 return ListView.builder(
-                  itemCount: chatRooms.length,
+                  itemCount: uniqueProductChatRooms.length,
                   itemBuilder: (context, index) {
-                    final chatRoom = chatRooms[index];
-                    if (!chatRoom.exists) {
-                      return Container();
-                    }
-                    
+                    final chatRoom = uniqueProductChatRooms.values.elementAt(index);
                     final productId = chatRoom['productId'];
-                    
+
                     return FutureBuilder<DocumentSnapshot>(
                       future: FirebaseFirestore.instance.collection('Product').doc(productId).get(),
                       builder: (context, productSnapshot) {

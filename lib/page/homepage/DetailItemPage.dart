@@ -1,4 +1,5 @@
 import 'package:capstone/component/alertdialog_contact.dart';
+import 'package:capstone/page/homepage/ChatRoomListPage.dart';
 import 'package:capstone/page/homepage/chatingchang.dart';
 import 'package:capstone/page/homepage/chatpage.dart';
 import 'package:capstone/page/homepage/chatpage3.dart';
@@ -377,43 +378,14 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         ],
                       ),
                       Spacer(),
-                      ChatButton(
-                        width: 80,
-                        height: 34,
-                        text1: '채팅하기',
-                        textsize: 14,
-                        onPressed: () async {
-                          if (FirebaseAuth.instance.currentUser == null) {
-                            CustomDialogLogin.showAlert(context, '채팅 기능은\n로그인 후 이용가능합니다.',
-                                15.0, Color.fromRGBO(29, 29, 29, 1));
-                          } else {
-
-                            String uid = FirebaseAuth.instance.currentUser!.uid;
-
-                            DocumentSnapshot userDoc = await FirebaseFirestore.instance
-                                .collection('User')
-                                .doc(uid)
-                                .get();
-
-                            bool status = userDoc['status'];
-
-                            if (status == false) {
-                              CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
-                                  15.0, Color.fromRGBO(29, 29, 29, 1));
-                            } else {
-                              _navigateToChatPage(widget.product!['user_id']);  
-                            
-                            }
-                          }
-                        },
-                      ),
+                     
 
 
 
                   ChatButton(
   width: 80,
   height: 34,
-  text1: '채팅하기2',
+  text1: '채팅하기',
   textsize: 14,
   onPressed: () async {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -445,12 +417,13 @@ class _DetailItemPageState extends State<DetailItemPage> {
           CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
               15.0, Color.fromRGBO(29, 29, 29, 1));
         } else {
-          _navigateToChatPage2(widget.product!['user_id'], widget.product!['post_id']);
+          _navigateToChatPage(widget.product!['user_id'], widget.product!['post_id']);
         }
       }
     }
   },
 ),
+                  
 
 
                     ],
@@ -465,32 +438,8 @@ class _DetailItemPageState extends State<DetailItemPage> {
   }
 }
 
-Future<void> _navigateToChatPage(String productOwnerId) async {
-  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
-  // Check if chat room already exists between the two users
-  final QuerySnapshot chatRoomSnapshot = await FirebaseFirestore.instance
-      .collection('chatRooms')
-      .where('users', arrayContainsAny: [currentUserId, productOwnerId])
-      .get();
-
-  DocumentReference chatRoomRef;
-
-  if (chatRoomSnapshot.docs.isNotEmpty) {
-    // Existing chat room found
-    chatRoomRef = chatRoomSnapshot.docs.first.reference;
-  } else {
-    // Create a new chat room
-    chatRoomRef = await FirebaseFirestore.instance.collection('chatRooms').add({
-      'users': [currentUserId, productOwnerId],
-      'created_at': Timestamp.now(),
-    });
-  }
-
-  Get.to(() => ChatPage2(chatRoomId: chatRoomRef.id, productOwnerId: productOwnerId));
-}
-
-Future<void> _navigateToChatPage2(String productOwnerId, String productId) async {
+Future<void> _navigateToChatPage(String productOwnerId, String productId) async {
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
   // Check if chat room already exists for the specific product
