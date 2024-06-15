@@ -32,7 +32,19 @@ class _PostWritePageState extends State<PostWritePage> {
         '모든 필드를 입력해주세요.',
         14,
         Colors.black,
-        () {},
+            () {},
+      );
+      return;
+    }
+
+    // 이미지가 선택되지 않았을 경우 경고 표시
+    if (controller.pickedImages.isEmpty) {
+      CustomDialog.showAlert(
+        context,
+        '사진을 선택해주세요.',
+        18,
+        Colors.black,
+            () {},
       );
       return;
     }
@@ -56,6 +68,7 @@ class _PostWritePageState extends State<PostWritePage> {
         'title': titleController.text,
         'price': priceController.text,
         'description': detailController.text,
+        'like_count': 0,
         'image_url': imageUrls,
         'user_id': userId,
       });
@@ -69,7 +82,7 @@ class _PostWritePageState extends State<PostWritePage> {
         '게시물이 성공적으로 등록되었습니다.',
         18.0,
         Colors.black,
-        () {
+            () {
           Get.back();
         },
       );
@@ -81,7 +94,7 @@ class _PostWritePageState extends State<PostWritePage> {
         '오류가 발생했습니다.',
         14,
         Colors.black,
-        () {},
+            () {},
       );
     }
 
@@ -90,6 +103,7 @@ class _PostWritePageState extends State<PostWritePage> {
     detailController.clear();
     controller.clearImages();
   }
+
 
   Future<String> uploadImageToFirebaseStorage(File imageFile) async {
     try {

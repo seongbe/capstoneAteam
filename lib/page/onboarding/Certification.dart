@@ -55,7 +55,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
     usersCollection.doc(uid).get().then((DocumentSnapshot snapshot) {
       if (!snapshot.exists) {
         // 사용자 정보가 없으면 삭제 가능
-        if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+        if (state == AppLifecycleState.detached) {
           deleteUser();
           Get.offAll(StartPage());
         }
@@ -126,7 +126,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
 
     if (isSent && user!.emailVerified) {
       // 이메일 인증이 완료된 경우 추가 정보 입력 페이지로 이동
-      Get.to(() => Selectstudentinfo(user: user, email: _emailController.text));
+      Get.off(() => Selectstudentinfo(user: user, email: _emailController.text));
     } else {
       // 이메일 인증이 완료되지 않은 경우 경고 메시지 표시
       CustomDialog2.showAlert(
@@ -206,14 +206,14 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
                     const SizedBox(height: 10),
                     GreenButton(
                       text1: '인증 메일 받기',
-                      width: 288,
+                      width: 300,
                       height: 55,
                       onPressed: _sendVerificationEmail,
                     ),
                     const SizedBox(height: 20),
                     GreenButton(
                       text1: '이메일 인증 확인',
-                      width: 288,
+                      width: 340,
                       height: 55,
                       onPressed: _checkEmailVerified,
                     ),
