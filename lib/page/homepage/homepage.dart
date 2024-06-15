@@ -1,4 +1,5 @@
 import 'package:capstone/controller/NavgationBarcontroller.dart';
+import 'package:capstone/page/homepage/ChatProductListPage.dart';
 import 'package:capstone/page/homepage/ChatRoomListPage.dart';
 import 'package:capstone/page/homepage/chatpage.dart';
 import 'package:capstone/page/homepage/mainpage.dart';
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
             case 0:
               return MainPage();
             case 1:
-              return ChatRoomListPage();
+              return ChatPage();
             case 2:
               return Mypage();
             default:

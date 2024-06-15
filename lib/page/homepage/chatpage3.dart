@@ -5,9 +5,10 @@ import 'package:intl/intl.dart';
 
 class ChatPage3 extends StatefulWidget {
   final String chatRoomId;
-  final String productId;
+  final String productId; // 추가된 필드
+  final String productOwnerId; // 추가된 필드
 
-  ChatPage3({required this.chatRoomId, required this.productId});
+  ChatPage3({required this.chatRoomId, required this.productId, required this.productOwnerId});
 
   @override
   _ChatPage3State createState() => _ChatPage3State();
@@ -25,13 +26,13 @@ class _ChatPage3State extends State<ChatPage3> {
     if (user == null) return;
 
     await _firestore.collection('chatRooms2')
-      .doc(widget.chatRoomId)
-      .collection('messages')
-      .add({
-        'senderId': user.uid,
-        'message': _messageController.text,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+        .doc(widget.chatRoomId)
+        .collection('messages')
+        .add({
+      'senderId': user.uid,
+      'message': _messageController.text,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
 
     _messageController.clear();
   }
@@ -57,10 +58,10 @@ class _ChatPage3State extends State<ChatPage3> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection('chatRooms2')
-                .doc(widget.chatRoomId)
-                .collection('messages')
-                .orderBy('timestamp', descending: true)
-                .snapshots(),
+                  .doc(widget.chatRoomId)
+                  .collection('messages')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());

@@ -340,7 +340,7 @@ class _ChatPageState extends State<ChatPage> {
 
                         return GestureDetector(
                           onTap: () {
-                            Get.to(() => ChatPage3(chatRoomId: chatRoom.id, productId: productId));
+                                Get.to(() => ChatPage3(chatRoomId: chatRoom.id, productOwnerId: product['user_id'], productId: productId));
                           },
                           child: Chatlistitem(
                             imagePath: imageUrl, // 이미지 경로
