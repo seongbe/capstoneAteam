@@ -295,6 +295,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
+                                                   
                           ),
                         ),
                       ],
