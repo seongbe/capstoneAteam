@@ -376,36 +376,41 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         ],
                       ),
                       Spacer(),
-                      ChatButton(
-                        width: 80,
-                        height: 34,
-                        text1: '채팅하기',
-                        textsize: 14,
-                        onPressed: () async {
-                          if (FirebaseAuth.instance.currentUser == null) {
-                            CustomDialogLogin.showAlert(context, '채팅 기능은\n로그인 후 이용가능합니다.',
-                                15.0, Color.fromRGBO(29, 29, 29, 1));
-                          } else {
 
-                            String uid = FirebaseAuth.instance.currentUser!.uid;
-
-                            DocumentSnapshot userDoc = await FirebaseFirestore.instance
-                                .collection('User')
-                                .doc(uid)
-                                .get();
-
-                            bool status = userDoc['status'];
-
-                            if (status == false) {
-                              CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+                      // 채팅 버튼을 보여주는 조건문 수정
+                      if (currentUserId != widget.product!['user_id'])
+                        ChatButton(
+                          width: 80,
+                          height: 34,
+                          text1: '채팅하기',
+                          textsize: 14,
+                          onPressed: () async {
+                            if (FirebaseAuth.instance.currentUser == null) {
+                              CustomDialogLogin.showAlert(
+                                  context, '채팅 기능은\n로그인 후 이용가능합니다.',
                                   15.0, Color.fromRGBO(29, 29, 29, 1));
                             } else {
-                              _navigateToChatPage(widget.product!['user_id']);  
-                            
+                              String uid = FirebaseAuth.instance.currentUser!
+                                  .uid;
+
+                              DocumentSnapshot userDoc = await FirebaseFirestore
+                                  .instance
+                                  .collection('User')
+                                  .doc(uid)
+                                  .get();
+
+                              bool status = userDoc['status'];
+
+                              if (status == false) {
+                                CustomDialogContact.showAlert(context,
+                                    '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+                                    15.0, Color.fromRGBO(29, 29, 29, 1));
+                              } else {
+                                _navigateToChatPage(widget.product!['user_id']);
+                              }
                             }
-                          }
-                        },
-                      ),
+                          },
+                        ),
                     ],
                   ),
                 ),

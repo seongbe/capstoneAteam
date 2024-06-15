@@ -88,13 +88,7 @@ class _MainPageState extends State<MainPage> {
               },  
               icon: Icon(Icons.search), // 맨 오른쪽 첫 번째 아이콘
             ),
-             
-            IconButton(
-              onPressed: () {
-               Get.to(Mypage());
-              },
-              icon: Icon(Icons.settings), // 맨 오른쪽 세 번째 아이콘
-            ),
+
           ],
         ),
         floatingActionButton: FloatingActionButton(
