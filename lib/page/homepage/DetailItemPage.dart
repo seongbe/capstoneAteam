@@ -295,6 +295,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
+                                                   
                           ),
                         ),
                       ],
@@ -399,7 +400,8 @@ class _DetailItemPageState extends State<DetailItemPage> {
                               CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
                                   15.0, Color.fromRGBO(29, 29, 29, 1));
                             } else {
-                              Get.to(ChatPage());
+                              _navigateToChatPage(widget.product!['user_id']);  
+                            
                             }
                           }
                         },
@@ -414,4 +416,29 @@ class _DetailItemPageState extends State<DetailItemPage> {
       ),
     );
   }
+}
+
+Future<void> _navigateToChatPage(String productOwnerId) async {
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  // Check if chat room already exists between the two users
+  final QuerySnapshot chatRoomSnapshot = await FirebaseFirestore.instance
+      .collection('chatRooms')
+      .where('users', arrayContainsAny: [currentUserId, productOwnerId])
+      .get();
+
+  DocumentReference chatRoomRef;
+
+  if (chatRoomSnapshot.docs.isNotEmpty) {
+    // Existing chat room found
+    chatRoomRef = chatRoomSnapshot.docs.first.reference;
+  } else {
+    // Create a new chat room
+    chatRoomRef = await FirebaseFirestore.instance.collection('chatRooms').add({
+      'users': [currentUserId, productOwnerId],
+      'created_at': Timestamp.now(),
+    });
+  }
+
+  Get.to(() => ChatPage2(chatRoomId: chatRoomRef.id, productOwnerId: productOwnerId));
 }
