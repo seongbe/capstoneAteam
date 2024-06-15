@@ -49,7 +49,8 @@ class _DetailItemPageState extends State<DetailItemPage> {
   Future<void> _checkIfLiked() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('User').doc(user.uid).get();
+      final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('User').doc(user.uid).get();
       if (userSnapshot.exists) {
         List<dynamic> interests = userSnapshot['interests'] ?? [];
         setState(() {
@@ -132,7 +133,8 @@ class _DetailItemPageState extends State<DetailItemPage> {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final DocumentReference userRef = FirebaseFirestore.instance.collection('User').doc(user.uid);
+    final DocumentReference userRef = FirebaseFirestore.instance.collection(
+        'User').doc(user.uid);
     final DocumentSnapshot userSnapshot = await userRef.get();
 
     if (!userSnapshot.exists) {
@@ -159,7 +161,8 @@ class _DetailItemPageState extends State<DetailItemPage> {
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
-    final List<String> imgPaths = product != null && product['image_url'] != null
+    final List<String> imgPaths = product != null &&
+        product['image_url'] != null
         ? List<String>.from(product['image_url'])
         : [];
     final String? uid = product?['user_id'];
@@ -190,23 +193,25 @@ class _DetailItemPageState extends State<DetailItemPage> {
           final userDoc = snapshot.data!;
           final String nickname = userDoc['nickname'] ?? '닉네임 없음';
           final String department = userDoc['department'] ?? '학과 없음';
-          final String profileUrl = userDoc['profile_url'] ?? 'default_profile_image_url';
+          final String profileUrl = userDoc['profile_url'] ??
+              'default_profile_image_url';
 
           return SafeArea(
             child: ListView(
               children: [
                 if (imgPaths.length > 1)
                   ImageCarouselSlider(imgPaths: imgPaths)
-                else if (imgPaths.length == 1)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.network(imgPaths[0]),
-                  )
                 else
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('이미지가 없습니다.'),
-                  ),
+                  if (imgPaths.length == 1)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(imgPaths[0]),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('이미지가 없습니다.'),
+                    ),
                 SizedBox(height: 20),
 
                 GestureDetector(
@@ -237,16 +242,22 @@ class _DetailItemPageState extends State<DetailItemPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(nickname, style: TextStyle(fontSize: 16)),
-                          Text(department, style: TextStyle(fontSize: 16)),
+                          Text(nickname, style: TextStyle(fontSize: 16,fontFamily: 'skybori',)),
+                          Text(department, style: TextStyle(fontSize: 16,fontFamily: 'skybori',)),
                         ],
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
-                Divider(),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
+                Divider(
+                  height: 50.0,
+                  color: Color(0xffD0E4BC),
+                  thickness: 1.0,
+                  indent: 20.0,
+                  endIndent: 20.0,
+                ),
+                SizedBox(height: 5),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -259,7 +270,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
-                            fontFamily: 'inter',
+                            fontFamily: 'skybori',
                             fontWeight: FontWeight.w700,
                             height: 0.09,
                           ),
@@ -327,97 +338,107 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    Divider(
+                      height: 50.0,
+                      color: Color(0xffD0E4BC),
+                      thickness: 1.0,
+                      indent: 20.0,
+                      endIndent: 20.0,
+                    ),
+                    SizedBox(height: 5),
                   ],
-                ),
-                Divider(),
-                SizedBox(
-                  width: 390,
-                  height: 50,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: _toggleHeart,
-                        child: Image(
-                          width: 46,
-                          height: 25,
-                          image: AssetImage(isLiked
-                              ? 'assets/icons/img_2.png'
-                              : 'assets/icons/img_1.png'),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product['price'],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w700,
-                              height: 0.09,
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Text(
-                            '가격 제안 불가',
-                            style: TextStyle(
-                              color: Color(0xFF8C8C8C),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w700,
-                              height: 0.12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-
-                      // 채팅 버튼을 보여주는 조건문 수정
-                      if (currentUserId != widget.product!['user_id'])
-                        ChatButton(
-                          width: 80,
-                          height: 34,
-                          text1: '채팅하기',
-                          textsize: 14,
-                          onPressed: () async {
-                            if (FirebaseAuth.instance.currentUser == null) {
-                              CustomDialogLogin.showAlert(
-                                  context, '채팅 기능은\n로그인 후 이용가능합니다.',
-                                  15.0, Color.fromRGBO(29, 29, 29, 1));
-                            } else {
-                              String uid = FirebaseAuth.instance.currentUser!
-                                  .uid;
-
-                              DocumentSnapshot userDoc = await FirebaseFirestore
-                                  .instance
-                                  .collection('User')
-                                  .doc(uid)
-                                  .get();
-
-                              bool status = userDoc['status'];
-
-                              if (status == false) {
-                                CustomDialogContact.showAlert(context,
-                                    '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
-                                    15.0, Color.fromRGBO(29, 29, 29, 1));
-                              } else {
-                                _navigateToChatPage(widget.product!['user_id']);
-                              }
-                            }
-                          },
-                        ),
-                    ],
-                  ),
                 ),
               ],
             ),
           );
         },
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10.0), // 원하는 패딩 값 설정
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Divider(),
+            SizedBox(height: 7),
+            SizedBox(
+              height: 50,
+              child: Row(
+                children: [
+                  SizedBox(width: 10),
+                  GestureDetector(
+                    onTap: _toggleHeart,
+                    child: Image(
+                      width: 46,
+                      height: 25,
+                      image: AssetImage(isLiked
+                          ? 'assets/icons/img_2.png'
+                          : 'assets/icons/img_1.png'),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product?['price'],
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w700,
+                          height: 0.09,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        '가격 제안 불가',
+                        style: TextStyle(
+                          color: Color(0xFF8C8C8C),
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w700,
+                          height: 0.12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  ChatButton(
+                    width: 80,
+                    height: 34,
+                    text1: '채팅하기',
+                    textsize: 14,
+                    onPressed: () async {
+                      if (FirebaseAuth.instance.currentUser == null) {
+                        CustomDialogLogin.showAlert(context, '채팅 기능은\n로그인 후 이용가능합니다.',
+                            15.0, Color.fromRGBO(29, 29, 29, 1));
+                      } else {
+                        String uid = FirebaseAuth.instance.currentUser!.uid;
+
+                        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                            .collection('User')
+                            .doc(uid)
+                            .get();
+
+                        bool status = userDoc['status'];
+
+                        if (status == false) {
+                          CustomDialogContact.showAlert(
+                              context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+                              15.0, Color.fromRGBO(29, 29, 29, 1));
+                        } else {
+                          Get.to(ChatPage());
+                        }
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 7),
+          ],
+        ),
       ),
     );
   }
