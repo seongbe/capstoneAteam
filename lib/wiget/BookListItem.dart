@@ -95,14 +95,7 @@ class BookListItem extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      SizedBox(width: 200),
-                      Row(
-                        children: [
-                          Image(image: AssetImage('assets/icons/icon_chat.png')),
-                          Text('3')
-                        ],
-                      ),
-                      SizedBox(width: 5),
+                      SizedBox(width: 250),
                       Image(
                         width: 20,
                         image: AssetImage('assets/icons/icon_heart.png')
