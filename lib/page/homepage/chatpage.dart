@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../onboarding/loginpage.dart';
 import 'chatpage3.dart'; // 추가된 import
-import 'homePage.dart';
+import 'homepage.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);

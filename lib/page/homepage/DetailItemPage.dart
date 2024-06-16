@@ -66,16 +66,8 @@ class _DetailItemPageState extends State<DetailItemPage> {
 
   void _toggleHeart() async {
     final User? user = FirebaseAuth.instance.currentUser;
-
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-
-    DocumentSnapshot userDoc =
-    await FirebaseFirestore.instance.collection('User').doc(uid).get();
-
-    bool status = userDoc['status'];
-
     if (user == null) {
-      //로그인 x
+      // 로그인하지 않은 경우
       CustomDialogLogin.showAlert(
         context,
         '좋아요 기능은\n로그인 후 이용가능합니다.',
@@ -83,36 +75,50 @@ class _DetailItemPageState extends State<DetailItemPage> {
         Color.fromRGBO(29, 29, 29, 1),
       );
       return;
-    } else if (status == false) {
-      //계정 정지 상태
+    }
+
+    String uid = user.uid;
+
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('User').doc(uid).get();
+
+    bool status = userDoc['status'];
+
+    if (status == false) {
+      // 계정이 정지된 경우
       CustomDialogContact.showAlert(
-          context,
-          '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
-          15.0,
-          Color.fromRGBO(29, 29, 29, 1));
+        context,
+        '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.',
+        15.0,
+        Color.fromRGBO(29, 29, 29, 1),
+      );
       return;
-    } else if (currentUserId == widget.product?['user_id']) {
-      //자신의 게시글에 좋아요 누르는 경우
+    }
+
+    if (currentUserId == widget.product?['user_id']) {
+      // 자신의 게시물에 좋아요를 누른 경우
       CustomDialog.showAlert(
         context,
-        '자신의 게시글에는 좋아요를 누를수 없습니다',
+        '자신의 게시글에는 좋아요를 누를 수 없습니다.',
         20,
         Colors.black,
-            () async {
+            () {
           // 팝업이 닫힌 후 추가로 수행할 작업 (필요한 경우)
         },
       );
       return;
-    } else {
-      //예외가 없을 경우, 좋아요 기능 실행
-      setState(() {
-        isLiked = !isLiked;
-        likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-      });
-
-      await _updateLikeCount();
-      await _toggleInterest(widget.product!['post_id']);
     }
+
+    // 좋아요 상태를 토글
+    setState(() {
+      isLiked = !isLiked;
+      likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+    });
+
+    // 좋아요 카운트 업데이트
+    await _updateLikeCount();
+
+    // 관심 상태 업데이트
+    await _toggleInterest(widget.product!['post_id']);
   }
 
   Future<void> _updateLikeCount() async {
@@ -289,23 +295,6 @@ class _DetailItemPageState extends State<DetailItemPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 30),
-                      Row(
-                        children: [
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: Text(
-                              product['description'],
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 20), // 오른쪽 여백
-                        ],
-                      ),
                       SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -322,7 +311,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                             ),
                           ),
                           Text(
-                            '좋아요수: ${product['likeCount'] ?? 0}',
+                            '좋아요수: ${product['like_count'] ?? 0}',
                             style: TextStyle(
                               color: Color(0xFF8C8C8C),
                               fontSize: 12,
