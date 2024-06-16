@@ -77,12 +77,13 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
     try {
       String email = _emailController.text.trim();
 
-      if (!GetUtils.isEmail(email)) {
-        CustomDialog2.showAlert(
-            context, "유효한 이메일 주소를 입력해주세요.", 20, Colors.black);
+      // 이메일 주소가 특정 도메인을 가지는지 확인
+      if (!email.endsWith('@skuniv.ac.kr')) {  // 예시: '@example.com'으로 끝나는 이메일만 허용
+        CustomDialog2.showAlert(context, "서경대학교 메일만 이용 가능합니다.", 20, Colors.black);
         return;
       }
 
+      // 나머지 로직은 기존과 동일하게 진행
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       CollectionReference usersCollection = firestore.collection('User');
 
@@ -92,11 +93,9 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        CustomDialog2.showAlert(
-            context, "이미 가입된 계정입니다.", 20, Colors.black);
+        CustomDialog2.showAlert(context, "이미 가입된 계정입니다.", 20, Colors.black);
         return;
       }
-
 
       FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -120,6 +119,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
       CustomDialog2.showAlert(context, "오류가 발생했습니다: $e", 20, Colors.black);
     }
   }
+
 
   Future<void> _checkEmailVerified() async {
     FirebaseAuth auth = FirebaseAuth.instance;
