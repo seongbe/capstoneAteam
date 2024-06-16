@@ -332,14 +332,14 @@ class _DetailItemPageState extends State<DetailItemPage> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 25.0), // 위쪽 공간 50
                     Divider(
-                      height: 50.0,
+                      height: 0,
                       color: Color(0xffD0E4BC),
                       thickness: 1.0,
                       indent: 20.0,
                       endIndent: 20.0,
                     ),
-                    SizedBox(height: 5),
                     CommentsSection(
                       postId: product!['post_id']!,
                       userId: uid!,
