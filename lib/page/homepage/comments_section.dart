@@ -1,3 +1,5 @@
+import 'package:capstone/component/alertdialog_contact.dart';
+import 'package:capstone/component/alertdialog_login.dart';
 import 'package:capstone/page/homepage/user_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -198,6 +200,15 @@ class _CommentsSectionState extends State<CommentsSection> {
     }
   }
 
+  Future<String> getStatus() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('User').doc(_currentUser!.uid).get();
+    if (userDoc.exists) {
+      return userDoc.get('status') ?? 'No';
+    } else {
+      return 'No';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -244,7 +255,18 @@ class _CommentsSectionState extends State<CommentsSection> {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: _addComment,
+                  onPressed: (){
+                    if (FirebaseAuth.instance.currentUser == null) {
+                      CustomDialogLogin.showAlert(context, '댓글 기능은\n로그인 후 이용가능합니다.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+                      return; // 로그인 필요 다이얼로그 표시 후 이벤트 중단
+                    }
+
+                    if (getStatus != 'true') {
+                      CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+                      return;
+                    }
+                    _addComment();
+                  },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Color(0xFF78BE39),
@@ -335,6 +357,9 @@ class _CommentsSectionState extends State<CommentsSection> {
                     Future<String> profileUrlFuture =
                         _getPostOwnerProfileUrl(comment['user_id']);
 
+
+
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -409,6 +434,17 @@ class _CommentsSectionState extends State<CommentsSection> {
                           alignment: Alignment.centerLeft,
                           child: TextButton(
                             onPressed: () {
+
+                              if (FirebaseAuth.instance.currentUser == null) {
+                                CustomDialogLogin.showAlert(context, '답글 기능은\n로그인 후 이용가능합니다.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+                                return; // 로그인 필요 다이얼로그 표시 후 이벤트 중단
+                              }
+
+                              if (getStatus != 'true') {
+                                CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.', 15.0, Color.fromRGBO(29, 29, 29, 1));
+                                return;
+                              }
+
                               _startReply(comment['comment_id']);
                             },
                             child: Text(
@@ -555,7 +591,7 @@ class _CommentsSectionState extends State<CommentsSection> {
                                                   SizedBox(height: 2.0),
                                                   // 답글 작성 시간 표시
                                                   Text(
-                                                    '작성 시간: ${replyFormatter.formatTimestamp()}',
+                                                    '${replyFormatter.formatTimestamp()}',
                                                     style: TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 12,
