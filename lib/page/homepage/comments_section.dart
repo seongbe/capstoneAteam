@@ -34,6 +34,7 @@ class _CommentsSectionState extends State<CommentsSection> {
     _scrollController = ScrollController();
     _auth = FirebaseAuth.instance;
     _currentUser = _auth.currentUser;
+
   }
 
   @override
@@ -49,13 +50,15 @@ class _CommentsSectionState extends State<CommentsSection> {
     if (_commentController.text.isEmpty) return;
 
     try {
-      CollectionReference commentsCollection =
-      FirebaseFirestore.instance.collection('Comment');
+      CollectionReference commentsCollection = FirebaseFirestore.instance.collection('Comment');
       Timestamp timestamp = Timestamp.now();
-      String userNickname = ' ';
+      String userNickname = 'Unknown'; // Default value
 
       if (_currentUser != null) {
         userNickname = await _getPostOwnerNickname(_currentUser!.uid);
+      } else {
+        print('Current user is null. Cannot add comment.');
+        return; // Return early if current user is null
       }
 
       // Generate unique comment_id using UUID
@@ -65,9 +68,9 @@ class _CommentsSectionState extends State<CommentsSection> {
         'comment_id': commentId,
         'content': _commentController.text,
         'created_at': timestamp,
-        'nickname': userNickname, // Assign the fetched user nickname here
-        'user_id': widget.userId,
-        'replies': [], // initialize replies as empty array
+        'nickname': userNickname,
+        'user_id': _currentUser!.uid,
+        'replies': [],
       };
 
       DocumentReference postRef = commentsCollection.doc(widget.postId);
@@ -88,6 +91,7 @@ class _CommentsSectionState extends State<CommentsSection> {
       print('Error adding comment: $e');
     }
   }
+
 
   Future<String> _getPostOwnerNickname(String userId) async {
     try {
@@ -164,7 +168,7 @@ class _CommentsSectionState extends State<CommentsSection> {
         'content': _replyController.text,
         'created_at': timestamp,
         'nickname': userNickname,
-        'user_id': widget.userId,
+        'user_id': _currentUser!.uid
       };
 
       DocumentReference postRef = commentsCollection.doc(widget.postId);
