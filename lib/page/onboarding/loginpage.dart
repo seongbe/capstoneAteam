@@ -100,12 +100,6 @@ class _loginpageState extends State<loginpage> with WidgetsBindingObserver {
     await _saveKeepLoggedIn(); // 로그아웃 시 유지 상태를 false로 업데이트
   }
 
-  void toggleKeepLoggedIn() {
-    setState(() {
-      keepLoggedIn = !keepLoggedIn;
-    });
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if ((state == AppLifecycleState.detached || state == AppLifecycleState.paused) && !keepLoggedIn) {
@@ -194,26 +188,7 @@ class _loginpageState extends State<loginpage> with WidgetsBindingObserver {
                     obscureText: true,
                   ),
                 ),
-                Row(
-                  children: [
-                    const SizedBox(width: 30),
-                    Checkbox(
-                      value: keepLoggedIn,
-                      onChanged: (value) {
-                        toggleKeepLoggedIn();
-                      },
-                    ),
-                    const SizedBox(width: 5),
-                    const Text(
-                      '로그인 상태 유지',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'SKYBORI',
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
-                ),
+
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

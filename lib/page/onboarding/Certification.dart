@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/page/onboarding/startPage.dart';
@@ -24,6 +26,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
   void dispose() {
     _emailController.dispose();
     super.dispose();
+    exit(0);
   }
 
   Future<void> deleteUser() async {
@@ -32,7 +35,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
         await user!.delete();
       } catch (e) {
         // 사용자 삭제 중에 오류가 발생한 경우 예외 처리를 수행합니다.
-        print('사용자 삭제 중 오류 발생: $e');
+        log('사용자 삭제 중 오류 발생: $e', error: e);
         // 오류 메시지를 사용자에게 표시할 수도 있습니다.
       }
     }
@@ -47,26 +50,28 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
 
   //AppLifecycleState.detached
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference usersCollection = firestore.collection('User');
-    String uid = FirebaseAuth.instance.currentUser!.uid;
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.detached) {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference usersCollection = firestore.collection('User');
+      User? user = FirebaseAuth.instance.currentUser;
 
-    usersCollection.doc(uid).get().then((DocumentSnapshot snapshot) {
-      if (!snapshot.exists) {
-        // 사용자 정보가 없으면 삭제 가능
-        if (state == AppLifecycleState.detached) {
-          deleteUser();
+      if (user != null) {
+        String uid = user.uid;
+
+        DocumentSnapshot snapshot = await usersCollection.doc(uid).get();
+
+        if (!snapshot.exists) {
+          // 사용자 정보가 없으면 삭제 가능
+          await deleteUser();
           Get.offAll(StartPage());
+        } else {
+          // 사용자 정보가 있으면 아무 동작도 하지 않음
+          log('Firestore에 사용자 정보가 있어서 삭제를 막습니다.');
         }
-      } else {
-        // 사용자 정보가 있으면 아무 동작도 하지 않음
-        print('Firestore에 사용자 정보가 있어서 삭제를 막습니다.');
       }
-    });
+    }
   }
-
-
 
   Future<void> _sendVerificationEmail() async {
     try {
@@ -121,7 +126,7 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
 
     user = auth.currentUser;
 
-    await user!.reload();
+    await user?.reload();
     user = auth.currentUser;  // reload 후에 user를 다시 가져옵니다
 
     if (isSent && user!.emailVerified) {
@@ -206,14 +211,14 @@ class _CertificationState extends State<Certification> with WidgetsBindingObserv
                     const SizedBox(height: 10),
                     GreenButton(
                       text1: '인증 메일 받기',
-                      width: 300,
+                      width: 310,
                       height: 55,
                       onPressed: _sendVerificationEmail,
                     ),
                     const SizedBox(height: 20),
                     GreenButton(
                       text1: '이메일 인증 확인',
-                      width: 340,
+                      width: 350,
                       height: 55,
                       onPressed: _checkEmailVerified,
                     ),
