@@ -41,7 +41,7 @@ class ContactContainer_RED extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '     문의 / 신고명 : ',
+                  '문의 / 신고명 : ',
                   style: TextStyle(fontSize: 16),
                 ),
                 Text(
@@ -69,7 +69,7 @@ class ContactContainer_RED extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '                      ID : ',
+                  'ID : ',
                   style: TextStyle(fontSize: 16),
                 ),
                 Expanded(
@@ -87,7 +87,7 @@ class ContactContainer_RED extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '                   날짜 : ',
+                  '날짜 : ',
                   style: TextStyle(fontSize: 16),
                 ),
                 Text(
@@ -101,7 +101,7 @@ class ContactContainer_RED extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '                   상태 : ',
+                  '상태 : ',
                   style: TextStyle(fontSize: 16),
                 ),
                 Text(

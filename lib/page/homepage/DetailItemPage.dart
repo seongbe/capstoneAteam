@@ -400,7 +400,7 @@ class _DetailItemPageState extends State<DetailItemPage> {
                     ],
                   ),
                   Spacer(),
-                  if (currentUserId != widget.product!['user_id'])
+                 
                    ChatButton(
   width: 80,
   height: 34,

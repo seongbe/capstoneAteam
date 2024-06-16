@@ -323,9 +323,9 @@ class _ChatPageState extends State<ChatPage> {
                     if (!chatRoom.exists) {
                       return Container();
                     }
-                    
+
                     final productId = chatRoom['productId'];
-                    
+
                     return FutureBuilder<DocumentSnapshot>(
                       future: FirebaseFirestore.instance.collection('Product').doc(productId).get(),
                       builder: (context, productSnapshot) {
@@ -333,21 +333,32 @@ class _ChatPageState extends State<ChatPage> {
                           return Center(child: CircularProgressIndicator());
                         }
 
-                        final product = productSnapshot.data!.data() as Map<String, dynamic>;
-                        final imageUrl = product['image_url'].isNotEmpty ? product['image_url'][0] : null;
-                        final description = product['description'];
+                        if (!productSnapshot.data!.exists) {
+                          // product가 없는 경우 빈 컨테이너 반환
+                          return Container();
+                        }
+
+                        final productData = productSnapshot.data!.data() as Map<String, dynamic>?;
+
+                        if (productData == null) {
+                          // product 데이터가 null인 경우 빈 컨테이너 반환
+                          return Container();
+                        }
+
+                        final imageUrl = productData['image_url'].isNotEmpty ? productData['image_url'][0] : null;
+                        final description = productData['description'];
                         final shortDescription = description.length <= 20 ? description : '${description.substring(0, 20)} ... 더 보기';
 
                         return GestureDetector(
                           onTap: () {
-                                Get.to(() => ChatPage3(chatRoomId: chatRoom.id, productOwnerId: product['user_id'], productId: productId));
+                            Get.to(() => ChatPage3(chatRoomId: chatRoom.id, productOwnerId: productData['user_id'], productId: productId));
                           },
                           child: Chatlistitem(
                             imagePath: imageUrl, // 이미지 경로
-                            title: product['title'], // 제목
+                            title: productData['title'], // 제목
                             subtitle1: shortDescription, // 부제목1
-                            subtitle2: "${product['price']} 원",
-                            product: product,
+                            subtitle2: "${productData['price']} 원",
+                            product: productData,
                           ),
                         );
                       },
