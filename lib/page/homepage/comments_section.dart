@@ -423,46 +423,69 @@ class _CommentsSectionState extends State<CommentsSection> {
                             ),
                           ),
                         ),
-                        if (_isReplying &&
-                            _selectedCommentId == comment['comment_id'])
-                          Container(
-                            padding: EdgeInsets.only(left: 40.0, right: 20.0),
-                            child: TextField(
-                              controller: _replyController,
-                              focusNode: _replyFocusNode,
-                              onSubmitted: (_) => _submitReply(),
-                              decoration: InputDecoration(
-                                hintText: '답글을 입력하세요.',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Color(0xffF8FFF2),
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10.0,
-                                  horizontal: 15.0,
+                        if (_isReplying && _selectedCommentId == comment['comment_id'])
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 40.0, right: 10.0),
+                                  child: TextField(
+                                    controller: _replyController,
+                                    focusNode: _replyFocusNode,
+                                    onSubmitted: (_) => _submitReply(),
+                                    decoration: InputDecoration(
+                                      hintText: '답글을 입력하세요.',
+                                      hintStyle: TextStyle(fontFamily: 'skybori'),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      filled: true,
+                                      fillColor: Color(0xffF8FFF2), // 배경 색상
+                                      contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                                      // 포커스 테두리 설정
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xffD0E4BC)),
+                                        borderRadius: BorderRadius.circular(15.0),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xffD0E4BC)),
+                                        borderRadius: BorderRadius.circular(15.0),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        onPressed: _cancelReply,
+                                        icon: Icon(
+                                          Icons.clear,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        if (_isReplying &&
-                            _selectedCommentId == comment['comment_id'])
-                          Container(
-                            alignment: Alignment.centerRight,
-                            margin: EdgeInsets.only(right: 20.0),
-                            child: TextButton(
-                              onPressed: _cancelReply,
-                              child: Text(
-                                '취소',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 14,
-                                  fontFamily: 'skybori',
-                                  fontWeight: FontWeight.w400,
+                              Container(
+                                margin: EdgeInsets.only(right: 20.0),
+                                child: ElevatedButton(
+                                  onPressed: _submitReply,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF78BE39),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      side: BorderSide(color: Color(0xFF66AA28), width: 1.0),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '전송',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontFamily: 'mitmi',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         if (replies.isNotEmpty)
                           ListView.builder(
