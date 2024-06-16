@@ -193,162 +193,165 @@ class _DetailItemPageState extends State<DetailItemPage> {
           final String profileUrl = userDoc['profile_url'] ?? 'default_profile_image_url';
 
           return SafeArea(
-            child: ListView(
-              children: [
-                if (imgPaths.length > 1)
-                  ImageCarouselSlider(imgPaths: imgPaths)
-                else if (imgPaths.length == 1)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.network(imgPaths[0]),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('이미지가 없습니다.'),
-                  ),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Get.to(() => UserDetail(uid: uid));
-                  },
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: ClipOval(
-                          child: Image.network(
-                            profileUrl,
-                            width: 46,
-                            height: 45,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/skon_fly.png',
-                                width: 46,
-                                height: 45,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(nickname, style: TextStyle(fontSize: 16, fontFamily: 'skybori',)),
-                          Text(department, style: TextStyle(fontSize: 16, fontFamily: 'skybori',)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 5),
-                Divider(
-                  height: 50.0,
-                  color: Color(0xffD0E4BC),
-                  thickness: 1.0,
-                  indent: 20.0,
-                  endIndent: 20.0,
-                ),
-                SizedBox(height: 5),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Text(
-                          product['title'],
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontFamily: 'skybori',
-                            fontWeight: FontWeight.w500,
-                            height: 0.09,
-                          ),
-                        ),
-                      ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (imgPaths.length > 1)
+                    ImageCarouselSlider(imgPaths: imgPaths),
+                  if (imgPaths.length == 1)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(imgPaths[0]),
                     ),
-                    SizedBox(height: 25),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 20),
-                        Text(
-                          _formatDate(product['created_at']),
-                          style: TextStyle(
-                            color: Color(0xFF8C8C8C),
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                            height: 0.12,
-                          ),
-                        ),
-                      ],
+                  if (imgPaths.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('이미지가 없습니다.'),
                     ),
-                    SizedBox(height: 30),
-                    Row(
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => UserDetail(uid: uid));
+                    },
+                    child: Row(
                       children: [
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Text(
-                            product['description'],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: ClipOval(
+                            child: Image.network(
+                              profileUrl,
+                              width: 46,
+                              height: 45,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/skon_fly.png',
+                                  width: 46,
+                                  height: 45,
+                                );
+                              },
                             ),
                           ),
                         ),
-                        SizedBox(width: 20), // 오른쪽 여백
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 20),
-                        Text(
-                          '관심  ',
-                          style: TextStyle(
-                            color: Color(0xFF8C8C8C),
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                            height: 0.12,
-                          ),
-                        ),
-                        Text(
-                          '좋아요수: ${product['likeCount'] ?? 0}',
-                          style: TextStyle(
-                            color: Color(0xFF8C8C8C),
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                            height: 0.12,
-                          ),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(nickname, style: TextStyle(fontSize: 16, fontFamily: 'skybori')),
+                            Text(department, style: TextStyle(fontSize: 16, fontFamily: 'skybori')),
+                          ],
                         ),
                       ],
                     ),
-                    Divider(
-                      height: 50.0,
-                      color: Color(0xffD0E4BC),
-                      thickness: 1.0,
-                      indent: 20.0,
-                      endIndent: 20.0,
-                    ),
-                    SizedBox(height: 5),
-                    CommentsSection(
-                      postId: product!['post_id']!,
-                      userId: uid!,
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                  SizedBox(height: 5),
+                  Divider(
+                    height: 50.0,
+                    color: Color(0xffD0E4BC),
+                    thickness: 1.0,
+                    indent: 20.0,
+                    endIndent: 20.0,
+                  ),
+                  SizedBox(height: 5),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          SizedBox(width: 20),
+                          Text(
+                            product['title'],
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: 'skybori',
+                              fontWeight: FontWeight.w500,
+                              height: 0.09,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 20),
+                          Text(
+                            _formatDate(product['created_at']),
+                            style: TextStyle(
+                              color: Color(0xFF8C8C8C),
+                              fontSize: 12,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 0.12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 30),
+                      Row(
+                        children: [
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: Text(
+                              product['description'],
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20), // 오른쪽 여백
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 20),
+                          Text(
+                            '관심  ',
+                            style: TextStyle(
+                              color: Color(0xFF8C8C8C),
+                              fontSize: 12,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 0.12,
+                            ),
+                          ),
+                          Text(
+                            '좋아요수: ${product['likeCount'] ?? 0}',
+                            style: TextStyle(
+                              color: Color(0xFF8C8C8C),
+                              fontSize: 12,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 0.12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25.0), // 위쪽 공간 50
+                      Divider(
+                        height: 0,
+                        color: Color(0xffD0E4BC),
+                        thickness: 1.0,
+                        indent: 20.0,
+                        endIndent: 20.0,
+                      ),
+                      CommentsSection(
+                        postId: product!['post_id']!,
+                        userId: uid!,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
+
         },
       ),
       bottomNavigationBar: Padding(
