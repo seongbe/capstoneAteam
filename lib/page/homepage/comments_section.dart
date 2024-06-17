@@ -261,7 +261,7 @@ class _CommentsSectionState extends State<CommentsSection> {
                       return; // 로그인 필요 다이얼로그 표시 후 이벤트 중단
                     }
 
-                    if (getStatus != 'true') {
+                    if (getStatus == 'false') {
                       CustomDialogContact.showAlert(context, '계정이 정지상태 입니다.\n문의하기를 통해\n관리자에게 문의해주세요.', 15.0, Color.fromRGBO(29, 29, 29, 1));
                       return;
                     }
